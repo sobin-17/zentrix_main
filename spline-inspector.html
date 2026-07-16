@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="module">
+    import { Application } from 'https://unpkg.com/@splinetool/runtime@1.9.35/build/runtime.js';
+    
+    async function init() {
+      const canvas = document.createElement('canvas');
+      document.body.appendChild(canvas);
+      
+      const app = new Application(canvas);
+      await app.load('https://prod.spline.design/QYsjYTMQQVk8eqIS/scene.splinecode');
+      
+      const objects = [];
+      const walk = (node, depth) => {
+        let materialType = 'None';
+        let materialColor = 'None';
+        
+        if (node.material) {
+          materialType = node.material.type || 'Material';
+          if (node.material.color) {
+            materialColor = `rgb(${Math.round(node.material.color.r*255)}, ${Math.round(node.material.color.g*255)}, ${Math.round(node.material.color.b*255)})`;
+          }
+        } else if (node.materials && node.materials.length > 0) {
+           materialType = 'Multiple';
+        }
+        
+        objects.push({
+          depth,
+          name: node.name || 'Unnamed',
+          type: node.type || node.constructor.name,
+          visible: node.visible,
+          material: materialType,
+          materialColor: materialColor
+        });
+        
+        if (node.children) {
+          node.children.forEach(child => walk(child, depth + 1));
+        }
+      };
+      
+      // Usually the main scene is app._scene
+      if (app._scene) {
+        walk(app._scene, 0);
+      } else {
+        // Fallback: Spline app exposes getObjects()
+        const allObjs = app.getObjects();
+        allObjs.forEach(node => walk(node, 0));
+      }
+      
+      window.splineDump = objects;
+      document.body.setAttribute('data-ready', 'true');
+    }
+    
+    init().catch(err => {
+      window.splineError = err.message;
+      document.body.setAttribute('data-ready', 'error');
+    });
+  </script>
+</head>
+<body>
+</body>
+</html>

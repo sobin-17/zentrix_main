@@ -1,0 +1,66 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Phone, GraduationCap } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+
+const FloatingCTA = () => {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, x: 50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
+      className="fixed right-6 bottom-16 md:right-8 md:bottom-20 z-50 flex flex-col gap-3 scale-[0.85] md:scale-100 origin-right"
+    >
+      {/* WhatsApp Button */}
+      <a 
+        href="https://wa.me/911234567890" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="group relative flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-[#25D366] shadow-[0_4px_15px_rgba(37,211,102,0.3)] hover:shadow-[0_0_25px_rgba(37,211,102,0.6)] transition-all duration-300 hover:scale-110"
+        title="WhatsApp Us"
+      >
+        <FaWhatsapp className="w-5 h-5 md:w-6 md:h-6 text-white" />
+        
+        {/* Glow effect */}
+        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none box-shadow-[0_0_20px_rgba(37,211,102,0.5)]"></div>
+        
+        {/* Tooltip */}
+        <div className="absolute right-full mr-4 px-3 py-1.5 bg-[#030005]/90 border border-white/10 rounded-lg text-sm font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap backdrop-blur-md">
+          WhatsApp Us
+        </div>
+      </a>
+
+      {/* Call Button */}
+      <a 
+        href="tel:+911234567890" 
+        className="group relative flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br from-[#00c6ff] to-[#0072ff] shadow-[0_4px_15px_rgba(0,114,255,0.3)] hover:shadow-[0_0_25px_rgba(0,114,255,0.6)] transition-all duration-300 hover:scale-110"
+        title="Call Us"
+      >
+        <Phone className="w-4 h-4 md:w-5 md:h-5 text-white" />
+        
+        {/* Glow effect */}
+        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none box-shadow-[0_0_20px_rgba(0,114,255,0.5)]"></div>
+        
+        {/* Tooltip */}
+        <div className="absolute right-full mr-4 px-3 py-1.5 bg-[#030005]/90 border border-white/10 rounded-lg text-sm font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap backdrop-blur-md">
+          Call Us
+        </div>
+      </a>
+
+      {/* Enroll Button */}
+      <Link 
+        to="/course"
+        className="group relative flex flex-col items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br from-[#00b4db] to-[#0083b0] shadow-[0_4px_15px_rgba(0,180,219,0.3)] hover:shadow-[0_0_25px_rgba(0,180,219,0.6)] transition-all duration-300 hover:scale-110"
+      >
+        <GraduationCap className="w-4 h-4 md:w-5 md:h-5 mb-0 text-white" />
+        <span className="text-[6px] md:text-[8px] font-bold tracking-wider text-white">ENROLL</span>
+        
+        {/* Glow effect */}
+        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none box-shadow-[0_0_20px_rgba(0,180,219,0.5)]"></div>
+      </Link>
+    </motion.div>
+  );
+};
+
+export default FloatingCTA;

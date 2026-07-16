@@ -1,0 +1,410 @@
+@import "tailwindcss";
+
+@theme {
+  --font-poppins: "Poppins", sans-serif;
+  --color-brand-purple: #9d00ff;
+  --color-brand-purple-light: #d470ff;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  html,
+  body {
+    @apply text-white m-0 p-0 antialiased overflow-x-hidden w-full max-w-[100vw];
+    background-color: #000000 !important;
+    font-family: var(--font-poppins);
+  }
+}
+
+/* Global Visual Atmosphere (Technology Stack Style) */
+section {
+  background-color: transparent !important;
+  border-top-color: transparent !important;
+  border-bottom-color: transparent !important;
+  position: relative;
+  isolation: isolate;
+  /* Create new stacking context for glow effects */
+}
+
+/* Soft ambient purple glows across all sections */
+section::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150vw;
+  height: 150vh;
+  transform: translate(-50%, -50%) translateZ(0);
+  /* GPU acceleration */
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.8;
+}
+
+/* Alternate glow positions for an organic flow down the page */
+section:nth-of-type(odd)::before {
+  background: radial-gradient(ellipse at 30% 40%, rgba(157, 0, 255, 0.07) 0%, transparent 55%);
+}
+
+section:nth-of-type(even)::before {
+  background: radial-gradient(ellipse at 70% 60%, rgba(212, 112, 255, 0.05) 0%, transparent 55%);
+}
+
+/* Base Card Style */
+.feature-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.feature-card:hover {
+  border-color: rgba(157, 0, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Button Styles */
+.btn-primary {
+  @apply px-6 py-2.5 rounded-full bg-white text-black text-sm font-semibold transition-all duration-300;
+}
+
+.btn-primary:hover {
+  @apply bg-gray-200;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.btn-outline {
+  @apply px-6 py-2.5 rounded-full border border-white/20 text-white text-sm font-medium transition-all duration-300;
+}
+
+.btn-outline:hover {
+  @apply bg-white/10;
+}
+
+/* Badge Style */
+.badge {
+  @apply inline-flex items-center px-5 py-1.5 rounded-full border border-[var(--color-brand-purple)] bg-[var(--color-brand-purple)]/10 text-[var(--color-brand-purple-light)] text-sm font-semibold uppercase tracking-wider mb-6;
+}
+
+/* 3D Orb Placeholder */
+.orb-container {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.orb-core {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #d470ff, #9d00ff, #38006b);
+  box-shadow:
+    0 0 60px 20px rgba(157, 0, 255, 0.5),
+    inset 0 0 50px 10px rgba(255, 255, 255, 0.5);
+  animation: pulse-glow-optimized 4s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+.orb-ring {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  border: 2px solid rgba(212, 112, 255, 0.3);
+  box-shadow: 0 0 30px rgba(157, 0, 255, 0.2);
+  animation: spin-optimized 10s linear infinite;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.orb-ring::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.8);
+}
+
+/* General Glows */
+.glow-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: -1;
+  opacity: 0.4;
+  pointer-events: none;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.glow-purple {
+  background: var(--color-brand-purple);
+}
+
+/* Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+@keyframes pulse-glow-optimized {
+  0% {
+    transform: translateZ(0) scale(1);
+    opacity: 0.9;
+  }
+
+  100% {
+    transform: translateZ(0) scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes spin-optimized {
+  from {
+    transform: translateZ(0) rotateX(60deg) rotateZ(0deg);
+  }
+
+  to {
+    transform: translateZ(0) rotateX(60deg) rotateZ(360deg);
+  }
+}
+
+@keyframes ping-ring {
+  0% {
+    transform: translateZ(0) scale(0.5);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translateZ(0) scale(2.5);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-soft {
+
+  0%,
+  100% {
+    transform: translateZ(0) scale(1);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: translateZ(0) scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes float-particle {
+
+  0%,
+  100% {
+    transform: translateZ(0) translateY(0) scale(1);
+    opacity: 0.2;
+  }
+
+  50% {
+    transform: translateZ(0) translateY(-15px) scale(1.5);
+    opacity: 0.6;
+  }
+}
+
+/* Global Ambient Motion Keyframes (GPU Accelerated) */
+@keyframes ambient-drift-1 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate3d(20vw, 15vh, 0) scale(1.05);
+  }
+
+  66% {
+    transform: translate3d(-10vw, 25vh, 0) scale(0.95);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes ambient-drift-2 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate3d(-15vw, -20vh, 0) scale(0.95);
+  }
+
+  66% {
+    transform: translate3d(15vw, 5vh, 0) scale(1.05);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes ambient-drift-3 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate3d(10vw, -10vh, 0) scale(1.05);
+  }
+
+  66% {
+    transform: translate3d(-15vw, -15vh, 0) scale(0.95);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.animate-ambient-1 {
+  animation: ambient-drift-1 45s infinite ease-in-out;
+  will-change: transform;
+}
+
+.animate-ambient-2 {
+  animation: ambient-drift-2 55s infinite ease-in-out;
+  will-change: transform;
+}
+
+.animate-ambient-3 {
+  animation: ambient-drift-3 65s infinite ease-in-out;
+  will-change: transform;
+}
+
+.delay-100 {
+  animation-delay: 0.1s;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.delay-300 {
+  animation-delay: 0.3s;
+}
+
+.delay-500 {
+  animation-delay: 0.5s;
+}
+
+.delay-700 {
+  animation-delay: 0.7s;
+}
+
+.delay-1000 {
+  animation-delay: 1.0s;
+}
+
+/* Bruteforce Hide Spline Watermark using Clip-Path and Enforce Transparency */
+.spline-wrapper {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 60px), calc(100% - 180px) calc(100% - 60px), calc(100% - 180px) 100%, 0 100%);
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.spline-wrapper canvas {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.spline-wrapper>div {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.spline-wrapper canvas+div,
+.spline-wrapper a[href*="spline.design"],
+#logo,
+a[href*="spline.design"] {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  z-index: -9999 !important;
+}
+
+/* Particle element for floating background */
+.service-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--color-brand-purple);
+  opacity: 0.6;
+  will-change: transform, opacity;
+  animation: float-particle var(--duration) ease-in-out var(--delay) infinite;
+  transform: translate(var(--tx), var(--ty));
+}
+
+/* Ambient light blobs */
+.ambient-light {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.2;
+  pointer-events: none;
+  animation: float-particle var(--duration, 6s) ease-in-out infinite;
+}
+
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-marquee-left {
+  animation: marquee-left 30s linear infinite;
+}
+
+.animate-marquee-right {
+  animation: marquee-right 30s linear infinite;
+}

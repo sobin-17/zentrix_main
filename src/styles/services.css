@@ -1,0 +1,172 @@
+/* src/styles/services.css */
+
+/* 1. Animated Color Sweep */
+@keyframes service-sweep {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(200%) skewX(-15deg); }
+}
+
+.animate-service-sweep {
+  animation: service-sweep 3s ease-in-out infinite;
+  width: 50%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* 2. Breathing Neon Glow */
+@keyframes breathing-glow {
+  0%, 100% { 
+    box-shadow: 0 0 10px var(--glow-color), inset 0 0 5px var(--glow-color); 
+    opacity: 0.5;
+  }
+  50% { 
+    box-shadow: 0 0 20px var(--glow-color), inset 0 0 15px var(--glow-color); 
+    opacity: 0.8;
+  }
+}
+
+.animate-breathing-glow {
+  animation: breathing-glow 4s ease-in-out infinite;
+  border-radius: 9999px;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* 3. Border Animation (Spinning Conic Gradient) */
+@keyframes spin-border {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.animated-border-wrapper {
+  position: relative;
+  border-radius: 9999px;
+  padding: 1.5px; /* Border thickness */
+  overflow: hidden;
+  z-index: 1;
+}
+
+.animated-border-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 50%; 
+  left: 50%; 
+  width: 300%; 
+  height: 300%;
+  background: conic-gradient(transparent 60%, var(--glow-color) 100%);
+  animation: spin-border 3s linear infinite;
+  z-index: -1;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.animated-border-wrapper:hover::before {
+  opacity: 1;
+  animation-duration: 1.5s;
+}
+
+.animated-border-inner {
+  position: relative;
+  background: rgba(8, 5, 12, 0.9); /* Deep dark base */
+  border-radius: 9999px;
+  height: 100%;
+  width: 100%;
+  z-index: 2;
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+}
+
+/* 4. Floating Light Particles */
+@keyframes float-particle {
+  0% { 
+    transform: translate(0, 0) scale(0.5); 
+    opacity: 0; 
+  }
+  20% { opacity: 0.8; transform: translate(calc(var(--tx) * 0.2), calc(var(--ty) * 0.2)) scale(1); }
+  80% { opacity: 0.8; transform: translate(calc(var(--tx) * 0.8), calc(var(--ty) * 0.8)) scale(1); }
+  100% { 
+    transform: translate(var(--tx), var(--ty)) scale(0.5); 
+    opacity: 0; 
+  }
+}
+
+.service-particle {
+  position: absolute;
+  border-radius: 50%;
+  animation: float-particle var(--duration) ease-in-out infinite;
+  animation-delay: var(--delay);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 5. Background Lighting */
+@keyframes ambient-light {
+  0%, 100% { transform: scale(1) translate(0, 0); opacity: 0.3; }
+  33% { transform: scale(1.1) translate(3%, 2%); opacity: 0.5; }
+  66% { transform: scale(0.9) translate(-2%, 4%); opacity: 0.4; }
+}
+
+.ambient-light {
+  position: absolute;
+  filter: blur(100px);
+  border-radius: 50%;
+  animation: ambient-light 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* --- Zentrix Premium Card Animations --- */
+
+/* 1. Elegant Energy Border (Card Wrapper) */
+@keyframes zentrix-border-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.zentrix-energy-border {
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  padding: 1px;
+  overflow: hidden;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* 2. Faint Energy Sweep & Border Brighten (Continuous & Hover) */
+@keyframes zentrix-hover-sweep {
+  0% { transform: translateX(-150%) skewX(-15deg); }
+  100% { transform: translateX(250%) skewX(-15deg); }
+}
+
+.zentrix-hover-sweep {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.15), transparent);
+  opacity: 0.6;
+  transition: opacity 0.5s;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.group:hover .zentrix-hover-sweep {
+  opacity: 1;
+}
+
+.zentrix-border-sweep {
+  position: absolute;
+  inset: -10px;
+  background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.8), transparent);
+  opacity: 0.4;
+  transition: opacity 0.5s;
+}
+
+.group:hover .zentrix-border-sweep {
+  opacity: 1;
+}
