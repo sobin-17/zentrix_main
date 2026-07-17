@@ -19,7 +19,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import OurProducts from './pages/OurProducts';
 import OurPortfolio from './pages/OurPortfolio';
 import YourNextStep from './pages/Yournextstepnew';
-import GetTouch from './pages/GetTouch';
+
 const GlobalAtmosphere = () => (
   <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
     {/* Glows removed to prevent blur rendering artifacts */}
@@ -49,7 +49,8 @@ function App() {
             <Route path="/career/:jobId" element={<JobDetail />} />
             <Route path="/ourproducts" element={<OurProducts />} />
             <Route path="/ourporfolio" element={<OurPortfolio />} />
-            <Route path="/get-in-touch" element={<GetInTouch />} />
+            <Route path="/get-touch" element={<GetTouch />} />
+            
             <Route path="/your-next-step" element={<YourNextStep />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-and-conditions" element={<TermsConditions />} />
