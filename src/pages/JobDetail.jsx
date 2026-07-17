@@ -5,10 +5,9 @@ import { ArrowLeft, MapPin, Clock, Briefcase, ChevronRight, Send, Loader2 } from
 import emailjs from '@emailjs/browser';
 
 // ─── EmailJS credentials ─────────────────────────────────────────────────────
-// Replace these three values with your own from https://www.emailjs.com/
-const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // e.g. 'service_abc123'
-const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // e.g. 'template_xyz789'
-const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // e.g. 'AbCdEfGhIjKlMnOp'
+const EMAILJS_SERVICE_ID  = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const EMAILJS_PUBLIC_KEY  = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 /* ─── All job data (mirrors Careers.jsx) ─────────────────────────────── */
 const jobData = {
