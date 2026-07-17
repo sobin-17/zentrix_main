@@ -8,6 +8,7 @@ import Service from './pages/Service';
 import Contact from './pages/Contact';
 import Course from './pages/Course';
 import Careers from './pages/Careers';
+import JobDetail from './pages/JobDetail';
 import GetInTouch from "./pages/GetInTouch";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
@@ -17,7 +18,7 @@ import './index.css';
 import ScrollToTop from "./components/ScrollToTop";
 import OurProducts from './pages/OurProducts';
 import OurPortfolio from './pages/OurPortfolio';
-
+import YourNextStep from './pages/Yournextstepnew';
 const GlobalAtmosphere = () => (
   <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
     {/* Glows removed to prevent blur rendering artifacts */}
@@ -29,14 +30,14 @@ function App() {
     
     <Router>
       <ScrollToTop />
-      <div className="bg-transparent text-white h-[100dvh] font-poppins relative flex flex-col overflow-hidden w-full max-w-[100vw]">
+      <div className="bg-transparent text-white font-poppins relative w-full max-w-[100vw]">
         <GlobalAtmosphere />
         {/* Persistent Navbar */}
         <Navbar />
         <FloatingCTA />
 
         {/* Dynamic Page Content */}
-        <main className="flex-grow overflow-y-auto overflow-x-hidden relative scroll-smooth" id="main-scroll-container">
+        <main className="relative scroll-smooth" id="main-scroll-container">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
@@ -44,9 +45,11 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/course" element={<Course />} />
             <Route path="/career" element={<Careers />} />
+            <Route path="/career/:jobId" element={<JobDetail />} />
             <Route path="/ourproducts" element={<OurProducts />} />
             <Route path="/ourporfolio" element={<OurPortfolio />} />
             <Route path="/get-in-touch" element={<GetInTouch />} />
+            <Route path="/your-next-step" element={<YourNextStep />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-and-conditions" element={<TermsConditions />} />
 

@@ -17,9 +17,17 @@
     }
   }
 
-  html,
+  html {
+    overflow-x: hidden;
+    overflow-y: hidden;
+    height: 100%;
+  }
+
   body {
-    @apply text-white m-0 p-0 antialiased overflow-x-hidden w-full max-w-[100vw];
+    @apply text-white m-0 p-0 antialiased w-full;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 100%;
     background-color: #000000 !important;
     font-family: var(--font-poppins);
   }
