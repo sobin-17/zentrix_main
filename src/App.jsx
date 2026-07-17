@@ -9,7 +9,7 @@ import Contact from './pages/Contact';
 import Course from './pages/Course';
 import Careers from './pages/Careers';
 import JobDetail from './pages/JobDetail';
-import GetInTouch from "./pages/GetInTouch";
+import GetTouch from "./pages/GetTouch";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import FloatingCTA from './components/FloatingCTA';
@@ -48,7 +48,7 @@ function App() {
             <Route path="/career/:jobId" element={<JobDetail />} />
             <Route path="/ourproducts" element={<OurProducts />} />
             <Route path="/ourporfolio" element={<OurPortfolio />} />
-            <Route path="/get-in-touch" element={<GetInTouch />} />
+            <Route path="/get-in-touch" element={<GetTouch />} />
             <Route path="/your-next-step" element={<YourNextStep />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-and-conditions" element={<TermsConditions />} />
