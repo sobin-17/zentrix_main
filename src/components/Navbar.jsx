@@ -4,6 +4,15 @@ import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const { pathname } = useLocation();
 
@@ -34,7 +43,9 @@ useEffect(() => {
 
   return (
     <nav
-      className="relative z-50 w-full px-6 md:px-12 py-4 md:py-6 flex items-center justify-between bg-transparent"
+      className={`sticky top-0 z-[100] w-full px-6 md:px-12 flex items-center justify-between transition-all duration-300 ${
+        scrolled ? 'bg-[#0a0514]/90 backdrop-blur-md border-b border-purple-500/20 py-3 md:py-4 shadow-[0_4px_30px_rgba(0,0,0,0.5)]' : 'bg-transparent py-4 md:py-6'
+      }`}
     >
       {/* Logo */}
       <div className="flex-shrink-0 flex items-center gap-2">

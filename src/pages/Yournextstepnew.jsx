@@ -166,6 +166,62 @@ const YourNextStep = () => {
         @media (max-width: 480px) {
           .ynx-hero-section { padding: 70px 16px 48px; }
         }
+
+        /* ── Lower Sections Responsive ── */
+        .ynx-section-padding { padding: 0 40px 100px; }
+        .ynx-section-padding-top { padding: 20px 40px 100px; }
+        
+        .ynx-process-container {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 0;
+        }
+        .ynx-step-connector {
+          flex-shrink: 0;
+          width: 48px;
+          height: 2px;
+          border-top: 2px dashed rgba(168,85,247,0.4);
+          margin-top: 28px;
+        }
+
+        .ynx-cta-banner {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 24px;
+          flex-wrap: wrap;
+        }
+        .ynx-cta-content {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+          .ynx-section-padding { padding: 0 24px 60px; }
+          .ynx-section-padding-top { padding: 10px 24px 60px; }
+          
+          .ynx-process-container { flex-direction: column; align-items: center; gap: 16px; }
+          .ynx-step-wrapper { width: 100%; max-width: 320px; }
+          .ynx-step-connector {
+            width: 2px;
+            height: 36px;
+            border-top: none;
+            border-left: 2px dashed rgba(168,85,247,0.4);
+            margin: 8px 0;
+          }
+        }
+        
+        @media (max-width: 600px) {
+          .ynx-cta-banner { justify-content: center; text-align: center; }
+          .ynx-cta-content { flex-direction: column; gap: 12px; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+          .ynx-section-padding { padding: 0 16px 50px; }
+          .ynx-section-padding-top { padding: 10px 16px 50px; }
+        }
       `}</style>
 
       {/* ── HERO ── */}
@@ -257,7 +313,7 @@ const YourNextStep = () => {
 
 
       {/* ── PROCESS STEPS ── */}
-      <section style={{ padding: "0 40px 100px" }}>
+      <section className="ynx-section-padding">
         <div style={{
           background: "#13131f",
           border: "1px solid rgba(255,255,255,0.07)",
@@ -266,10 +322,10 @@ const YourNextStep = () => {
           maxWidth: "1200px",
           margin: "0 auto",
         }}>
-          <div style={{ display: "flex", alignItems: "flex-start", gap: "0", justifyContent: "space-between" }}>
+          <div className="ynx-process-container">
             {steps.map((step, idx) => (
               <React.Fragment key={idx}>
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", padding: "0 8px" }}>
+                <div className="ynx-step-wrapper" style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", padding: "0 8px" }}>
                   {/* Icon */}
                   <div style={{ width: "56px", height: "56px", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px" }}>
                     {step.icon}
@@ -295,13 +351,7 @@ const YourNextStep = () => {
 
                 {/* Dotted connector */}
                 {idx < steps.length - 1 && (
-                  <div style={{
-                    flexShrink: 0,
-                    width: "48px",
-                    height: "2px",
-                    borderTop: "2px dashed rgba(168,85,247,0.4)",
-                    marginTop: "28px",
-                  }} />
+                  <div className="ynx-step-connector" />
                 )}
               </React.Fragment>
             ))}
@@ -310,7 +360,7 @@ const YourNextStep = () => {
       </section>
 
       {/* ── WHAT WE DO ── */}
-      <section style={{ padding: "20px 40px 100px" }}>
+      <section className="ynx-section-padding-top">
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <h2 style={{ fontSize: "clamp(28px,4vw,40px)", fontWeight: 800, marginBottom: "8px" }}>What We Do</h2>
           <div style={{ width: "40px", height: "4px", background: "#a855f7", borderRadius: "2px", marginBottom: "36px" }} />
@@ -347,21 +397,16 @@ const YourNextStep = () => {
       </section>
 
       {/* ── CTA BANNER ── */}
-      <section style={{ padding: "0 40px 100px" }}>
-        <div style={{
+      <section className="ynx-section-padding">
+        <div className="ynx-cta-banner" style={{
           maxWidth: "1200px",
           margin: "0 auto",
           background: "linear-gradient(135deg, #1a0a2e 0%, #13131f 60%, #1c0f30 100%)",
           border: "1px solid rgba(168,85,247,0.25)",
           borderRadius: "20px",
           padding: "36px 40px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: "24px",
-          flexWrap: "wrap",
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+          <div className="ynx-cta-content">
             <div style={{
               width: "52px", height: "52px",
               background: "rgba(168,85,247,0.15)",
