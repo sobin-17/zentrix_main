@@ -17,8 +17,8 @@ const Navbar = () => {
       ]
     },
     { name: 'Courses', path: '/course' },
-    { name: 'Careers', path: '/career' },
-    { name: 'Your Next Step', path: '/contact' },
+    { name: 'Career', path: '/career' },
+    { name: 'Your Next Step', path: '/your-next-step' },
   ];
 
   return (

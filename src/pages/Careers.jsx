@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const jobOpenings = [
   {
@@ -520,12 +521,12 @@ const Careers = () => {
                       <p className="text-slate-300 text-sm md:text-base leading-relaxed mb-6">
                         {job.description}
                       </p>
-                      <a
-                        href="/contact"
+                      <Link
+                        to={`/career/${job.id}`}
                         className="inline-flex items-center gap-2 px-6 py-2.5 bg-[var(--color-brand-purple)] hover:bg-purple-700 text-white text-xs font-bold rounded-full transition-all tracking-wider uppercase"
                       >
                         Apply Now <span>↗</span>
-                      </a>
+                      </Link>
                     </div>
                   )}
                 </div>
