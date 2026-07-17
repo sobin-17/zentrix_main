@@ -119,51 +119,32 @@ const Careers = () => {
       }}
     />
   ))}
-        <motion.img
-  src="/career_hand.png"
-  className="absolute -bottom-18 right-0 w-full  object-contain"
-  initial={{
-    opacity: 0,
-    scale: 0.9,
-    y: 40,
-  }}
-  whileInView={{
-    opacity: 1,
-    scale: 1,
-    y: 0,
-  }}
-  viewport={{ once: false, amount: 0.3 }}
-  animate={{
-    y: [0, -10, 0],
-    rotate: [0, 1.5, 0, -1.5, 0],
-    scale: [1, 1.01, 1],
-  }}
-  transition={{
-    opacity: { duration: 1 },
-    scale: {
-      duration: 5,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-    rotate: {
-      duration: 8,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-    y: {
-      duration: 4,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-  }}
-  whileHover={{
-    scale: 1.05,
-    y: -6,
-    filter:
-      "brightness(1.15) drop-shadow(0 0 70px rgba(168,85,247,0.8))",
-    transition: { duration: 0.3 },
-  }}
-/>
+         {/* Hand image */}
+         <motion.img
+          src="/career_hand.png"
+          alt=""
+          className="absolute bottom-0 sm:-bottom-8 md:-bottom-14 lg:-bottom-18 right-0 w-[80%] sm:w-[70%] md:w-[80%] lg:w-full object-contain"
+          initial={{ opacity: 0, scale: 0.9, y: -10 }}
+          whileInView={{ opacity: 1, scale: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.3 }}
+          animate={{
+            y: [0, -10, 0],
+            rotate: [0, 1.5, 0, -1.5, 0],
+            scale: [1, 1.01, 1],
+          }}
+          transition={{
+            opacity: { duration: 1 },
+            scale: { duration: 5, repeat: Infinity, ease: "easeInOut" },
+            rotate: { duration: 8, repeat: Infinity, ease: "easeInOut" },
+            y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+          }}
+          whileHover={{
+            scale: 1.05,
+            y: -6,
+            filter: "brightness(1.15) drop-shadow(0 0 70px rgba(168,85,247,0.8))",
+            transition: { duration: 0.3 },
+          }}
+        />
           {/* Purple Glow */}
           <div className="absolute bottom-[-120px] left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-[#8B2EFF] opacity-30 blur-[220px] rounded-full"></div>
         </div>

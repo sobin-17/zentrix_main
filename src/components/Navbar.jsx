@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown, ArrowUpRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const { pathname } = useLocation();
+
+useEffect(() => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+
+  setIsOpen(false);
+}, [pathname]);
 
   const links = [
     { name: 'Orbit', path: '/' },
@@ -70,7 +81,7 @@ const Navbar = () => {
 
       {/* Desktop CTA */}
       <Link
-        to="/get-in-touch"
+        to="/get-touch"
         className="hidden md:flex items-center gap-1.5 bg-white text-black px-6 py-2.5 rounded-full font-semibold text-[13px] hover:bg-slate-200 transition-colors"
       >
         Get In Touch <ArrowUpRight className="w-4 h-4" />
