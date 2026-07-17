@@ -44,7 +44,7 @@ function ServiceCard({ title, items, delay = 0 }) {
         bg-white/[0.04]
         backdrop-blur-[40px]
         p-7
-        min-h-[360px]
+        min-h-[440px]
         group
         transition-all duration-500
         hover:border-purple-500/40
@@ -60,12 +60,12 @@ function ServiceCard({ title, items, delay = 0 }) {
       {/* Purple edge glow */}
       <div className="absolute inset-0 rounded-[28px] bg-gradient-to-b from-purple-600/[0.06] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-      <div className="relative z-10 flex flex-col h-full">
-        <h3 className="text-[22px] font-bold mb-5 leading-tight tracking-tight">
+      <div className="relative z-10 flex flex-col h-full mt-4" >
+        <h3 className="text-[22px] font-bold mb-5 text-center leading-tight tracking-tight">
           {title}
         </h3>
 
-        <ul className="space-y-[10px] text-gray-300 text-[14px] flex-1">
+        <ul className="space-y-[10px] text-gray-300 text-[16px] flex-1 ml-8 mt-4">
           {items.map((item, i) => (
             <li key={i} className="flex items-start gap-2">
               <span className="text-purple-400 mt-[2px] flex-shrink-0">•</span>
@@ -108,9 +108,9 @@ export default function Services() {
       title: "Software Development",
       items: [
         "Custom Web & Mobile Applications",
-        "Scalable Business Solutions",
-        "Secure & High-Performance Systems",
-        "Maintenance & Technical Support",
+        <>Scalable Business<br />Solutions</>,
+        <>Secure & High-<br />Performance Systems</>,
+        <>Maintenance &<br />Technical Support</>,
       ],
     },
     {
@@ -118,17 +118,17 @@ export default function Services() {
       items: [
         "Academic & Final Year Projects",
         "Industry-Oriented Development",
-        "Real-World Problem Solving",
-        "End-to-End Project Guidance",
+        <>Real-World Problem <br/>Solving</>,
+        <>End-to-End Project <br/>Guidance</>,
       ],
     },
     {
       title: "Digital Marketing",
       items: [
-        "Search Engine Optimization (SEO)",
+        <>Search Engine<br/> Optimization (SEO)</>,
         "Social Media Marketing",
-        "Content Marketing Strategies",
-        "Lead Generation Campaigns",
+        <>Content Marketing<br/> Strategies</>,
+        <>Lead Generation <br/>Campaigns</>,
       ],
     },
   ];
@@ -173,10 +173,10 @@ export default function Services() {
   });
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#030006] text-white">
+    <div className="relative min-h-screen overflow-hidden bg-black text-white">
 
       {/* ── Ambient top glow ─────────────────────────────────────── */}
-      <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full bg-purple-700/10 blur-[200px] pointer-events-none" />
+      <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full bg-black-700/10 blur-[200px] pointer-events-none" />
 
       {/* ════════════════════════════════════════════════════════════ */}
       {/*  HERO                                                        */}
@@ -206,13 +206,13 @@ export default function Services() {
       {/*  SERVICE CARDS (floating above wave background)              */}
       {/* ════════════════════════════════════════════════════════════ */}
 
-      <section className="relative max-w-[1120px] mx-auto px-6 -mt-4 z-20">
+      <section className="relative max-w-[1130px] mx-auto px-8 -mt-5 z-20 ">
         <motion.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
-          className="grid md:grid-cols-3 gap-5"
+          className="grid md:grid-cols-3 gap-6"
         >
           {services.map((svc, i) => (
             <ServiceCard key={i} {...svc} delay={i * 0.15} />
@@ -261,70 +261,68 @@ export default function Services() {
           "
         />
 
-        <div className="relative z-10 max-w-[1120px] mx-auto px-6">
-          <div className="grid lg:grid-cols-2 items-start gap-8">
-            {/* LEFT */}
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="lg:lg:-mt-12"
-            >
-              <h2
-                className="
+<div className="relative z-10 max-w-[1120px] mx-auto px-6">
+  <div className="grid lg:grid-cols-2 items-start gap-8">
+
+    {/* LEFT */}
+    <motion.div
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      className="lg:-mt-12"
+    >
+      <h2
+        className="
           font-semibold
           leading-[0.82]
           tracking-[-0.06em]
-          text-[85px]
+          text-[65px]
+          sm:text-[85px]
           md:text-[100px]
           lg:text-[150px]
         "
-              >
-                <span className="block whitespace-nowrap">
-                  What we
-                </span>
+      >
+        <span className="block whitespace-nowrap">
+          What we
+        </span>
+        <span className="block">
+          do?
+        </span>
+      </h2>
+    </motion.div>
 
-                <span className="block">
-                  do?
-                </span>
-              </h2>
-            </motion.div>
+    {/* RIGHT */}
+    <motion.div
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      className="flex justify-start lg:justify-end pt-6 lg:pt-24"
+    >
+      <p
+        className="
+          w-full
+          max-w-full lg:max-w-[560px]
+          text-left lg:text-right
+          text-white/90
+          text-base sm:text-lg lg:text-[20px]
+          leading-relaxed lg:leading-7
+          tracking-[0.01em]
+        "
+      >
+        Zentrix Technology empowers individuals and businesses through
+        innovative technology solutions, industry-focused training, and
+        digital transformation services. From software development and
+        UI/UX design to project building, digital marketing, and emerging
+        technologies, we help clients and learners achieve their goals
+        through practical expertise, creative thinking, and modern
+        solutions tailored to today's rapidly evolving digital landscape.
+      </p>
+    </motion.div>
 
-            {/* RIGHT */}
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="flex justify-end lg:pt-24 lg:-ml-18"
-            >
-              <p
-                className="
-      w-full
-      max-w-[2290px]
-      ml-2
-      text-right
-      -translate-x-24
-      text-white/90
-      text-[20px]
-      leading-7
-      tracking-[0.01em]
-      pr-1
-      
-    "
-              >
-                Zentrix Technology empowers individuals and businesses through
-                innovative technology solutions, industry-focused training, and
-                digital transformation services. From software development and
-                UI/UX design to project building, digital marketing, and emerging
-                technologies, we help clients and learners achieve their goals
-                through practical expertise, creative thinking, and modern
-                solutions tailored to today's rapidly evolving digital landscape.
-              </p>
-            </motion.div>
-          </div>
-        </div>
+  </div>
+</div>
       </section>
 
       {/* ════════════════════════════════════════════════════════════ */}

@@ -92,13 +92,13 @@ const Footer = () => {
               </li>
 
               <li className="text-center">
-                <Link to="/contact" className="hover:text-white transition">
+                <Link to="/career" className="hover:text-white transition">
                   Careers
                 </Link>
               </li>
 
               <li className="text-center">
-                <Link to="/contact" className="hover:text-white transition">
+                <Link to="/course" className="hover:text-white transition">
                   Courses
                 </Link>
               </li>

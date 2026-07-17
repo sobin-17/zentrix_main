@@ -1,6 +1,7 @@
 import React from 'react';
 import { Lightbulb, Rocket, Target, GraduationCap, Network, Brain } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { useState, useEffect } from "react";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -23,6 +24,10 @@ const staggerContainer = {
 };
 
 const particles = Array.from({ length: 120 }).map((_, i) => ({
+
+  
+
+
   id: i,
   size: Math.random() * 3 + 1,
   top: `${Math.random() * 100}%`,
@@ -33,9 +38,93 @@ const particles = Array.from({ length: 120 }).map((_, i) => ({
   duration: Math.random() * 4 + 4,
 }));
 
+function CustomCursor() {
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+  const ringX = useSpring(cursorX, { damping: 30, stiffness: 250, mass: 0.5 });
+  const ringY = useSpring(cursorY, { damping: 30, stiffness: 250, mass: 0.5 });
+  const [isPointer, setIsPointer] = React.useState(false);
+  const [isVisible, setIsVisible] = React.useState(false);
+
+  React.useEffect(() => {
+    const moveCursor = (e) => {
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
+      if (!isVisible) setIsVisible(true);
+    };
+    const handleOver = (e) => {
+      const target = e.target.closest('a, button, [role="button"], .cursor-hover, input, textarea');
+      setIsPointer(!!target);
+    };
+    const handleLeave = () => setIsVisible(false);
+
+    window.addEventListener('mousemove', moveCursor);
+    window.addEventListener('mouseover', handleOver);
+    document.addEventListener('mouseleave', handleLeave);
+    return () => {
+      window.removeEventListener('mousemove', moveCursor);
+      window.removeEventListener('mouseover', handleOver);
+      document.removeEventListener('mouseleave', handleLeave);
+    };
+  }, [cursorX, cursorY, isVisible]);
+
+  return (
+    <>
+      {/* Center dot */}
+      <motion.div
+        className="fixed top-0 left-0 pointer-events-none z-[9999] rounded-full hidden md:block"
+        style={{
+          x: cursorX,
+          y: cursorY,
+          translateX: '-50%',
+          translateY: '-50%',
+          width: 6,
+          height: 6,
+          backgroundColor: '#c084fc',
+        }}
+        animate={{
+          scale: isPointer ? 0 : 1,
+          opacity: isVisible ? 1 : 0,
+        }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
+      />
+      {/* Outer ring - thin, trails smoothly */}
+      <motion.div
+        className="fixed top-0 left-0 pointer-events-none z-[9999] rounded-full border hidden md:block"
+        style={{
+          x: ringX,
+          y: ringY,
+          translateX: '-50%',
+          translateY: '-50%',
+          borderWidth: 1.5,
+          borderColor: 'rgba(168,85,247,0.6)',
+        }}
+        animate={{
+          width: isPointer ? 44 : 28,
+          height: isPointer ? 44 : 28,
+          borderColor: isPointer ? 'rgba(168,85,247,0.9)' : 'rgba(168,85,247,0.5)',
+          backgroundColor: isPointer ? 'rgba(168,85,247,0.08)' : 'rgba(168,85,247,0)',
+          opacity: isVisible ? 1 : 0,
+        }}
+        transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+      />
+    </>
+  );
+}
+
 export default function AboutView() {
+  const [isDesktop, setIsDesktop] = useState(false);
+
+useEffect(() => {
+  const mq = window.matchMedia("(min-width: 1024px)");
+  setIsDesktop(mq.matches);
+  const handler = (e) => setIsDesktop(e.matches);
+  mq.addEventListener("change", handler);
+  return () => mq.removeEventListener("change", handler);
+}, []);
   return (
     <div className="relative pt-8 pb-16 bg-transparent text-gray-300 overflow-hidden">
+      <CustomCursor />
       {/* Floating particles */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         {particles.map((p) => (
@@ -212,11 +301,11 @@ export default function AboutView() {
           </div>
 
           {/* Right Image */}
-          <div className="absolute top-[58%] right-[-145px] -translate-y-1/2 z-0 pointer-events-none hidden lg:block overflow-visible">
+          <div className="absolute top-[48%] right-[-100px] sm:right-[-160px] lg:right-[-220px] -translate-y-1/2 z-0 pointer-events-none overflow-visible">
           <motion.img
   src="/about_intro_logo.png"
   alt="Zentrix Logo"
-  className="w-[800px] max-w-none h-auto object-contain mix-blend-screen opacity-75"
+  className="w-[280px] sm:w-[420px] md:w-[560px] lg:w-[800px] h-auto object-contain mix-blend-screen opacity-75"
   initial={{
     opacity: 0,
     scale: 0.85,
@@ -764,22 +853,22 @@ export default function AboutView() {
 
             {/* Dot marks — pop in as the line reaches each card */}
             <motion.div
-              className="absolute left-1/2 top-[180px] -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full z-10"
-              style={{ backgroundColor: "#3b82f6" }}
+              className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full z-10"
+              style={{ backgroundColor: "#3b82f6", top: "16%" }}
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.4, delay: 0.3, ease: "easeOut" }}
             />
             <motion.div
-              className="absolute left-1/2 top-[360px] -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full z-10"
-              style={{ backgroundColor: "#22c55e" }}
+              className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full z-10"
+              style={{ backgroundColor: "#22c55e", top: "50%" }}
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.4, delay: 0.9, ease: "easeOut" }}
             />
             <motion.div
-              className="absolute left-1/2 top-[550px] -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full z-10"
-              style={{ backgroundColor: "#a855f7" }}
+              className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full z-10"
+              style={{ backgroundColor: "#a855f7", top: "84%" }}
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.4, delay: 1.5, ease: "easeOut" }}
@@ -787,7 +876,8 @@ export default function AboutView() {
 
             {/* Card 1 */}
             <motion.div
-  className="absolute left-[6%] top-[20px] w-full max-w-[400px] bg-[#0b0319] border border-purple-600/30 rounded-[28px] p-8 flex flex-col items-center text-center z-10"
+  className="absolute left-0 top-[3%] z-10 bg-[#0b0319] border border-purple-600/30 rounded-[28px] p-6 md:p-8 flex flex-col items-center text-center"
+  style={{ width: "clamp(220px, 42%, 400px)" }}
   initial={{ opacity: 0, x: -150, scale: 0.9 }}
   whileInView={{ opacity: 1, x: 0, scale: 1 }}
   viewport={{ once: false }}
@@ -816,7 +906,8 @@ export default function AboutView() {
 
             {/* Card 2 */}
             <motion.div
-  className="absolute right-[10%] top-[200px] w-full max-w-[400px] bg-[#0b0319] border border-purple-600/30 rounded-[28px] p-8 flex flex-col items-center text-center z-10"
+  className="absolute right-0 top-[32%] z-10 bg-[#0b0319] border border-purple-600/30 rounded-[28px] p-6 md:p-8 flex flex-col items-center text-center"
+  style={{ width: "clamp(220px, 42%, 400px)" }}
   initial={{ opacity: 0, x: 150, scale: 0.9 }}
   whileInView={{ opacity: 1, x: 0, scale: 1 }}
   viewport={{ once: false, amount: 0.3 }}
@@ -845,7 +936,8 @@ export default function AboutView() {
 
             {/* Card 3 */}
             <motion.div
-  className="absolute left-[6%] top-[400px] w-full max-w-[400px] bg-[#0b0319] border border-purple-600/30 rounded-[28px] p-8 flex flex-col items-center text-center z-10"
+  className="absolute left-0 top-[64%] z-10 bg-[#0b0319] border border-purple-600/30 rounded-[28px] p-6 md:p-8 flex flex-col items-center text-center"
+  style={{ width: "clamp(220px, 42%, 400px)" }}
   initial={{ opacity: 0, x: -150, scale: 0.9 }}
   whileInView={{ opacity: 1, x: 0, scale: 1 }}
   viewport={{ once: false, amount: 0.3 }}
