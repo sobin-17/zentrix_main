@@ -282,7 +282,7 @@ function CourseCard({ course, index }) {
         </p>
 
         <Link
-          to="/get-in-touch"
+          to="/get-touch"
           className="block w-full"
         >
           <button
