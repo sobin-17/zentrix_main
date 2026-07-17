@@ -17,6 +17,7 @@ import './index.css';
 import ScrollToTop from "./components/ScrollToTop";
 import OurProducts from './pages/OurProducts';
 import OurPortfolio from './pages/OurPortfolio';
+import GetTouch from './pages/GetTouch';
 
 const GlobalAtmosphere = () => (
   <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
@@ -47,6 +48,7 @@ function App() {
             <Route path="/ourproducts" element={<OurProducts />} />
             <Route path="/ourporfolio" element={<OurPortfolio />} />
             <Route path="/get-in-touch" element={<GetInTouch />} />
+            <Route path="/get-touch" element={<GetTouch/>}/>
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-and-conditions" element={<TermsConditions />} />
 

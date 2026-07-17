@@ -217,7 +217,7 @@ const Hero = () => {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.12, ease: "easeOut" }}
             className="w-full lg:w-1/2 h-[300px] sm:h-[400px] lg:h-[600px] flex justify-center lg:justify-end relative pointer-events-none lg:pointer-events-auto -translate-y-6 lg:-translate-y-10"
           >
             <Spline 
