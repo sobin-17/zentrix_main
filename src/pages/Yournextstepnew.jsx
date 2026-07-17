@@ -424,7 +424,7 @@ const YourNextStep = () => {
           </div>
 
           <button
-            onClick={() => navigate("/get-in-touch")}
+            onClick={() => navigate("/get-touch")}
             style={{
               display: "flex", alignItems: "center", gap: "10px",
               background: "#fff",

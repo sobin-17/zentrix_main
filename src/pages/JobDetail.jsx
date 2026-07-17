@@ -5,9 +5,9 @@ import { ArrowLeft, MapPin, Clock, Briefcase, ChevronRight, Send, Loader2 } from
 import emailjs from '@emailjs/browser';
 
 // ─── EmailJS credentials ─────────────────────────────────────────────────────
-const EMAILJS_SERVICE_ID  = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-const EMAILJS_PUBLIC_KEY  = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 /* ─── All job data (mirrors Careers.jsx) ─────────────────────────────── */
 const jobData = {
@@ -185,22 +185,28 @@ const PARTICLES = Array.from({ length: 50 }, (_, i) => {
 
 /* ─── Application Form ───────────────────────────────────────────────── */
 const ApplyForm = ({ jobTitle }) => {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '', resume: null });
   const [status, setStatus] = useState('idle'); // idle | sending | success | error
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    if (e.target.name === 'resume') {
+      setForm({ ...form, resume: e.target.files[0] });
+    } else {
+      setForm({ ...form, [e.target.name]: e.target.value });
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus('sending');
 
     const templateParams = {
-      to_email:    'hr.zentrixtechnology@gmail.com',
-      job_title:   jobTitle,
-      from_name:   form.name,
-      from_email:  form.email,
-      from_phone:  form.phone,
-      message:     form.message || '(No additional message provided)',
+      to_email: 'hr.zentrixtechnology@gmail.com',
+      job_title: jobTitle,
+      from_name: form.name,
+      from_email: form.email,
+      from_phone: form.phone,
+      message: form.message || '(No additional message provided)',
     };
 
     try {
@@ -274,6 +280,20 @@ const ApplyForm = ({ jobTitle }) => {
           className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-purple-500 transition-colors text-sm"
         />
       </div>
+      <div>
+        <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Resume / CV *</label>
+        <div className="relative w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 transition-colors focus-within:border-purple-500 hover:border-white/20">
+          <input
+            required
+            type="file"
+            name="resume"
+            accept=".pdf,.doc,.docx"
+            onChange={handleChange}
+            className="w-full text-white text-sm focus:outline-none cursor-pointer file:cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-500 transition-all"
+          />
+        </div>
+      </div>
+
       <div>
         <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Why should we hire you?</label>
         <textarea
