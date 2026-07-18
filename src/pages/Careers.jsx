@@ -320,7 +320,7 @@ const Careers = () => {
               </p>
             </div>
 
-            <div className="relative w-full h-[700px] overflow-hidden">
+            
 
               {/* Space dots / particles */}
   {particles.map((p) => (
@@ -375,7 +375,7 @@ const Careers = () => {
 
 </div>
 
-          </div>
+          
 
         </section>
         {/* ================= CURRENT OPENINGS ================= */}
