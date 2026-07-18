@@ -7,25 +7,25 @@ const Roadmap = () => {
       badge: "Pillar 1",
       title: "Transform Businesses",
       description: "Through intelligent digital solutions and automation.",
-      color: "bg-blue-500",
-      borderColor: "border-blue-500",
-      glowColor: "rgba(59,130,246,0.5)"
+      color: "bg-indigo-500",
+      borderColor: "border-indigo-500",
+      glowColor: "rgba(99,102,241,0.5)"
     },
     {
       badge: "Pillar 2",
       title: "Empower Talent",
       description: "By creating practical learning experiences that bridge the gap between education and industry.",
-      color: "bg-green-500",
-      borderColor: "border-green-500",
-      glowColor: "rgba(34,197,94,0.5)"
+      color: "bg-violet-500",
+      borderColor: "border-violet-500",
+      glowColor: "rgba(139,92,246,0.5)"
     },
     {
       badge: "Pillar 3",
       title: "Create Innovation",
       description: "By developing impactful products that address evolving market needs and shape the future.",
-      color: "bg-purple-500",
-      borderColor: "border-purple-500",
-      glowColor: "rgba(168,85,247,0.5)"
+      color: "bg-fuchsia-300",
+      borderColor: "border-fuchsia-300",
+      glowColor: "rgba(240,171,252,0.5)"
     }
   ];
 
@@ -53,7 +53,7 @@ const Roadmap = () => {
 
           {/* Animated Filled Vertical Line */}
           <motion.div
-            className="absolute left-1/2 top-0 w-px bg-gradient-to-b from-blue-500 via-green-500 to-purple-500 -translate-x-1/2 hidden md:block"
+            className="absolute left-1/2 top-0 w-px bg-gradient-to-b from-indigo-500 via-violet-500 to-fuchsia-300 -translate-x-1/2 hidden md:block"
             initial={{ height: "0%" }}
             animate={isInView ? { height: "100%" } : { height: "0%" }}
             transition={{ duration: lineDuration, ease: "linear" }}
