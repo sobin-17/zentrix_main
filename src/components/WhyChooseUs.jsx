@@ -72,7 +72,7 @@ const WhyChooseUs = () => {
   }, [reasons.length]);
 
   return (
-    <section className="py-24 relative">
+    <section className="py-10 md:py-24 relative">
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col items-center text-center mb-16">

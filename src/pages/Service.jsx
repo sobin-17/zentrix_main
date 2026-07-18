@@ -244,10 +244,15 @@ export default function Services() {
   });
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-green text-white">
+    <div className="relative min-h-screen overflow-hidden bg-black text-white">
+      {/* ── Full Page Background ── */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <img src="/tech stack bg.png" alt="Background" className="w-full h-full object-cover object-center opacity-80" />
+        <div className="absolute inset-0 bg-black/30 bg-gradient-to-b from-transparent to-[#02010A]/90" />
+      </div>
 
       {/* ── Ambient top glow ─────────────────────────────────────── */}
-      <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full bg-black-700/10 blur-[200px] pointer-events-none" />
+      <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full bg-purple-900/10 blur-[200px] pointer-events-none z-0" />
 
       {/* ════════════════════════════════════════════════════════════ */}
       {/*  HERO                                                        */}
@@ -295,42 +300,8 @@ export default function Services() {
       {/*  WHAT WE DO                                                  */}
       {/* ════════════════════════════════════════════════════════════ */}
 
-      <section
-        className="
-          relative
-          mt-[-160px]
-          pt-[240px]
-          pb-[120px]
-          overflow-hidden
-        "
-      >
-        {/* Background wave image — starts behind cards, fills section */}
-        <img
-          src="/services1.png"
-          alt="services background"
-          className="
-            absolute
-            inset-0
-            w-full
-            h-full
-            object-cover
-            object-center
-            pointer-events-none
-            opacity-100
-          "
-        />
-
-        {/* Gradient overlay — light at top (transparent) to dark at bottom */}
-        <div
-          className="
-            absolute
-            inset-0
-            bg-gradient-to-b
-            from-[#030006]/20
-            via-[#030006]/10
-            to-[#030006]/90
-          "
-        />
+      <section className="relative py-24 z-20 overflow-hidden">
+        {/* Secondary wave background removed to allow the full-page smooth waves background to flow perfectly in all sections */}
 
 <div className="relative z-10 max-w-[1120px] mx-auto px-6">
   <div className="grid lg:grid-cols-2 items-start gap-8">

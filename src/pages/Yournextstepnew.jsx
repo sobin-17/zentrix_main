@@ -4,86 +4,86 @@ import { useNavigate } from "react-router-dom";
 /* ─── SVG Icons ─────────────────────────────────────────────── */
 const LightbulbIcon = () => (
   <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/>
-    <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>
+    <line x1="9" y1="18" x2="15" y2="18" /><line x1="10" y1="22" x2="14" y2="22" />
+    <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14" />
   </svg>
 );
 
 const PeopleIcon = () => (
   <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
   </svg>
 );
 
 const ClipboardIcon = () => (
   <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-    <line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/>
+    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+    <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+    <line x1="9" y1="12" x2="15" y2="12" /><line x1="9" y1="16" x2="13" y2="16" />
   </svg>
 );
 
 const CodeIcon = () => (
   <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+    <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
   </svg>
 );
 
 const RocketIcon = () => (
   <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
-    <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
-    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+    <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" /><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
   </svg>
 );
 
 /* ── "What We Do" icons ── */
 const DevIcon = () => (
   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+    <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
   </svg>
 );
 
 const AcademyIcon = () => (
   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+    <path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c3 3 9 3 12 0v-5" />
   </svg>
 );
 
 const AIIcon = () => (
   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 2a4 4 0 0 1 4 4v1h1a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3h1V6a4 4 0 0 1 4-4z"/>
-    <circle cx="9" cy="13" r="1" fill="#a855f7"/><circle cx="15" cy="13" r="1" fill="#a855f7"/>
-    <path d="M9 17c.83.65 2.17 1 3 1s2.17-.35 3-1"/>
+    <path d="M12 2a4 4 0 0 1 4 4v1h1a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3h1V6a4 4 0 0 1 4-4z" />
+    <circle cx="9" cy="13" r="1" fill="#a855f7" /><circle cx="15" cy="13" r="1" fill="#a855f7" />
+    <path d="M9 17c.83.65 2.17 1 3 1s2.17-.35 3-1" />
   </svg>
 );
 
 const SupportIcon = () => (
   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+    <path d="M3 18v-6a9 9 0 0 1 18 0v6" /><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
   </svg>
 );
 
 const ChatIcon = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
   </svg>
 );
 
 /* ─── Data ───────────────────────────────────────────────────── */
 const steps = [
-  { num: "01", icon: <LightbulbIcon />, title: "Share Your Idea",  desc: "Tell us what you need." },
-  { num: "02", icon: <PeopleIcon />,    title: "We Connect",       desc: "Our team will reach out." },
-  { num: "03", icon: <ClipboardIcon />, title: "Plan & Proposal",  desc: "We analyze and prepare the best plan." },
-  { num: "04", icon: <CodeIcon />,      title: "Development",      desc: "We build with quality and care." },
-  { num: "05", icon: <RocketIcon />,    title: "Delivery",         desc: "On time. Every time. Beyond expectations." },
+  { num: "01", icon: <LightbulbIcon />, title: "Share Your Idea", desc: "Tell us what you need." },
+  { num: "02", icon: <PeopleIcon />, title: "We Connect", desc: "Our team will reach out." },
+  { num: "03", icon: <ClipboardIcon />, title: "Plan & Proposal", desc: "We analyze and prepare the best plan." },
+  { num: "04", icon: <CodeIcon />, title: "Development", desc: "We build with quality and care." },
+  { num: "05", icon: <RocketIcon />, title: "Delivery", desc: "On time. Every time. Beyond expectations." },
 ];
 
 const services = [
-  { icon: <DevIcon />,     title: "Software Development",  desc: "Custom software solutions that grow your business." },
-  { icon: <AcademyIcon />, title: "Academy & Training",    desc: "Industry-focused training for your career growth." },
-  { icon: <AIIcon />,      title: "AI & Tech Solutions",   desc: "Intelligent solutions powered by technology." },
+  { icon: <DevIcon />, title: "Software Development", desc: "Custom software solutions that grow your business." },
+  { icon: <AcademyIcon />, title: "Academy & Training", desc: "Industry-focused training for your career growth." },
+  { icon: <AIIcon />, title: "AI & Tech Solutions", desc: "Intelligent solutions powered by technology." },
   { icon: <SupportIcon />, title: "Support & Maintenance", desc: "We're here even after the project is done." },
 ];
 
@@ -129,10 +129,17 @@ const YourNextStep = () => {
           position: relative;
           min-height: 100vh;
           display: flex;
-          align-items: flex-start;
-          justify-content: flex-start;
-          padding: 72px 60px 100px;
+          align-items: center;
+          justify-content: center;
+          padding: 72px 24px 100px;
           overflow: hidden;
+        }
+        .ynx-hero-container {
+          position: relative;
+          z-index: 4;
+          width: 100%;
+          max-width: 1200px;
+          padding-left: 20px;
         }
         .ynx-hero-img {
           position: absolute;
@@ -145,18 +152,17 @@ const YourNextStep = () => {
           transform-origin: center center;
         }
         .ynx-hero-text {
-          position: relative;
-          z-index: 4;
           max-width: 520px;
           animation: heroTextFade 1s ease-out both;
         }
 
         @media (max-width: 768px) {
           .ynx-hero-section {
-            padding: 80px 24px 60px;
+            padding: 80px 16px 60px;
             align-items: flex-end;
             min-height: 70vh;
           }
+          .ynx-hero-container { padding-left: 0; }
           .ynx-hero-img {
             width: 100%;
             opacity: 0.45;
@@ -257,14 +263,14 @@ const YourNextStep = () => {
 
         {/* Star sparks — blink in/out */}
         {[
-          { right: "28%", top: "22%", size: 5,  delay: "0s",    dur: "1.2s" },
-          { right: "24%", top: "38%", size: 4,  delay: "0.4s",  dur: "1.8s" },
-          { right: "32%", top: "18%", size: 6,  delay: "0.8s",  dur: "1.4s" },
-          { right: "19%", top: "32%", size: 3,  delay: "1.2s",  dur: "2s"   },
-          { right: "21%", top: "50%", size: 4,  delay: "0.2s",  dur: "1.6s" },
-          { right: "35%", top: "30%", size: 3,  delay: "1.5s",  dur: "1.1s" },
-          { right: "17%", top: "44%", size: 5,  delay: "0.6s",  dur: "2.2s" },
-          { right: "26%", top: "60%", size: 3,  delay: "1s",    dur: "1.5s" },
+          { right: "28%", top: "22%", size: 5, delay: "0s", dur: "1.2s" },
+          { right: "24%", top: "38%", size: 4, delay: "0.4s", dur: "1.8s" },
+          { right: "32%", top: "18%", size: 6, delay: "0.8s", dur: "1.4s" },
+          { right: "19%", top: "32%", size: 3, delay: "1.2s", dur: "2s" },
+          { right: "21%", top: "50%", size: 4, delay: "0.2s", dur: "1.6s" },
+          { right: "35%", top: "30%", size: 3, delay: "1.5s", dur: "1.1s" },
+          { right: "17%", top: "44%", size: 5, delay: "0.6s", dur: "2.2s" },
+          { right: "26%", top: "60%", size: 3, delay: "1s", dur: "1.5s" },
         ].map((p, i) => (
           <div key={i} style={{
             position: "absolute",
@@ -280,10 +286,10 @@ const YourNextStep = () => {
 
         {/* Floating dust particles */}
         {[
-          { right: "27%", top: "28%", size: 6, delay: "0s",   dur: "4s"   },
-          { right: "23%", top: "44%", size: 4, delay: "1s",   dur: "5s"   },
-          { right: "31%", top: "21%", size: 5, delay: "2s",   dur: "3.5s" },
-          { right: "18%", top: "36%", size: 3, delay: "0.5s", dur: "6s"   },
+          { right: "27%", top: "28%", size: 6, delay: "0s", dur: "4s" },
+          { right: "23%", top: "44%", size: 4, delay: "1s", dur: "5s" },
+          { right: "31%", top: "21%", size: 5, delay: "2s", dur: "3.5s" },
+          { right: "18%", top: "36%", size: 3, delay: "0.5s", dur: "6s" },
         ].map((p, i) => (
           <div key={`d${i}`} style={{
             position: "absolute",
@@ -298,16 +304,18 @@ const YourNextStep = () => {
         ))}
 
         {/* Heading */}
-        <div className="ynx-hero-text">
-          <h1 style={{ fontSize: "clamp(64px,10vw,120px)", fontWeight: 900, lineHeight: 1, margin: 0 }}>
-            YOUR<br />
-            <span style={{ color: "#a855f7" }}>NEXT</span> STEP
-          </h1>
-          <div style={{ width: "40px", height: "4px", background: "#a855f7", borderRadius: "2px", margin: "18px 0 22px" }} />
-          <p style={{ fontSize: "17px", color: "#ccc", lineHeight: 1.7, margin: 0 }}>
-            From idea to reality.<br />
-            We make the process simple and effective.
-          </p>
+        <div className="ynx-hero-container">
+          <div className="ynx-hero-text" style={{ marginTop: "-23vh" }}>
+            <h1 style={{ fontSize: "clamp(68px,12.5vw,135px)", fontWeight: 900, lineHeight: 0.95, margin: 0 }}>
+              YOUR<br />
+              <span style={{ color: "#a855f7" }}>NEXT</span> STEP
+            </h1>
+            <div style={{ width: "40px", height: "4px", background: "#a855f7", borderRadius: "2px", margin: "18px 0 22px" }} />
+            <p style={{ fontSize: "17px", color: "#ccc", lineHeight: 1.7, margin: 0 }}>
+              From idea to reality.<br />
+              We make the process simple and effective.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -443,7 +451,7 @@ const YourNextStep = () => {
           >
             Let's Talk
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
             </svg>
           </button>
         </div>
