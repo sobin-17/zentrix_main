@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { GraduationCap, Boxes, BrainCircuit, HeartHandshake } from "lucide-react";
 
 /* ─── Animation Variants ──────────────────────────────────────────── */
 
@@ -100,6 +101,76 @@ function ServiceCard({ title, items, delay = 0 }) {
   );
 }
 
+/* ─── Why Choose Us — stacked glow-pill cards ─────────────────────────
+   Matches the reference: a vertical stack of rounded pill cards, each
+   with a glowing circular icon on the left and title/description on
+   the right. No connecting line, no left/right alternation.            */
+
+function WhyChooseUsCards({ items }) {
+  return (
+    <div className="mx-auto flex max-w-3xl flex-col gap-8">
+      {items.map((item, i) => {
+        const Icon = item.icon;
+        return (
+          <motion.div
+            key={item.title}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.4 }}
+            transition={{
+              duration: 0.7,
+              delay: i * 0.1,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            whileHover={{
+              y: -5,
+              boxShadow: "0 0 42px rgba(168,85,247,0.32)",
+              transition: { duration: 0.3, ease: "easeOut" },
+            }}
+            className="
+              group relative flex items-center gap-8
+              overflow-hidden rounded-[32px]
+              border border-purple-500/25
+              bg-gradient-to-br from-purple-950/40 via-black/40 to-black/60
+              px-9 py-8
+              backdrop-blur-xl
+              transition-colors duration-300
+              hover:border-purple-400/50
+            "
+            style={{
+              boxShadow: "0 0 26px rgba(168,85,247,0.12)",
+            }}
+          >
+            {/* subtle inner glow wash */}
+            <div className="pointer-events-none absolute inset-0 rounded-[32px] bg-gradient-to-r from-purple-500/[0.05] to-transparent" />
+
+            {/* glowing icon avatar */}
+            <div
+              className="relative flex h-[88px] w-[88px] shrink-0 items-center justify-center rounded-full border border-purple-400/40 bg-gradient-to-br from-purple-700/60 to-purple-950/60"
+              style={{
+                boxShadow:
+                  "0 0 26px rgba(168,85,247,0.55), 0 0 52px rgba(168,85,247,0.28), inset 0 0 16px rgba(216,180,254,0.25)",
+              }}
+            >
+              <Icon className="h-10 w-10 text-purple-100" strokeWidth={1.5} />
+            </div>
+
+            {/* copy */}
+            <div className="relative z-10">
+              <h3 className="text-[22px] font-bold leading-snug text-white sm:text-[25px]">
+                {item.title}
+              </h3>
+              <p className="mt-2 text-[15px] leading-[1.6] text-gray-400 sm:text-[17px]">
+                {item.desc}
+              </p>
+            </div>
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+}
+
 /* ─── Main Component ──────────────────────────────────────────────── */
 
 export default function Services() {
@@ -135,22 +206,22 @@ export default function Services() {
 
   const whyItems = [
     {
-      side: "right",
+      icon: GraduationCap,
       title: "Hands on Learning experience",
       desc: "Build practical skills through workshops, live projects, case studies, and interactive learning sessions.",
     },
     {
-      side: "left",
+      icon: Boxes,
       title: "Career oriented programs",
       desc: "Our programs are designed to enhance employability and prepare learners for successful careers in technology.",
     },
     {
-      side: "right",
-      title: "innovative tecnical solutions",
+      icon: BrainCircuit,
+      title: "Innovative technical solutions",
       desc: "We deliver modern, scalable, and customized solutions that help businesses achieve their digital goals.",
     },
     {
-      side: "left",
+      icon: HeartHandshake,
       title: "Personalised support",
       desc: "Receive dedicated assistance and mentorship throughout your learning and project development journey.",
     },
@@ -173,7 +244,7 @@ export default function Services() {
   });
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-black text-white">
+    <div className="relative min-h-screen overflow-hidden bg-green text-white">
 
       {/* ── Ambient top glow ─────────────────────────────────────── */}
       <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full bg-black-700/10 blur-[200px] pointer-events-none" />
@@ -382,80 +453,9 @@ export default function Services() {
             </h2>
           </motion.div>
 
-         {/* Timeline - No center line, tighter spacing */}
-<div className="relative">
-  <div className="space-y-6">
-    {whyItems.map((item, i) => {
-      const fromX = item.side === "left" ? -120 : 120;
-      const card = (
-        <motion.div
-          initial={{ opacity: 0, x: fromX, y: 30, scale: 0.94, filter: "blur(8px)" }}
-          whileInView={{ opacity: 1, x: 0, y: 0, scale: 1, filter: "blur(0px)" }}
-          viewport={{ once: false, amount: 0.3 }}
-          transition={{
-            duration: 0.9,
-            delay: i * 0.12,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-          whileHover={{
-            y: -8,
-            scale: 1.02,
-            rotate: item.side === "left" ? -0.8 : 0.8,
-            boxShadow: "0 0 30px rgba(168,85,247,0.35)",
-            transition: { duration: 0.35, ease: "easeOut" },
-          }}
-          className={`
-            group relative overflow-hidden
-            ${item.side === "left" ? "text-left" : "text-right"}
-            rounded-[24px]
-            border border-white/[0.08]
-            bg-white/[0.03]
-            backdrop-blur-xl
-            p-6
-            transition-all duration-300
-            hover:border-purple-500/40
-            hover:bg-white/[0.06]
-          `}
-        >
-          {/* Accent bar that draws in on hover */}
-          <span
-            className={`
-              absolute top-0 left-0 h-[2px] w-full
-              bg-gradient-to-r from-purple-500 via-fuchsia-400 to-purple-500
-              origin-${item.side === "left" ? "left" : "right"}
-              scale-x-0 group-hover:scale-x-100
-              transition-transform duration-500 ease-out
-            `}
-          />
+          {/* Stacked glow-pill cards (new reference-image style) */}
+          <WhyChooseUsCards items={whyItems} />
 
-          <h3 className="text-[20px] font-bold mb-1 tracking-tight">
-            {item.title}
-          </h3>
-
-          <p className="text-gray-400 text-[13px] leading-[1.6]">
-            {item.desc}
-          </p>
-        </motion.div>
-      );
-
-      return (
-        <div key={i} className="grid lg:grid-cols-2 gap-8 items-center">
-          {item.side === "left" ? (
-            <>
-              {card}
-              <div />
-            </>
-          ) : (
-            <>
-              <div />
-              {card}
-            </>
-          )}
-        </div>
-      );
-    })}
-  </div>
-</div>
         </div>
       </section>
 

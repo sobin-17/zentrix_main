@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Link } from "react-router-dom";
 const ContactCTA = () => {
   return (
     <section id="contact" className="py-32 relative overflow-hidden">
@@ -10,7 +10,12 @@ const ContactCTA = () => {
 
       <div className="container mx-auto px-6 relative z-10 text-center">
         <div className="badge border-white/20 bg-white/5 text-white mb-8">
+        <Link
+          to="/get-touch"
+          className="block w-full"
+        >
           Contact Us
+          </Link>
         </div>
         
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-white drop-shadow-lg">
