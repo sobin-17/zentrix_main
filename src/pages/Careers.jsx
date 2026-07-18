@@ -98,94 +98,105 @@ const Careers = () => {
     <main className="min-h-screen bg-black text-white pb-16 font-poppins relative overflow-hidden">
 
       {/* ================= HERO SECTION — Full-width banner ================= */}
-      <section className="relative w-full min-h-[85vh] overflow-hidden">        {/* Full-bleed hand image as banner background */}
-        <div className="absolute inset-0 w-full h-full z-0">
-          {/* Space dots / particles */}
-          {particles.map((p) => (
-            <div
-              key={p.id}
-              className="service-particle"
-              style={{
-                width: p.size,
-                height: p.size,
-                top: p.top,
-                left: p.left,
-                backgroundColor: p.color,
-                boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-                '--tx': p.tx,
-                '--ty': p.ty,
-                '--duration': `${p.duration}s`,
-                '--delay': `${p.delay}s`,
-              }}
-            />
-          ))}
-          {/* Hand image */}
-          <motion.img
-            src="/career_hand.png"
-            alt=""
-            className="absolute bottom-0 sm:-bottom-8 md:-bottom-14 lg:-bottom-18 right-0 w-[80%] sm:w-[70%] md:w-[80%] lg:w-full object-contain"
-            initial={{ opacity: 0, scale: 0.9, y: -10 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            animate={{
-              y: [0, -10, 0],
-              rotate: [0, 1.5, 0, -1.5, 0],
-              scale: [1, 1.01, 1],
-            }}
-            transition={{
-              opacity: { duration: 1 },
-              scale: { duration: 5, repeat: Infinity, ease: "easeInOut" },
-              rotate: { duration: 8, repeat: Infinity, ease: "easeInOut" },
-              y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-            }}
-            whileHover={{
-              scale: 1.05,
-              y: -6,
-              filter: "brightness(1.15) drop-shadow(0 0 70px rgba(168,85,247,0.8))",
-              transition: { duration: 0.3 },
-            }}
-          />
-          {/* Purple Glow */}
-          <div className="absolute bottom-[-120px] left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-[#8B2EFF] opacity-30 blur-[220px] rounded-full"></div>
-        </div>
+<section className="relative w-full min-h-[60vh] sm:min-h-[70vh] md:min-h-[80vh] lg:min-h-[85vh] overflow-hidden">
+  {/* Full-bleed hand image as banner background */}
+  <div className="absolute inset-0 w-full h-full z-0">
+    {/* Space dots / particles */}
+    {particles.map((p) => (
+      <div
+        key={p.id}
+        className="service-particle"
+        style={{
+          width: p.size,
+          height: p.size,
+          top: p.top,
+          left: p.left,
+          backgroundColor: p.color,
+          boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+          '--tx': p.tx,
+          '--ty': p.ty,
+          '--duration': `${p.duration}s`,
+          '--delay': `${p.delay}s`,
+        }}
+      />
+    ))}
 
-        {/* Hero text content — overlaid on image */}
-        <div className="absolute top-8 left-0 right-0 z-10 w-full max-w-7xl mx-auto px-6 md:px-12">
+    {/* Hand image */}
+    <motion.img
+      src="/career_hand.png"
+      alt=""
+      className="absolute bottom-4 sm:bottom-0 lg:-bottom-14 right-0 w-[88%] sm:w-[80%] md:w-[78%] lg:w-full object-contain"
+      initial={{ opacity: 0, scale: 0.9, y: -10 }}
+      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+      viewport={{ once: false, amount: 0.3 }}
+      animate={{
+        y: [0, -10, 0],
+        rotate: [0, 1.5, 0, -1.5, 0],
+        scale: [1, 1.01, 1],
+      }}
+      transition={{
+        opacity: { duration: 1 },
+        scale: { duration: 5, repeat: Infinity, ease: "easeInOut" },
+        rotate: { duration: 8, repeat: Infinity, ease: "easeInOut" },
+        y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+      }}
+      whileHover={{
+        scale: 1.05,
+        y: -6,
+        filter: "brightness(1.15) drop-shadow(0 0 70px rgba(168,85,247,0.8))",
+        transition: { duration: 0.3 },
+      }}
+    />
 
-          <div className="flex items-start gap-5">
+    {/* Purple Glow */}
+    <div className="absolute bottom-[-80px] sm:bottom-[-100px] lg:bottom-[-120px] left-1/2 -translate-x-1/2 w-[500px] sm:w-[700px] lg:w-[1000px] h-[250px] sm:h-[350px] lg:h-[500px] bg-[#8B2EFF] opacity-30 blur-[140px] sm:blur-[180px] lg:blur-[220px] rounded-full"></div>
+  </div>
 
-            {/* Career Heading */}
-            <h1 className="text-[90px] md:text-[125px] lg:text-[150px] font-black leading-[0.85] tracking-tight text-white whitespace-nowrap">
-              Career
-            </h1>
+  {/* Hero text content — overlaid on image */}
+  <div className="absolute top-6 sm:top-8 left-0 right-0 z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 md:px-12">
 
-            {/* Right Side */}
-            <div className="pt-5 lg:pt-6 max-w-[700px]">
+    <div className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5">
 
-              <h2 className="text-white font-semibold text-[22px] md:text-[26px] lg:text-[30px] leading-none whitespace-nowrap">
-                "Your Career Our Mission"
-              </h2>
+      {/* Career Heading */}
+      <h1 className="text-[56px] xs:text-[64px] sm:text-[90px] md:text-[125px] lg:text-[150px] font-black leading-[0.85] tracking-tight text-white whitespace-nowrap">
+        Career
+      </h1>
 
-              <p className="mt-2 text-gray-300 text-[14px] md:text-[15px] lg:text-[16px] leading-5 max-w-[650px]">
-                At Zentrix Technologies, we create opportunities to learn, create,
-                and innovate together.
-              </p>
+      {/* Right Side */}
+      <div className="pt-1 sm:pt-5 lg:pt-6 max-w-full sm:max-w-[500px] lg:max-w-[700px]">
 
-            </div>
+        <h2 className="text-white font-semibold text-[16px] sm:text-[22px] md:text-[26px] lg:text-[30px] leading-tight sm:leading-none">
+          "Your Career Our Mission"
+        </h2>
 
-          </div>
+        <p className="mt-2 text-gray-300 text-[13px] sm:text-[14px] md:text-[15px] lg:text-[16px] leading-5 max-w-[90%] sm:max-w-[500px] lg:max-w-[650px]">
+          At Zentrix Technologies, we create opportunities to learn, create,
+          and innovate together.
+        </p>
 
-        </div>
-        {/* Bottom Left Description */}
-        <div className="absolute bottom-[80px] left-[60px] z-20 max-w-[400px]">
-          <p className="text-white/85 text-[15px] md:text-[14px] font-light leading-[22px] tracking-[0.2px]">
-            At Zentrix Technologies, we create opportunities to learn, create, and innovate together
-          </p>
-        </div>
-        {/* Bottom fade into page */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent z-10"></div>
-      </section>
+        {/* On mobile only: the "bottom-left" description moves up here
+            instead of floating near the bottom, so it's always visible
+            and never risks overlapping the hand image. */}
+        <p className="md:hidden mt-3 text-white/70 text-[12px] font-light leading-[18px] tracking-[0.2px] max-w-[90%]">
+          At Zentrix Technologies, we create opportunities to learn, create, and innovate together
+        </p>
 
+      </div>
+
+    </div>
+
+  </div>
+
+  {/* Bottom Left Description — desktop/tablet only, stays near the bottom */}
+  <div className="hidden md:block absolute bottom-[60px] lg:bottom-[80px] left-6 lg:left-[60px] z-20 max-w-[280px] lg:max-w-[400px]">
+    <p className="text-white/85 text-[13px] md:text-[14px] font-light leading-[20px] md:leading-[22px] tracking-[0.2px]">
+      At Zentrix Technologies, we create opportunities to learn, create, and innovate together
+    </p>
+  </div>
+
+  {/* Bottom fade into page */}
+  <div className="absolute bottom-0 left-0 right-0 h-24 sm:h-32 bg-gradient-to-t from-black to-transparent z-10"></div>
+</section>
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         {/* ================= WHY WORK WITH US ================= */}
         <section className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden py-8 lg:py-12">
