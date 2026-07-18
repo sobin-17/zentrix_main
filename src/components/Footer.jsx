@@ -86,7 +86,7 @@ const Footer = () => {
               </li>
 
               <li className="text-center">
-                <Link to="/contact" className="hover:text-white transition">
+                <Link to="/your-next-step" className="hover:text-white transition">
                   Your Next Step
                 </Link>
               </li>
