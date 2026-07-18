@@ -37,7 +37,7 @@ useEffect(() => {
       ]
     },
     { name: 'Courses', path: '/course' },
-    { name: 'Career', path: '/career' },
+    { name: 'Careers', path: '/career' },
     { name: 'Your Next Step', path: '/your-next-step' },
   ];
 

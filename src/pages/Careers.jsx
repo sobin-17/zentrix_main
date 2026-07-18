@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, ArrowRight, Users, Lightbulb, TrendingUp, Handshake, BookOpen, Trophy, LineChart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
@@ -101,50 +101,50 @@ const Careers = () => {
       <section className="relative w-full min-h-[85vh] overflow-hidden">        {/* Full-bleed hand image as banner background */}
         <div className="absolute inset-0 w-full h-full z-0">
           {/* Space dots / particles */}
-  {particles.map((p) => (
-    <div
-      key={p.id}
-      className="service-particle"
-      style={{
-        width: p.size,
-        height: p.size,
-        top: p.top,
-        left: p.left,
-        backgroundColor: p.color,
-        boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-        '--tx': p.tx,
-        '--ty': p.ty,
-        '--duration': `${p.duration}s`,
-        '--delay': `${p.delay}s`,
-      }}
-    />
-  ))}
-         {/* Hand image */}
-         <motion.img
-          src="/career_hand.png"
-          alt=""
-          className="absolute bottom-0 sm:-bottom-8 md:-bottom-14 lg:-bottom-18 right-0 w-[80%] sm:w-[70%] md:w-[80%] lg:w-full object-contain"
-          initial={{ opacity: 0, scale: 0.9, y: -10 }}
-          whileInView={{ opacity: 1, scale: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.3 }}
-          animate={{
-            y: [0, -10, 0],
-            rotate: [0, 1.5, 0, -1.5, 0],
-            scale: [1, 1.01, 1],
-          }}
-          transition={{
-            opacity: { duration: 1 },
-            scale: { duration: 5, repeat: Infinity, ease: "easeInOut" },
-            rotate: { duration: 8, repeat: Infinity, ease: "easeInOut" },
-            y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-          }}
-          whileHover={{
-            scale: 1.05,
-            y: -6,
-            filter: "brightness(1.15) drop-shadow(0 0 70px rgba(168,85,247,0.8))",
-            transition: { duration: 0.3 },
-          }}
-        />
+          {particles.map((p) => (
+            <div
+              key={p.id}
+              className="service-particle"
+              style={{
+                width: p.size,
+                height: p.size,
+                top: p.top,
+                left: p.left,
+                backgroundColor: p.color,
+                boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+                '--tx': p.tx,
+                '--ty': p.ty,
+                '--duration': `${p.duration}s`,
+                '--delay': `${p.delay}s`,
+              }}
+            />
+          ))}
+          {/* Hand image */}
+          <motion.img
+            src="/career_hand.png"
+            alt=""
+            className="absolute bottom-0 sm:-bottom-8 md:-bottom-14 lg:-bottom-18 right-0 w-[80%] sm:w-[70%] md:w-[80%] lg:w-full object-contain"
+            initial={{ opacity: 0, scale: 0.9, y: -10 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.3 }}
+            animate={{
+              y: [0, -10, 0],
+              rotate: [0, 1.5, 0, -1.5, 0],
+              scale: [1, 1.01, 1],
+            }}
+            transition={{
+              opacity: { duration: 1 },
+              scale: { duration: 5, repeat: Infinity, ease: "easeInOut" },
+              rotate: { duration: 8, repeat: Infinity, ease: "easeInOut" },
+              y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+            }}
+            whileHover={{
+              scale: 1.05,
+              y: -6,
+              filter: "brightness(1.15) drop-shadow(0 0 70px rgba(168,85,247,0.8))",
+              transition: { duration: 0.3 },
+            }}
+          />
           {/* Purple Glow */}
           <div className="absolute bottom-[-120px] left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-[#8B2EFF] opacity-30 blur-[220px] rounded-full"></div>
         </div>
@@ -188,7 +188,7 @@ const Careers = () => {
 
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         {/* ================= WHY WORK WITH US ================= */}
-        <section className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden py-32 md:py-40">
+        <section className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden py-8 lg:py-12">
           {/* Stage backdrop — pure black so it blends with page */}
           <div className="absolute inset-0 bg-black" />
 
@@ -224,24 +224,24 @@ const Careers = () => {
           <div className="relative z-10 flex flex-col items-center justify-between h-full">
 
             {/* Space dots / particles */}
-  {particles.map((p) => (
-    <div
-      key={p.id}
-      className="service-particle"
-      style={{
-        width: p.size,
-        height: p.size,
-        top: p.top,
-        left: p.left,
-        backgroundColor: p.color,
-        boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-        '--tx': p.tx,
-        '--ty': p.ty,
-        '--duration': `${p.duration}s`,
-        '--delay': `${p.delay}s`,
-      }}
-    />
-  ))}
+            {particles.map((p) => (
+              <div
+                key={p.id}
+                className="service-particle"
+                style={{
+                  width: p.size,
+                  height: p.size,
+                  top: p.top,
+                  left: p.left,
+                  backgroundColor: p.color,
+                  boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+                  '--tx': p.tx,
+                  '--ty': p.ty,
+                  '--duration': `${p.duration}s`,
+                  '--delay': `${p.delay}s`,
+                }}
+              />
+            ))}
 
 
             {/* Heading */}
@@ -276,166 +276,282 @@ const Careers = () => {
 
         </section>
         {/* ================= WORK CULTURE ================= */}
-        <section className="relative bg-black py-12">
+        {/* ================= WORK CULTURE ================= */}
+        <section className="relative bg-[#02010A] overflow-hidden py-8 font-poppins">
 
-          {/* Space dots / particles */}
-  {particles.map((p) => (
-    <div
-      key={p.id}
-      className="service-particle"
-      style={{
-        width: p.size,
-        height: p.size,
-        top: p.top,
-        left: p.left,
-        backgroundColor: p.color,
-        boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-        '--tx': p.tx,
-        '--ty': p.ty,
-        '--duration': `${p.duration}s`,
-        '--delay': `${p.delay}s`,
-      }}
-    />
-  ))}
-
-
-          {/* Heading */}
-          <div className="text-center mb-1">
-            <h2 className="leading-none">
-              <span className="text-[78px] md:text-[105px] lg:text-[120px] font-extralight text-white tracking-tight">
-                Work
-              </span>
-
-              <span className="ml-3 text-[38px] md:text-[50px] lg:text-[60px] font-light text-white/30">
-                Culture
-              </span>
-            </h2>
+          {/* ── Top-left abstract dot grid ── */}
+          <div className="absolute top-10 left-10 opacity-30 pointer-events-none">
+            {Array.from({ length: 5 }).map((_, row) => (
+              <div key={row} className="flex gap-2 mb-2">
+                {Array.from({ length: 5 }).map((_, col) => (
+                  <div key={col} className="w-1 h-1 rounded-full bg-indigo-400" />
+                ))}
+              </div>
+            ))}
           </div>
 
-          <div className="relative">
-            {/* Description */}
-            <div className="absolute -top-1 left-1/2 -translate-x-1/2 z-20 w-full px-6 text-center">
-              <p className="mx-auto max-w-[1100px] text-white text-[16px] md:text-[18px] leading-9 font-light tracking-[0.3px]">
-                We foster a collaborative, innovative, and growth-oriented work culture where creativity is encouraged and every contribution matters. Our team thrives on continuous learning, teamwork, and real-world problem-solving, creating an environment that empowers individuals to develop skills, share ideas, and achieve professional success.
-              </p>
+          {/* ── Heading ── */}
+          <motion.div
+            className="relative z-20 text-center px-6 mb-4"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <h2 className="font-extrabold leading-none tracking-tight mb-2" style={{ fontSize: 'clamp(48px, 6vw, 76px)' }}>
+              <span className="text-white">Work </span>
+              <span style={{
+                background: 'linear-gradient(90deg, #c084fc 0%, #3b82f6 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}>Culture</span>
+            </h2>
+            
+            {/* Center glowing dot and thin line */}
+            <div className="flex items-center justify-center gap-2 max-w-[200px] mx-auto mt-4 mb-8">
+               <div className="w-12 h-[1px] bg-gradient-to-r from-transparent to-purple-500" />
+               <div className="w-2 h-2 rounded-full bg-purple-400 shadow-[0_0_10px_#a855f7]" />
+               <div className="w-12 h-[1px] bg-gradient-to-l from-transparent to-blue-500" />
             </div>
+          </motion.div>
 
-            <div className="relative w-full h-[700px] overflow-hidden">
+          {/* ── Description ── */}
+          <motion.div
+            className="relative z-20 text-center px-6 mb-10"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}
+          >
+            <p className="mx-auto max-w-[850px] text-gray-300 text-[15px] md:text-[17px] leading-8 font-normal">
+              We foster a collaborative, innovative, and growth-oriented work culture
+              where creativity is encouraged and every contribution matters. Our team thrives
+              on continuous learning, teamwork, and real-world problem-solving, creating an
+              environment that empowers individuals to develop skills, share ideas,
+              and achieve professional success.
+            </p>
+          </motion.div>
 
-              {/* Space dots / particles */}
-  {particles.map((p) => (
-    <div
-      key={p.id}
-      className="service-particle"
-      style={{
-        width: p.size,
-        height: p.size,
-        top: p.top,
-        left: p.left,
-        backgroundColor: p.color,
-        boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-        '--tx': p.tx,
-        '--ty': p.ty,
-        '--duration': `${p.duration}s`,
-        '--delay': `${p.delay}s`,
-      }}
-    />
-  ))}
+          {/* ── Main visual area (Background & Hexagons) ── */}
+          <div className="relative w-[100vw] left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] overflow-hidden flex items-center justify-center p-0" style={{ height: 'min(75vh, 750px)', minHeight: '500px' }}>
 
-  {/* Background */}
-  <img
-    src="/career_background.png "
-    className="w-full h-full object-cover ml-0"
-    animate={{
-      scale: [1, 1.03, 1],
-      rotate: [0, 0.2, 0, -0.2, 0],
-      y: [0, -6, 0],
-    }}
-    transition={{
-      duration: 10,
-      repeat: Infinity,
-      ease: "easeInOut",
-    }}
-  />
+            {/* Main Background Image with Animation */}
+            <motion.div
+              className="absolute inset-0 w-full h-full"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1 }}
+            >
+               <motion.img
+                 src="/workculture image new.png"
+                 alt="Work Culture Virtual Background"
+                 className="w-full h-full object-cover object-center max-w-none"
+                 animate={{
+                   scale: [1, 1.05, 1],
+                   opacity: [0.85, 1, 0.85],
+                 }}
+                 transition={{
+                   duration: 10,
+                   repeat: Infinity,
+                   ease: "easeInOut"
+                 }}
+               />
 
-  {/* Animated People */}
-  <motion.img
-    src="/career_people1.png"
-    className="absolute inset-0 w-[110%] h-[110%] object-cover left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2  "
-    animate={{
-      x: [0, 8, 0],
-      y: [0, -4, 0],
-    }}
-    transition={{
-      duration: 2.5,
-      repeat: Infinity,
-      ease: "easeInOut",
-    }}
-  />
+               {/* ── Attractive Moving Animated Neon Waves ── */}
+               <div className="absolute inset-x-0 bottom-0 top-0 overflow-hidden pointer-events-none mix-blend-screen">
+                 {/* Deep Purple Wave */}
+                 <motion.div
+                   className="absolute left-[-20%] top-[45%] w-[140%] h-[350px] border-t-2 border-purple-500/50 rounded-[100%] shadow-[0_-15px_40px_rgba(168,85,247,0.5)]"
+                   style={{ filter: "blur(5px)" }}
+                   animate={{ y: [0, -40, 0], rotate: [-3, 3, -3] }}
+                   transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+                 />
+                 
+                 {/* Electric Blue Wave */}
+                 <motion.div
+                   className="absolute left-[-30%] top-[55%] w-[160%] h-[400px] border-t-[3px] border-blue-400/50 rounded-[100%] shadow-[0_-20px_50px_rgba(59,130,246,0.6)]"
+                   style={{ filter: "blur(8px)" }}
+                   animate={{ y: [0, 50, 0], rotate: [4, -4, 4], scale: [1, 1.05, 1] }}
+                   transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                 />
+                 
+                 {/* Hot Pink Subtle Wave */}
+                 <motion.div
+                   className="absolute left-[-10%] top-[30%] w-[120%] h-[200px] border-t-[1.5px] border-pink-500/60 rounded-[100%] shadow-[0_-10px_25px_rgba(236,72,153,0.5)]"
+                   style={{ filter: "blur(4px)" }}
+                   animate={{ y: [-20, 20, -20], rotate: [-6, 6, -6] }}
+                   transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+                 />
+               </div>
+               
+               {/* Edge gradients to softly blend into the black background at the very rims */}
+               <div className="absolute inset-x-0 top-0 h-[25%] bg-gradient-to-b from-[#02010A] to-transparent pointer-events-none" />
+               <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-[#02010A] to-transparent pointer-events-none" />
+               <div className="absolute inset-y-0 left-0 w-[15%] bg-gradient-to-r from-[#02010A] via-[#02010A]/80 to-transparent pointer-events-none" />
+               <div className="absolute inset-y-0 right-0 w-[15%] bg-gradient-to-l from-[#02010A] via-[#02010A]/80 to-transparent pointer-events-none" />
+            </motion.div>
 
-</div>
+            {/* Left Hexagon: People First */}
+            <motion.div 
+               className="absolute z-20 left-[5%] md:left-[12%] top-[30%] -translate-y-1/2 flex flex-col items-center justify-center"
+               initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.4 }}
+               animate={{ y: [-8, 8, -8] }} style={{ animationDuration: '5s', animationIterationCount: 'infinite', animationTimingFunction: 'ease-in-out' }}
+            >
+               <div className="relative flex flex-col items-center justify-center w-[110px] h-[125px]">
+                  <svg className="absolute inset-0 w-full h-full drop-shadow-[0_0_20px_rgba(168,85,247,0.7)]" viewBox="0 0 100 115" fill="none">
+                     <polygon points="50,2 98,28 98,85 50,113 2,85 2,28" stroke="url(#hex-purple)" strokeWidth="2" fill="rgba(20,5,40,0.5)" strokeLinejoin="round" />
+                     <defs><linearGradient id="hex-purple" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#d8b4fe" /><stop offset="100%" stopColor="#a855f7" /></linearGradient></defs>
+                  </svg>
+                  <Users className="w-7 h-7 text-purple-200 mb-1 relative z-10 drop-shadow-[0_0_8px_white]" strokeWidth={2} />
+                  <span className="text-white text-[11px] font-bold text-center leading-tight relative z-10 px-2 mt-1">People<br/>First</span>
+               </div>
+            </motion.div>
 
+            {/* Right Top Hexagon: Innovate Everyday */}
+            <motion.div 
+               className="absolute z-20 right-[8%] md:right-[15%] top-[15%] flex flex-col items-center justify-center"
+               initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.6 }}
+               animate={{ y: [8, -8, 8] }} style={{ animationDuration: '6s', animationIterationCount: 'infinite', animationTimingFunction: 'ease-in-out' }}
+            >
+               <div className="relative flex flex-col items-center justify-center w-[110px] h-[125px]">
+                  <svg className="absolute inset-0 w-full h-full drop-shadow-[0_0_20px_rgba(59,130,246,0.6)]" viewBox="0 0 100 115" fill="none">
+                     <polygon points="50,2 98,28 98,85 50,113 2,85 2,28" stroke="url(#hex-blue)" strokeWidth="2" fill="rgba(5,15,40,0.5)" strokeLinejoin="round" />
+                     <defs><linearGradient id="hex-blue" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#93c5fd" /><stop offset="100%" stopColor="#3b82f6" /></linearGradient></defs>
+                  </svg>
+                  <Lightbulb className="w-7 h-7 text-blue-200 mb-1 relative z-10 drop-shadow-[0_0_8px_white]" strokeWidth={2} />
+                  <span className="text-white text-[11px] font-bold text-center leading-tight relative z-10 px-2 mt-1">Innovate<br/>Everyday</span>
+               </div>
+            </motion.div>
+
+            {/* Right Bottom Hexagon: Grow Together */}
+            <motion.div 
+               className="absolute z-20 right-[5%] md:right-[10%] bottom-[20%] flex flex-col items-center justify-center"
+               initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.8 }}
+               animate={{ y: [-5, 5, -5] }} style={{ animationDuration: '4.5s', animationIterationCount: 'infinite', animationTimingFunction: 'ease-in-out' }}
+            >
+               <div className="relative flex flex-col items-center justify-center w-[110px] h-[125px]">
+                  <svg className="absolute inset-0 w-full h-full drop-shadow-[0_0_20px_rgba(139,92,246,0.6)]" viewBox="0 0 100 115" fill="none">
+                     <polygon points="50,2 98,28 98,85 50,113 2,85 2,28" stroke="url(#hex-indigo)" strokeWidth="2" fill="rgba(15,10,40,0.5)" strokeLinejoin="round" />
+                     <defs><linearGradient id="hex-indigo" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#a78bfa" /><stop offset="100%" stopColor="#8b5cf6" /></linearGradient></defs>
+                  </svg>
+                  <TrendingUp className="w-7 h-7 text-indigo-200 mb-1 relative z-10 drop-shadow-[0_0_8px_white]" strokeWidth={2} />
+                  <span className="text-white text-[11px] font-bold text-center leading-tight relative z-10 px-2 mt-1">Grow<br/>Together</span>
+               </div>
+            </motion.div>
+
+            {/* Bottom gradient fade */}
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#02010A] to-transparent pointer-events-none z-10" />
+          </div>
+
+          {/* ── 6 Feature Cards ── */}
+          <div className="relative z-20 w-full px-4 md:px-8 mt-12 pb-14">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-7xl mx-auto">
+              {[
+                { icon: Handshake, title: 'Collaborative', desc: 'We believe in the power of teamwork and open communication.' },
+                { icon: Lightbulb, title: 'Innovative', desc: 'We encourage creativity and new ideas to solve real-world challenges.' },
+                { icon: LineChart, title: 'Growth-Oriented', desc: 'We support continuous learning and personal & professional growth.' },
+                { icon: Users, title: 'Empowering', desc: 'We empower individuals to take ownership and make an impact.' },
+                { icon: BookOpen, title: 'Continuous Learning', desc: 'We promote knowledge sharing and skill development.' },
+                { icon: Trophy, title: 'Success Driven', desc: 'We celebrate achievements and strive for excellence together.' },
+              ].map((item, i) => (
+                <motion.div
+                  key={item.title}
+                  className="relative flex flex-col items-center text-center px-4 py-8 rounded-[20px] overflow-hidden group bg-[#060414] border border-white/5"
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.1 }}
+                  transition={{ duration: 0.6, delay: i * 0.1, ease: 'easeOut' }}
+                  whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                >
+                  {/* Neon border glow overlay mapped to the top */}
+                  <div className="absolute inset-x-0 top-0 h-[30%] opacity-40 group-hover:opacity-70 transition-opacity duration-300" 
+                       style={{ background: 'linear-gradient(to bottom, rgba(139,92,246,0.5), transparent)' }} />
+                  <div className="absolute top-0 left-[20%] right-[20%] h-[1px] bg-gradient-to-r from-transparent via-purple-400 to-transparent shadow-[0_0_15px_#a855f7]" />
+
+                  {/* Icon with circular thin outline */}
+                  <div className="relative w-14 h-14 rounded-full border-[1.5px] border-white/20 flex items-center justify-center mb-6 group-hover:border-purple-400/50 transition-colors duration-300 shadow-[inset_0_0_15px_rgba(255,255,255,0.02)]">
+                     <item.icon className="w-6 h-6 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.7)] group-hover:text-purple-300 group-hover:drop-shadow-[0_0_10px_#a855f7] transition-all duration-300" strokeWidth={1.5} />
+                  </div>
+
+                  <h3 className="text-white font-[700] text-[13px] mb-3 tracking-wide">{item.title}</h3>
+                  <p className="text-gray-400 text-[11.5px] leading-relaxed font-light">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Marquee tagline ── */}
+          <div className="relative z-20 flex justify-center items-center pb-8 border-b-2 border-indigo-900/30">
+             <div className="flex items-center gap-4 text-[12px] md:text-[14px] text-gray-300 font-light tracking-wider">
+                <span>Together We Create</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-pink-500 shadow-[0_0_8px_#ec4899]" />
+                <span>Together We Grow</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-purple-500 shadow-[0_0_8px_#a855f7]" />
+                <span>Together We Succeed</span>
+             </div>
           </div>
 
         </section>
         {/* ================= CURRENT OPENINGS ================= */}
-        <section id="openings" className="relative pt-40 pb-20 mt-24">
+        <section id="openings" className="relative pt-16 pb-12">
           <div className="relative flex justify-center items-center">
             {/* Space dots / particles */}
-  {particles.map((p) => (
-    <div
-      key={p.id}
-      className="service-particle"
-      style={{
-        width: p.size,
-        height: p.size,
-        top: p.top,
-        left: p.left,
-        backgroundColor: p.color,
-        boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-        '--tx': p.tx,
-        '--ty': p.ty,
-        '--duration': `${p.duration}s`,
-        '--delay': `${p.delay}s`,
-      }}
-    />
-  ))}
+            {particles.map((p) => (
+              <div
+                key={p.id}
+                className="service-particle"
+                style={{
+                  width: p.size,
+                  height: p.size,
+                  top: p.top,
+                  left: p.left,
+                  backgroundColor: p.color,
+                  boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+                  '--tx': p.tx,
+                  '--ty': p.ty,
+                  '--duration': `${p.duration}s`,
+                  '--delay': `${p.delay}s`,
+                }}
+              />
+            ))}
 
             {/* Background Image */}
             <motion.img
-  src="/career_current1.png"
-  className="w-[1350px] md:w-[1450px] lg:w-[1550px] max-w-none h-auto object-contain -translate-y-32"
-  animate={{
-    y: [0, -10, 0],
-    scale: [1, 1.01, 1],
-  }}
-  transition={{
-    duration: 5,
-    repeat: Infinity,
-    ease: "easeInOut",
-  }}
-/>
-{/* Foreground particles — floats OVER the image */}
-<div className="absolute inset-0 z-[5] pointer-events-none">
-    {particles.slice(40, 80).map((p) => (
-      <div
-        key={p.id}
-        className="service-particle"
-        style={{
-          width: p.size,
-          height: p.size,
-          top: p.top,
-          left: p.left,
-          backgroundColor: p.color,
-          boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-          '--tx': p.tx,
-          '--ty': p.ty,
-          '--duration': `${p.duration}s`,
-          '--delay': `${p.delay}s`,
-        }}
-      />
-    ))}
-  </div>
+              src="/career_current1.png"
+              className="w-[1350px] md:w-[1450px] lg:w-[1550px] max-w-none h-auto object-contain -translate-y-32"
+              animate={{
+                y: [0, -10, 0],
+                scale: [1, 1.01, 1],
+              }}
+              transition={{
+                duration: 5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+            {/* Foreground particles — floats OVER the image */}
+            <div className="absolute inset-0 z-[5] pointer-events-none">
+              {particles.slice(40, 80).map((p) => (
+                <div
+                  key={p.id}
+                  className="service-particle"
+                  style={{
+                    width: p.size,
+                    height: p.size,
+                    top: p.top,
+                    left: p.left,
+                    backgroundColor: p.color,
+                    boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+                    '--tx': p.tx,
+                    '--ty': p.ty,
+                    '--duration': `${p.duration}s`,
+                    '--delay': `${p.delay}s`,
+                  }}
+                />
+              ))}
+            </div>
 
             {/* Content on Image */}
             <div className="absolute inset-0 flex flex-col items-center justify-start pt-[24%]">
@@ -517,27 +633,27 @@ const Careers = () => {
         </section>
 
         {/* ================= GROWTH / OPPORTUNITIES ================= */}
-        <section className="py-20 text-center relative">
+        <section className="py-12 text-center relative">
 
           {/* Space dots / particles */}
-  {particles.map((p) => (
-    <div
-      key={p.id}
-      className="service-particle"
-      style={{
-        width: p.size,
-        height: p.size,
-        top: p.top,
-        left: p.left,
-        backgroundColor: p.color,
-        boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-        '--tx': p.tx,
-        '--ty': p.ty,
-        '--duration': `${p.duration}s`,
-        '--delay': `${p.delay}s`,
-      }}
-    />
-  ))}
+          {particles.map((p) => (
+            <div
+              key={p.id}
+              className="service-particle"
+              style={{
+                width: p.size,
+                height: p.size,
+                top: p.top,
+                left: p.left,
+                backgroundColor: p.color,
+                boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+                '--tx': p.tx,
+                '--ty': p.ty,
+                '--duration': `${p.duration}s`,
+                '--delay': `${p.delay}s`,
+              }}
+            />
+          ))}
 
 
           <div className="mb-16 text-left ml-10">
@@ -567,127 +683,127 @@ const Careers = () => {
 
           </div>
 
-        {/* Diamond diagram */}
-<div className="relative max-w-3xl mx-auto px-4" style={{ height: '820px' }}>
+          {/* Diamond diagram */}
+          <div className="relative max-w-3xl mx-auto px-4" style={{ height: '820px' }}>
 
-{/* Animated SVG Lines behind nodes */}
-<svg
-  className="absolute inset-0 w-full h-full pointer-events-none"
-  style={{ zIndex: 0 }}
-  viewBox="0 0 780 780"
-  preserveAspectRatio="xMidYMid meet"
->
-  <defs>
-    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stopColor="#9d00ff" stopOpacity="0.2" />
-      <stop offset="50%" stopColor="#d470ff" stopOpacity="1" />
-      <stop offset="100%" stopColor="#9d00ff" stopOpacity="0.2" />
-    </linearGradient>
-  </defs>
+            {/* Animated SVG Lines behind nodes */}
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none"
+              style={{ zIndex: 0 }}
+              viewBox="0 0 780 780"
+              preserveAspectRatio="xMidYMid meet"
+            >
+              <defs>
+                <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#9d00ff" stopOpacity="0.2" />
+                  <stop offset="50%" stopColor="#d470ff" stopOpacity="1" />
+                  <stop offset="100%" stopColor="#9d00ff" stopOpacity="0.2" />
+                </linearGradient>
+              </defs>
 
-  {/* Static dim base lines — top & bottom now equal length */}
-  <line x1="390" y1="120" x2="150" y2="380" stroke="#9d00ff" strokeOpacity="0.25" strokeWidth="2.2" />
-  <line x1="390" y1="120" x2="630" y2="380" stroke="#9d00ff" strokeOpacity="0.25" strokeWidth="2.2" />
-  <line x1="150" y1="380" x2="390" y2="640" stroke="#9d00ff" strokeOpacity="0.25" strokeWidth="2.2" />
-  <line x1="630" y1="380" x2="390" y2="640" stroke="#9d00ff" strokeOpacity="0.25" strokeWidth="2.2" />
+              {/* Static dim base lines — top & bottom now equal length */}
+              <line x1="390" y1="120" x2="150" y2="380" stroke="#9d00ff" strokeOpacity="0.25" strokeWidth="2.2" />
+              <line x1="390" y1="120" x2="630" y2="380" stroke="#9d00ff" strokeOpacity="0.25" strokeWidth="2.2" />
+              <line x1="150" y1="380" x2="390" y2="640" stroke="#9d00ff" strokeOpacity="0.25" strokeWidth="2.2" />
+              <line x1="630" y1="380" x2="390" y2="640" stroke="#9d00ff" strokeOpacity="0.25" strokeWidth="2.2" />
 
-  {/* Animated glowing lines */}
-  <line x1="390" y1="120" x2="150" y2="380" stroke="url(#lineGrad)" strokeWidth="3">
-    <animate attributeName="stroke-dashoffset" from="500" to="0" dur="2.5s" repeatCount="indefinite" />
-    <animate attributeName="stroke-dasharray" from="0 500" to="500 0" dur="2.5s" repeatCount="indefinite" />
-  </line>
-  <line x1="390" y1="120" x2="630" y2="380" stroke="url(#lineGrad)" strokeWidth="3">
-    <animate attributeName="stroke-dashoffset" from="500" to="0" dur="2.5s" begin="0.6s" repeatCount="indefinite" />
-    <animate attributeName="stroke-dasharray" from="0 500" to="500 0" dur="2.5s" begin="0.6s" repeatCount="indefinite" />
-  </line>
-  <line x1="150" y1="380" x2="390" y2="640" stroke="url(#lineGrad)" strokeWidth="3">
-    <animate attributeName="stroke-dashoffset" from="500" to="0" dur="2.5s" begin="1.2s" repeatCount="indefinite" />
-    <animate attributeName="stroke-dasharray" from="0 500" to="500 0" dur="2.5s" begin="1.2s" repeatCount="indefinite" />
-  </line>
-  <line x1="630" y1="380" x2="390" y2="640" stroke="url(#lineGrad)" strokeWidth="3">
-    <animate attributeName="stroke-dashoffset" from="500" to="0" dur="2.5s" begin="1.8s" repeatCount="indefinite" />
-    <animate attributeName="stroke-dasharray" from="0 500" to="500 0" dur="2.5s" begin="1.8s" repeatCount="indefinite" />
-  </line>
-</svg>
+              {/* Animated glowing lines */}
+              <line x1="390" y1="120" x2="150" y2="380" stroke="url(#lineGrad)" strokeWidth="3">
+                <animate attributeName="stroke-dashoffset" from="500" to="0" dur="2.5s" repeatCount="indefinite" />
+                <animate attributeName="stroke-dasharray" from="0 500" to="500 0" dur="2.5s" repeatCount="indefinite" />
+              </line>
+              <line x1="390" y1="120" x2="630" y2="380" stroke="url(#lineGrad)" strokeWidth="3">
+                <animate attributeName="stroke-dashoffset" from="500" to="0" dur="2.5s" begin="0.6s" repeatCount="indefinite" />
+                <animate attributeName="stroke-dasharray" from="0 500" to="500 0" dur="2.5s" begin="0.6s" repeatCount="indefinite" />
+              </line>
+              <line x1="150" y1="380" x2="390" y2="640" stroke="url(#lineGrad)" strokeWidth="3">
+                <animate attributeName="stroke-dashoffset" from="500" to="0" dur="2.5s" begin="1.2s" repeatCount="indefinite" />
+                <animate attributeName="stroke-dasharray" from="0 500" to="500 0" dur="2.5s" begin="1.2s" repeatCount="indefinite" />
+              </line>
+              <line x1="630" y1="380" x2="390" y2="640" stroke="url(#lineGrad)" strokeWidth="3">
+                <animate attributeName="stroke-dashoffset" from="500" to="0" dur="2.5s" begin="1.8s" repeatCount="indefinite" />
+                <animate attributeName="stroke-dasharray" from="0 500" to="500 0" dur="2.5s" begin="1.8s" repeatCount="indefinite" />
+              </line>
+            </svg>
 
-{/* ===================== NODES ===================== */}
+            {/* ===================== NODES ===================== */}
 
-{/* TOP — Experience */}
-<div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center" style={{ top: "20px", zIndex: 10 }}>
-  <p className="text-slate-300 text-[14px] font-medium mb-4 text-center whitespace-nowrap leading-6">
-    Hands-On Software Development Experience
-  </p>
-  <div
-    className="w-48 h-48 rounded-full p-[3px] animate-pulse-glow-purple"
-    style={{
-      background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
-      boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
-    }}
-  >
-    <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[24px] text-center px-4">
-      Experience
-    </div>
-  </div>
-</div>
+            {/* TOP — Experience */}
+            <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center" style={{ top: "20px", zIndex: 10 }}>
+              <p className="text-slate-300 text-[14px] font-medium mb-4 text-center whitespace-nowrap leading-6">
+                Hands-On Software Development Experience
+              </p>
+              <div
+                className="w-48 h-48 rounded-full p-[3px] animate-pulse-glow-purple"
+                style={{
+                  background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
+                  boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
+                }}
+              >
+                <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[24px] text-center px-4">
+                  Experience
+                </div>
+              </div>
+            </div>
 
-{/* LEFT — Mentorship */}
-<div className="absolute flex flex-col items-center" style={{ left: "10%", top: "49%", transform: "translateY(-50%)", zIndex: 10 }}>
-  <div
-    className="w-48 h-48 rounded-full p-[3px] animate-pulse-glow-purple"
-    style={{
-      animationDelay: "0.7s",
-      background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
-      boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
-    }}
-  >
-    <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[24px] text-center px-4">
-      Mentorship
-    </div>
-  </div>
-  <p className="text-slate-300 text-[14px] font-medium mt-4 max-w-[270px] text-center whitespace-nowrap leading-6">
-    Expert Mentorship &amp; Career Guidance
-  </p>
-</div>
+            {/* LEFT — Mentorship */}
+            <div className="absolute flex flex-col items-center" style={{ left: "10%", top: "49%", transform: "translateY(-50%)", zIndex: 10 }}>
+              <div
+                className="w-48 h-48 rounded-full p-[3px] animate-pulse-glow-purple"
+                style={{
+                  animationDelay: "0.7s",
+                  background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
+                  boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
+                }}
+              >
+                <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[24px] text-center px-4">
+                  Mentorship
+                </div>
+              </div>
+              <p className="text-slate-300 text-[14px] font-medium mt-4 max-w-[270px] text-center whitespace-nowrap leading-6">
+                Expert Mentorship &amp; Career Guidance
+              </p>
+            </div>
 
-{/* RIGHT — Career Growth */}
-<div className="absolute flex flex-col items-center" style={{ right: "10%", top: "49%", transform: "translateY(-50%)", zIndex: 10 }}>
-  <div
-    className="w-48 h-48 rounded-full p-[3px] animate-pulse-glow-purple"
-    style={{
-      animationDelay: "1.4s",
-      background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
-      boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
-    }}
-  >
-    <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[24px] text-center px-4">
-      Career<br />Growth
-    </div>
-  </div>
-  <p className="text-slate-300 text-[14px] font-medium mt-4 max-w-[270px] text-center whitespace-nowrap leading-6">
-    Performance-Based Career Growth
-  </p>
-</div>
+            {/* RIGHT — Career Growth */}
+            <div className="absolute flex flex-col items-center" style={{ right: "10%", top: "49%", transform: "translateY(-50%)", zIndex: 10 }}>
+              <div
+                className="w-48 h-48 rounded-full p-[3px] animate-pulse-glow-purple"
+                style={{
+                  animationDelay: "1.4s",
+                  background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
+                  boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
+                }}
+              >
+                <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[24px] text-center px-4">
+                  Career<br />Growth
+                </div>
+              </div>
+              <p className="text-slate-300 text-[14px] font-medium mt-4 max-w-[270px] text-center whitespace-nowrap leading-6">
+                Performance-Based Career Growth
+              </p>
+            </div>
 
-{/* BOTTOM — Tech Ideas */}
-<div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center" style={{ bottom: "20px", zIndex: 10 }}>
-  <div
-    className="w-48 h-48 rounded-full p-[3px] animate-pulse-glow-purple"
-    style={{
-      animationDelay: "2.1s",
-      background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
-      boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
-    }}
-  >
-    <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[24px] text-center px-4">
-      Tech<br />Ideas
-    </div>
-  </div>
-  <p className="text-slate-300 text-[14px] font-medium mt-4 max-w-[310px] text-center whitespace-nowrap leading-6">
-    Exposure to Emerging Technologies &amp; Industry Practices
-  </p>
-</div>
+            {/* BOTTOM — Tech Ideas */}
+            <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center" style={{ bottom: "20px", zIndex: 10 }}>
+              <div
+                className="w-48 h-48 rounded-full p-[3px] animate-pulse-glow-purple"
+                style={{
+                  animationDelay: "2.1s",
+                  background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
+                  boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
+                }}
+              >
+                <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[24px] text-center px-4">
+                  Tech<br />Ideas
+                </div>
+              </div>
+              <p className="text-slate-300 text-[14px] font-medium mt-4 max-w-[310px] text-center whitespace-nowrap leading-6">
+                Exposure to Emerging Technologies &amp; Industry Practices
+              </p>
+            </div>
 
-</div>
+          </div>
         </section>
 
       </div >

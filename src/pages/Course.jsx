@@ -8,7 +8,7 @@ import {
   GraduationCap, Globe, TrendingUp, Layout,
 } from 'lucide-react';
 import ParticleBackground from '../components/ParticleBackground';
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ArrowRight } from "lucide-react";
 import WhyChooseUs from '../components/WhyChooseUs';
 import Technologies from '../components/Technologies';
 import Footer from '../components/Footer';
@@ -226,71 +226,164 @@ function SectionLabel({ children }) {
 }
 
 function CourseCard({ course, index }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
+
+  const getAccent = () => {
+    switch (course.id) {
+      case 'mern-stack': 
+        return { 
+          titleText: <><span className="text-white">MERN</span> <span className="text-blue-500 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]">STACK</span></>,
+          badge1: 'bg-[#3730a3]/80 text-[#818cf8] border border-[#6366f1]/50 shadow-[0_0_10px_rgba(99,102,241,0.5)]', 
+          badge2: 'border-white/20 text-gray-200 bg-black/40 backdrop-blur-sm',
+          btn: 'bg-[#7c3aed] text-white shadow-[0_0_15px_rgba(124,58,237,0.6)] hover:shadow-[0_0_30px_rgba(124,58,237,1)] hover:bg-[#8b5cf6]', 
+          cardBorder: 'hover:border-blue-500/50',
+          cardShadow: 'hover:shadow-[0_0_40px_rgba(59,130,246,0.25)]',
+          gradientHover: 'group-hover:from-blue-900/20'
+        };
+      case 'java-dev': 
+        return { 
+          titleText: <><span className="text-[#a855f7] drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">JAVA</span> <span className="text-white">PROGRAMMING</span></>,
+          badge1: 'bg-blue-600 text-white border border-blue-400/50 shadow-[0_0_10px_rgba(59,130,246,0.7)]', 
+          badge2: 'border-white/20 text-gray-200 bg-black/40 backdrop-blur-sm',
+          btn: 'bg-[#9333ea] text-white shadow-[0_0_15px_rgba(147,51,234,0.6)] hover:shadow-[0_0_30px_rgba(147,51,234,1)] hover:bg-[#a855f7]', 
+          cardBorder: 'hover:border-purple-500/50',
+          cardShadow: 'hover:shadow-[0_0_40px_rgba(168,85,247,0.25)]',
+          gradientHover: 'group-hover:from-purple-900/20'
+        };
+      case 'ui-ux': 
+        return { 
+          titleText: <><span className="text-pink-500 drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]">UI - UX</span> <span className="text-white">DESIGNING</span></>,
+          badge1: 'bg-pink-900/80 text-pink-300 border border-pink-500/50 shadow-[0_0_10px_rgba(236,72,153,0.5)]', 
+          badge2: 'border-white/20 text-gray-200 bg-black/40 backdrop-blur-sm',
+          btn: 'bg-pink-600 text-white shadow-[0_0_15px_rgba(219,39,119,0.6)] hover:shadow-[0_0_30px_rgba(219,39,119,1)] hover:bg-pink-500', 
+          cardBorder: 'hover:border-pink-500/50',
+          cardShadow: 'hover:shadow-[0_0_40px_rgba(236,72,153,0.25)]',
+          gradientHover: 'group-hover:from-pink-900/20'
+        };
+      case 'python-fullstack': 
+        return { 
+          titleText: <><span className="text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]">PYTHON</span> <span className="text-white">FULL STACK</span></>,
+          badge1: 'bg-cyan-900/60 text-cyan-300 border border-cyan-400/50 shadow-[0_0_10px_rgba(34,211,238,0.5)]', 
+          badge2: 'border-white/20 text-gray-200 bg-black/40 backdrop-blur-sm',
+          btn: 'bg-cyan-600 text-white shadow-[0_0_15px_rgba(8,145,178,0.6)] hover:shadow-[0_0_30px_rgba(8,145,178,1)] hover:bg-cyan-500', 
+          cardBorder: 'hover:border-cyan-400/50',
+          cardShadow: 'hover:shadow-[0_0_40px_rgba(34,211,238,0.25)]',
+          gradientHover: 'group-hover:from-cyan-900/20'
+        };
+      case 'data-analytics': 
+        return { 
+          titleText: <><span className="text-white">DATA</span> <span className="text-orange-500 drop-shadow-[0_0_10px_rgba(249,115,22,0.8)]">ANALYTICS</span></>,
+          badge1: 'bg-orange-900/80 text-orange-300 border border-orange-500/50 shadow-[0_0_10px_rgba(249,115,22,0.5)]', 
+          badge2: 'border-white/20 text-gray-200 bg-black/40 backdrop-blur-sm',
+          btn: 'bg-orange-600 text-white shadow-[0_0_15px_rgba(234,88,12,0.6)] hover:shadow-[0_0_30px_rgba(234,88,12,1)] hover:bg-orange-500', 
+          cardBorder: 'hover:border-orange-500/50',
+          cardShadow: 'hover:shadow-[0_0_40px_rgba(249,115,22,0.25)]',
+          gradientHover: 'group-hover:from-orange-900/20'
+        };
+      case 'data-science-ml': 
+        return { 
+          titleText: <><span className="text-emerald-500 drop-shadow-[0_0_10px_rgba(16,185,129,0.8)]">DATA SCIENCE</span> <span className="text-white">& ML</span></>,
+          badge1: 'bg-emerald-900/80 text-emerald-300 border border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.5)]', 
+          badge2: 'border-white/20 text-gray-200 bg-black/40 backdrop-blur-sm',
+          btn: 'bg-emerald-600 text-white shadow-[0_0_15px_rgba(5,150,105,0.6)] hover:shadow-[0_0_30px_rgba(5,150,105,1)] hover:bg-emerald-500', 
+          cardBorder: 'hover:border-emerald-500/50',
+          cardShadow: 'hover:shadow-[0_0_40px_rgba(16,185,129,0.25)]',
+          gradientHover: 'group-hover:from-emerald-900/20'
+        };
+      case 'ai': 
+        return { 
+          titleText: <><span className="text-white">ARTIFICIAL</span> <span className="text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]">INTELLIGENCE</span></>,
+          badge1: 'bg-red-900/80 text-red-300 border border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.5)]', 
+          badge2: 'border-white/20 text-gray-200 bg-black/40 backdrop-blur-sm',
+          btn: 'bg-red-600 text-white shadow-[0_0_15px_rgba(220,38,38,0.6)] hover:shadow-[0_0_30px_rgba(220,38,38,1)] hover:bg-red-500', 
+          cardBorder: 'hover:border-red-500/50',
+          cardShadow: 'hover:shadow-[0_0_40px_rgba(239,68,68,0.25)]',
+          gradientHover: 'group-hover:from-red-900/20'
+        };
+      default: 
+        return { 
+          titleText: <><span className="text-white">{course.title.split(' ')[0]}</span> <span className="text-purple-400 drop-shadow-[0_0_10px_rgba(167,139,250,0.8)]">{course.title.split(' ').slice(1).join(' ')}</span></>,
+          badge1: 'bg-purple-900/60 text-purple-300 border border-purple-500/50 shadow-[0_0_10px_rgba(167,139,250,0.5)]', 
+          badge2: 'border-white/20 text-gray-200 bg-black/40 backdrop-blur-sm',
+          btn: 'bg-purple-600 text-white shadow-[0_0_15px_rgba(147,51,234,0.6)] hover:shadow-[0_0_30px_rgba(147,51,234,1)] hover:bg-purple-500', 
+          cardBorder: 'hover:border-purple-500/50',
+          cardShadow: 'hover:shadow-[0_0_40px_rgba(167,139,250,0.25)]',
+          gradientHover: 'group-hover:from-purple-900/20'
+        };
+    }
+  };
+
+  const accent = getAccent();
 
   return (
     <motion.div
-      ref={ref}
-      variants={fadeUp}
-      custom={index * 0.05}
-      initial="hidden"
-      animate={inView ? 'visible' : 'hidden'}
-      whileHover={{ y: -10, transition: { duration: 0.3 } }}
-      className="group relative rounded-[28px] overflow-hidden border border-white/10 hover:border-[var(--color-brand-purple)]/70 bg-white/[0.03] backdrop-blur-sm transition-colors duration-300 cursor-pointer"
-      style={{
-        boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.05)',
-      }}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.08 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: (index % 2) * 0.1 }}
+      whileHover={{ y: -6, transition: { duration: 0.2, ease: 'easeOut' } }}
+      style={{ willChange: 'transform, opacity' }}
+      className={`group relative rounded-[28px] overflow-hidden border border-white/10 bg-[#080808] cursor-pointer flex flex-col sm:flex-row h-full min-h-[300px] z-10 ${accent.cardBorder} ${accent.cardShadow}`}
     >
-      {/* Purple glow on hover */}
-      <div className="absolute inset-0 rounded-[28px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-        style={{ boxShadow: '0 0 60px 10px rgba(157,0,255,0.18)' }}
-      />
+      {/* Background glow pseudo-element */}
+      <div className={`absolute inset-0 bg-gradient-to-r from-transparent to-transparent opacity-0 transition-opacity duration-500 pointer-events-none z-0 ${accent.gradientHover} group-hover:opacity-100`} />
 
-      {/* Image */}
-      <div className="relative h-[180px] overflow-hidden">        <img
-        src={course.image}
-        alt={course.title}
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-      />
+      {/* Content (Left) */}
+      <div className="relative z-10 p-6 sm:p-8 flex flex-col justify-between w-full sm:w-[55%] lg:w-[60%] lg:pr-2">
+        <div>
+          {/* Top Badges */}
+          <div className="flex flex-wrap items-center gap-3 mb-6">
+            <span className={`px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider ${accent.badge1}`}>
+              {course.id === 'mern-stack' ? 'FULL STACK DEVELOPMENT' : course.category}
+            </span>
+            <span className={`px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider border ${accent.badge2} flex items-center gap-1.5`}>
+              <span className="opacity-70 text-blue-400">⏱</span> {course.duration}
+            </span>
+          </div>
 
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+          <h3 className="text-[34px] sm:text-[40px] font-black mb-4 leading-[1.1] tracking-tight uppercase">
+            {accent.titleText}
+          </h3>
 
-        {/* Top Left Badges */}
-        <div className="absolute top-3 left-3 flex items-center gap-2 z-20">
-          {/* Category */}
-          <span className="px-3 py-1 rounded-full bg-white text-black text-[9px] font-bold uppercase tracking-wide shadow-md">
-            {course.category}
-          </span>
+          <p className="text-gray-300/80 text-sm leading-relaxed mb-6 font-normal line-clamp-3">
+            {course.description}
+          </p>
 
-          {/* Duration */}
-          <span className="px-3 py-1 rounded-full bg-gradient-to-r from-purple-700 to-fuchsia-600 text-white text-[9px] font-bold uppercase shadow-[0_0_10px_rgba(168,85,247,0.5)]">
-            {course.duration}
-          </span>
+          {course.id === 'java-dev' && (
+            <div className="hidden xl:flex items-center gap-5 mb-6 text-[11px] text-gray-300 font-medium tracking-wide uppercase">
+               <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-purple-400" /> Fast &amp; Scalable</span>
+               <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-purple-400" /> Secure &amp; Reliable</span>
+               <span className="flex items-center gap-1.5"><Code className="w-3.5 h-3.5 text-purple-400" /> Enterprise Ready</span>
+            </div>
+          )}
         </div>
-      </div>
 
-      {/* Content */}
-      <div className="relative z-10 p-7">
-        <h3 className="text-xl font-bold text-white mb-3 group-hover:text-[var(--color-brand-purple-light)] transition-colors duration-300 leading-snug">
-          {course.title}
-        </h3>
-
-        <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 mb-6">
-          {course.description}
-        </p>
-
-        <Link
-          to="/get-touch"
-          className="block w-full"
-        >
+        <Link to={`/course/${course.id}`} className="block w-max mt-auto relative z-20">
           <button
-            className="w-full py-3 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-[var(--color-brand-purple)] to-purple-500 hover:from-purple-500 hover:to-[var(--color-brand-purple-light)] transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(157,0,255,0.4)]"
+            className={`px-8 py-3.5 rounded-2xl font-bold text-sm tracking-wide ${accent.btn} flex items-center gap-2 relative overflow-hidden`}
+            style={{ transition: 'box-shadow 0.25s ease, background-color 0.25s ease' }}
           >
-            Enroll Now
+            <div className="absolute inset-x-0 top-0 h-[1px] bg-white/30" />
+            Enroll Now <ArrowRight className="w-4 h-4 ml-1" />
           </button>
         </Link>
+      </div>
+
+      {/* Image (Right) */}
+      <div
+        className="relative w-full sm:w-[45%] lg:w-[40%] overflow-hidden z-10 bg-[#0a0a0a]"
+        style={{ minHeight: '220px' }}
+      >
+        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#080808] to-transparent z-10 pointer-events-none" />
+        <img
+          src={course.image}
+          alt={course.title}
+          loading="eager"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover object-right-bottom sm:object-right"
+          style={{ transition: 'transform 0.6s ease', transform: 'scale(1)' }}
+          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04)'}
+          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+        />
       </div>
     </motion.div>
   );
@@ -384,24 +477,24 @@ const Course = () => {
       {/* ═════════════════ HERO SECTION ═════════════════ */}
       <section className="relative pt-28 pb-24 overflow-hidden">
 
-      {particles.map((p) => (
-      <div
-        key={p.id}
-        className="service-particle"
-        style={{
-          width: p.size,
-          height: p.size,
-          top: p.top,
-          left: p.left,
-          backgroundColor: p.color,
-          boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-          '--tx': p.tx,
-          '--ty': p.ty,
-          '--duration': `${p.duration}s`,
-          '--delay': `${p.delay}s`,
-        }}
-      />
-    ))}
+        {particles.map((p) => (
+          <div
+            key={p.id}
+            className="service-particle"
+            style={{
+              width: p.size,
+              height: p.size,
+              top: p.top,
+              left: p.left,
+              backgroundColor: p.color,
+              boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+              '--tx': p.tx,
+              '--ty': p.ty,
+              '--duration': `${p.duration}s`,
+              '--delay': `${p.delay}s`,
+            }}
+          />
+        ))}
 
         {/* Title */}
         <motion.h1
@@ -424,20 +517,20 @@ const Course = () => {
         </motion.h1>
         {/* Arc Background */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full pointer-events-none z-0 overflow-hidden">
-        <motion.img
-  src="/course_arc.png"
-  alt="Arc"
-  className="w-full object-cover"
-  animate={{
-    y: [0, -12, 0],
-    scale: [1, 1.015, 1],
-  }}
-  transition={{
-    duration: 5,
-    repeat: Infinity,
-    ease: "easeInOut",
-  }}
-/>
+          <motion.img
+            src="/course_arc.png"
+            alt="Arc"
+            className="w-full object-cover"
+            animate={{
+              y: [0, -12, 0],
+              scale: [1, 1.015, 1],
+            }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
         </div>
 
         {/* Description on Arc */}
@@ -501,50 +594,18 @@ const Course = () => {
       {/* ══════════ COURSE CARDS ══════════ */}
       <section className="relative max-w-7xl mx-auto px-6 pb-24 overflow-visible">
 
-        <div className="space-y-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
           {courses.map((course, index) => (
 
             <div
               key={course.id}
-              className={`relative flex ${index % 2 === 0
-                ? "justify-start"
-                : "justify-end"
-                }`}
+              className="relative w-full h-full flex"
             >
-
-              {/* Animated Background Text */}
-              {/* Full Screen Animated Background Text */}
-              <div
-                className={`absolute inset-0 overflow-hidden pointer-events-none z-0 flex items-center`}
-              >
-                <div
-                  className={`flex whitespace-nowrap ${index % 2 === 0
-                    ? "animate-marquee-left"
-                    : "animate-marquee-right"
-                    }`}
-                  style={{ width: "250vw" }}
-                >
-                  {Array.from({ length: 30 }).map((_, i) => (
-                    <span
-                      key={i}
-                      className="mx-12 text-[180px] font-black uppercase tracking-[0.2em] text-white/[0.04] select-none"
-                    >
-                      {course.bgLabel}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              {/* COURSE CARD */}
-              <div className="relative z-10 w-full max-w-[600px]">
-
-                <CourseCard
-                  course={course}
-                  index={index}
-                />
-
-              </div>
-
+              <CourseCard
+                course={course}
+                index={index}
+              />
             </div>
 
           ))}
@@ -561,23 +622,23 @@ const Course = () => {
 
 
         {particles.map((p) => (
-      <div
-        key={p.id}
-        className="service-particle"
-        style={{
-          width: p.size,
-          height: p.size,
-          top: p.top,
-          left: p.left,
-          backgroundColor: p.color,
-          boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-          '--tx': p.tx,
-          '--ty': p.ty,
-          '--duration': `${p.duration}s`,
-          '--delay': `${p.delay}s`,
-        }}
-      />
-    ))}
+          <div
+            key={p.id}
+            className="service-particle"
+            style={{
+              width: p.size,
+              height: p.size,
+              top: p.top,
+              left: p.left,
+              backgroundColor: p.color,
+              boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+              '--tx': p.tx,
+              '--ty': p.ty,
+              '--duration': `${p.duration}s`,
+              '--delay': `${p.delay}s`,
+            }}
+          />
+        ))}
 
         <div className="max-w-7xl mx-auto relative z-10">
 
@@ -683,24 +744,24 @@ const Course = () => {
       {/* ══════════ 5-STAGE LEARNING ROADMAP ══════════ */}
       <section className="py-24 px-6 md:px-12 relative overflow-hidden">
 
-      {particles.map((p) => (
-      <div
-        key={p.id}
-        className="service-particle"
-        style={{
-          width: p.size,
-          height: p.size,
-          top: p.top,
-          left: p.left,
-          backgroundColor: p.color,
-          boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-          '--tx': p.tx,
-          '--ty': p.ty,
-          '--duration': `${p.duration}s`,
-          '--delay': `${p.delay}s`,
-        }}
-      />
-    ))}
+        {particles.map((p) => (
+          <div
+            key={p.id}
+            className="service-particle"
+            style={{
+              width: p.size,
+              height: p.size,
+              top: p.top,
+              left: p.left,
+              backgroundColor: p.color,
+              boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+              '--tx': p.tx,
+              '--ty': p.ty,
+              '--duration': `${p.duration}s`,
+              '--delay': `${p.delay}s`,
+            }}
+          />
+        ))}
         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[var(--color-brand-purple)]/10 blur-[140px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto relative z-10">
@@ -721,37 +782,37 @@ const Course = () => {
           {/* Stages */}
           <div className="overflow-hidden w-full py-6">
 
-  <motion.div
-    className="flex items-center gap-8 w-max"
-    animate={{
-      x: ["0%", "-50%"],
-    }}
-    transition={{
-      duration: 18,
-      repeat: Infinity,
-      ease: "linear",
-    }}
-  >
-    {[...learningStages, ...learningStages].map((stage, i) => (
-      <React.Fragment key={i}>
+            <motion.div
+              className="flex items-center gap-8 w-max"
+              animate={{
+                x: ["0%", "-50%"],
+              }}
+              transition={{
+                duration: 18,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+            >
+              {[...learningStages, ...learningStages].map((stage, i) => (
+                <React.Fragment key={i}>
 
-        <StageCard
-          stage={stage}
-          index={i}
-          total={learningStages.length * 2}
-        />
+                  <StageCard
+                    stage={stage}
+                    index={i}
+                    total={learningStages.length * 2}
+                  />
 
-        {i !== learningStages.length * 2 - 1 && (
-          <div className="flex items-center">
-            <ChevronRight className="w-10 h-10 text-purple-400" />
+                  {i !== learningStages.length * 2 - 1 && (
+                    <div className="flex items-center">
+                      <ChevronRight className="w-10 h-10 text-purple-400" />
+                    </div>
+                  )}
+
+                </React.Fragment>
+              ))}
+            </motion.div>
+
           </div>
-        )}
-
-      </React.Fragment>
-    ))}
-  </motion.div>
-
-</div>
         </div>
       </section>
 

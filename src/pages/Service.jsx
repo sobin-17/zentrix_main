@@ -74,7 +74,7 @@ function ServiceCard({ title, items, delay = 0 }) {
           ))}
         </ul>
 
-        <Link to="/contact">
+        <Link to="/get-touch">
           <button
             className="
               mt-8
