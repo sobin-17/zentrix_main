@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const ServicesPreview = () => {
   const services = [
@@ -55,9 +56,11 @@ const ServicesPreview = () => {
                 ))}
               </ul>
 
-              <button className="btn-outline w-3/4">
-                Enquire now
-              </button>
+              <Link to="/get-touch" className="w-full flex justify-center">
+                <button className="btn-outline w-3/4">
+                  Enquire now
+                </button>
+              </Link>
             </div>
           ))}
         </div>

@@ -7,6 +7,7 @@ import About from './pages/About';
 import Service from './pages/Service';
 import Contact from './pages/Contact';
 import Course from './pages/Course';
+import CourseDetail from './pages/CourseDetail';
 import Careers from './pages/Careers';
 import JobDetail from './pages/JobDetail';
 import GetTouch from "./pages/GetTouch";
@@ -46,6 +47,7 @@ function App() {
             <Route path="/service" element={<Service />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/course" element={<Course />} />
+            <Route path="/course/:courseId" element={<CourseDetail />} />
             <Route path="/career" element={<Careers />} />
             <Route path="/career/:jobId" element={<JobDetail />} />
             <Route path="/ourproducts" element={<OurProducts />} />
