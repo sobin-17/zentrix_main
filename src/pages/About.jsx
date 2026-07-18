@@ -156,7 +156,7 @@ useEffect(() => {
 
       <div className="max-w-screen-xl mx-auto px-6 md:px-12">
         <motion.div
-          className="relative w-screen left-1/2 -translate-x-1/2 min-h-[75vh] lg:min-h-[85vh] overflow-hidden flex items-center"
+          className="relative w-screen left-1/2 -translate-x-1/2 min-h-[40vh] md:min-h-[75vh] lg:min-h-[85vh] overflow-hidden flex items-center pt-12 md:pt-0"
           id="about-hero"
           variants={fadeUp}
           initial="hidden"
@@ -272,7 +272,7 @@ useEffect(() => {
           <div className="relative z-10 w-full lg:w-[58%] flex flex-col justify-center">
 
             <motion.h2
-              className="text-5xl md:text-6xl lg:text-[4.8rem] tracking-tight leading-none mb-7 whitespace-nowrap"
+              className="text-[46px] md:text-6xl lg:text-[4.8rem] tracking-tight leading-[1.1] md:leading-none mb-7 flex flex-col sm:block"
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"

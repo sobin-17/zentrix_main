@@ -244,35 +244,39 @@ export default function Services() {
   });
 
   return (
-<div className="relative min-h-screen overflow-hidden bg-[#0b0319] text-white">
+    <div className="relative min-h-screen overflow-hidden bg-black text-white">
+      {/* ── Full Page Background ── */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <img src="/tech stack bg.png" alt="Background" className="w-full h-full object-cover object-center opacity-80" />
+        <div className="absolute inset-0 bg-black/30 bg-gradient-to-b from-transparent to-[#02010A]/90" />
+      </div>
 
-{/* ── Ambient top glow — blended into the site's purple family ── */}
-<div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full bg-gradient-to-br from-fuchsia-600/10 via-violet-600/15 to-fuchsia-600/10 blur-[200px] pointer-events-none" />
+      {/* ── Ambient top glow ─────────────────────────────────────── */}
+      <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full bg-purple-900/10 blur-[200px] pointer-events-none z-0" />
 
-{/* ════════════════════════════════════════════════════════════ */}
-{/*  HERO                                                        */}
-{/* ════════════════════════════════════════════════════════════ */}
+      {/* ════════════════════════════════════════════════════════════ */}
+      {/*  HERO                                                        */}
+      {/* ════════════════════════════════════════════════════════════ */}
 
-<section className="relative pt-16 pb-5 z-10">
-  <motion.h1
-    variants={fadeUp}
-    initial="hidden"
-    animate="visible"
-    className="
-text-center
-font-semibold
-text-[72px]
-md:text-[110px]
-lg:text-[150px]
-xl:text-[180px]
-leading-[0.88]
-tracking-[-0.05em]
-bg-gradient-to-r from-indigo-200 via-white to-fuchsia-200 bg-clip-text text-transparent
-"
-  >
-    Tech Space
-  </motion.h1>
-</section>
+      <section className="relative pt-16 pb-5 z-10">
+        <motion.h1
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          className="
+    text-center
+    font-semibold
+    text-[72px]
+    md:text-[110px]
+    lg:text-[150px]
+    xl:text-[180px]
+    leading-[0.88]
+    tracking-[-0.05em]
+  "
+        >
+          Tech Space
+        </motion.h1>
+      </section>
 
       {/* ════════════════════════════════════════════════════════════ */}
       {/*  SERVICE CARDS (floating above wave background)              */}
@@ -296,42 +300,8 @@ bg-gradient-to-r from-indigo-200 via-white to-fuchsia-200 bg-clip-text text-tran
       {/*  WHAT WE DO                                                  */}
       {/* ════════════════════════════════════════════════════════════ */}
 
-      <section
-        className="
-          relative
-          mt-[-160px]
-          pt-[240px]
-          pb-[120px]
-          overflow-hidden
-        "
-      >
-        {/* Background wave image — starts behind cards, fills section */}
-        <img
-          src="/services1.png"
-          alt="services background"
-          className="
-            absolute
-            inset-0
-            w-full
-            h-full
-            object-cover
-            object-center
-            pointer-events-none
-            opacity-100
-          "
-        />
-
-        {/* Gradient overlay — light at top (transparent) to dark at bottom */}
-        <div
-          className="
-            absolute
-            inset-0
-            bg-gradient-to-b
-            from-[#030006]/20
-            via-[#030006]/10
-            to-[#030006]/90
-          "
-        />
+      <section className="relative py-24 z-20 overflow-hidden">
+        {/* Secondary wave background removed to allow the full-page smooth waves background to flow perfectly in all sections */}
 
 <div className="relative z-10 max-w-[1120px] mx-auto px-6">
   <div className="grid lg:grid-cols-2 items-start gap-8">

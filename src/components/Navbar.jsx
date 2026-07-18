@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown, ArrowUpRight } from 'lucide-react';
 import { Link, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,7 +39,6 @@ useEffect(() => {
     },
     { name: 'Courses', path: '/course' },
     { name: 'Careers', path: '/career' },
-    { name: 'Your Next Step', path: '/your-next-step' },
   ];
 
   return (
@@ -58,23 +58,32 @@ useEffect(() => {
         </Link>
       </div>
 
-      {/* Center Nav Links - Absolute Centered (Desktop) */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center justify-center gap-8 border border-white/30 rounded-full px-10 py-3 bg-black/40 backdrop-blur-md">
-        {links.map((link) => (
-          link.dropdown ? (
-            <div key={link.name} className="relative group">
-              <Link to={link.path} className="flex items-center gap-1 text-xs font-semibold text-slate-300 hover:text-white transition-colors uppercase tracking-widest">
+      {/* Center Nav Links - Spanning Full Available Width */}
+      <div className="hidden md:flex flex-1 items-center justify-around ml-8 lg:ml-16 mr-4 border border-white/20 rounded-full px-6 py-3.5 bg-black/40 backdrop-blur-md">
+        {links.map((link) => {
+          const isActive = pathname === link.path || (link.dropdown && link.dropdown.some(d => pathname === d.path));
+          
+          return link.dropdown ? (
+            <div key={link.name} className="relative group flex flex-col justify-center h-full">
+              <Link to={link.path} className={`relative flex items-center gap-1 text-[13px] font-semibold transition-colors uppercase tracking-widest pb-1 ${isActive ? 'text-purple-400' : 'text-slate-300 hover:text-white'}`}>
                 {link.name}
                 <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
+                {isActive && (
+                  <motion.span
+                    layoutId="desktop-nav-active"
+                    className="absolute left-0 right-0 -bottom-1 h-[3px] bg-purple-500 rounded-full shadow-[0_0_10px_#a855f7]"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
               </Link>
               {/* Dropdown Menu */}
               <div className="absolute top-full left-1/2 -translate-x-1/2 pt-5 hidden group-hover:block">
-                <div className="bg-black/80 border border-white/20 rounded-2xl py-2 w-48 shadow-2xl flex flex-col backdrop-blur-lg">
+                <div className="bg-black/90 border border-white/20 rounded-2xl py-2 w-56 shadow-2xl flex flex-col backdrop-blur-lg">
                   {link.dropdown.map((sublink) => (
                     <Link
                       key={sublink.name}
                       to={sublink.path}
-                      className="px-6 py-3 text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-colors uppercase tracking-widest"
+                      className={`px-6 py-3 text-xs font-semibold transition-colors uppercase tracking-widest ${pathname === sublink.path ? 'text-purple-400 bg-white/5' : 'text-slate-300 hover:text-white hover:bg-white/5'}`}
                     >
                       {sublink.name}
                     </Link>
@@ -83,19 +92,32 @@ useEffect(() => {
               </div>
             </div>
           ) : (
-            <Link key={link.name} to={link.path} className="text-xs font-semibold text-slate-300 hover:text-white transition-colors uppercase tracking-widest">
-              {link.name}
-            </Link>
+            <div key={link.name} className="relative flex flex-col justify-center h-full">
+              <Link to={link.path} className={`relative text-[13px] font-semibold transition-colors uppercase tracking-widest pb-1 flex items-center h-full ${isActive ? 'text-purple-400' : 'text-slate-300 hover:text-white'}`}>
+                {link.name}
+                {isActive && (
+                  <motion.span
+                    layoutId="desktop-nav-active"
+                    className="absolute left-0 right-0 -bottom-1 h-[3px] bg-purple-500 rounded-full shadow-[0_0_10px_#a855f7]"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </Link>
+            </div>
           )
-        ))}
+        })}
       </div>
 
-      {/* Desktop CTA */}
+      {/* Action Button - Corner */}
       <Link
-        to="/get-touch"
-        className="hidden md:flex items-center gap-1.5 bg-white text-black px-6 py-2.5 rounded-full font-semibold text-[13px] hover:bg-slate-200 transition-colors"
+        to="/your-next-step"
+        className={`hidden md:flex items-center gap-1 select-none whitespace-nowrap bg-white text-black px-6 py-2.5 rounded-full font-bold text-[12px] uppercase tracking-widest transition-all duration-300 hover:scale-105 border-2 ${
+          pathname === '/your-next-step' 
+            ? 'border-pink-500 shadow-[0_0_20px_rgba(236,72,153,0.6)]' 
+            : 'border-transparent shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:shadow-[0_0_25px_rgba(255,255,255,0.4)]'
+        }`}
       >
-        Get In Touch <ArrowUpRight className="w-4 h-4" />
+        Your Next Step <ArrowUpRight className="w-4 h-4 ml-1" />
       </Link>
 
       {/* Mobile Hamburger Menu Button */}
@@ -108,7 +130,7 @@ useEffect(() => {
 
       {/* Mobile Dropdown Menu */}
       <div className={`absolute top-full left-0 w-full bg-black/90 backdrop-blur-xl border-b border-white/5 shadow-2xl md:hidden overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-[500px] py-4' : 'max-h-0 py-0 border-transparent'}`}>
-        <div className="flex flex-col px-6 gap-4">
+        <div className="flex flex-col px-6 gap-1">
           {links.map((link) => (
             <div key={link.name}>
               <Link
@@ -134,6 +156,19 @@ useEffect(() => {
               )}
             </div>
           ))}
+
+          {/* Your Next Step - Mobile Only Link */}
+          <div className="mt-1 pt-3 border-t border-white/10">
+            <Link
+              to="/your-next-step"
+              onClick={() => setIsOpen(false)}
+              className={`text-sm font-bold flex items-center justify-between py-2 uppercase tracking-widest transition-colors ${
+                pathname === '/your-next-step' ? 'text-pink-400' : 'text-slate-200 hover:text-white'
+              }`}
+            >
+              Your Next Step <ArrowUpRight className="w-4 h-4 ml-1" />
+            </Link>
+          </div>
         </div>
       </div>
     </nav>

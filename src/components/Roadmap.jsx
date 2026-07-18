@@ -35,7 +35,7 @@ const Roadmap = () => {
   const lineDuration = 1.5;
 
   return (
-    <section className="py-24 relative bg-transparent border-y border-white/5 overflow-hidden">
+    <section className="py-10 md:py-24 relative bg-transparent border-y border-white/5 overflow-hidden">
       <div className="container mx-auto px-6 md:px-12 max-w-5xl relative z-10">
 
         <div className="flex flex-col items-center text-center mb-20">
@@ -97,11 +97,11 @@ const Roadmap = () => {
                       boxShadow: { duration: 1.5, delay, ease: "easeInOut" }
                     }}
                   >
-                    <div className="flex items-center gap-4 mb-4">
-                      <span className={`px-4 py-1.5 rounded-full text-white text-sm font-bold ${item.color}`}>
+                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 sm:gap-4 mb-4">
+                      <span className={`whitespace-nowrap px-4 py-1.5 rounded-full text-white text-[13px] sm:text-sm font-bold ${item.color}`}>
                         {item.badge}
                       </span>
-                      <h3 className="text-white font-semibold text-lg">{item.title}</h3>
+                      <h3 className="text-white font-semibold text-[17px] sm:text-lg">{item.title}</h3>
                     </div>
                     <p className="text-slate-400 text-sm leading-relaxed">
                       {item.description}

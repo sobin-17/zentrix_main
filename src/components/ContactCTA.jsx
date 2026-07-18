@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from "react-router-dom";
 const ContactCTA = () => {
   return (
-    <section id="contact" className="py-32 relative overflow-hidden">
+    <section id="contact" className="py-12 md:py-32 relative overflow-hidden">
       {/* Background Glow */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[400px] bg-[var(--color-brand-purple)] opacity-20 blur-[100px] rounded-full mix-blend-screen pointer-events-none"></div>

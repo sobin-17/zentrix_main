@@ -58,90 +58,93 @@ const Footer = () => {
 
           </div>
 
-          {/* QUICK LINKS */}
-          <div className="flex flex-col items-center justify-center">
+          {/* MOBILE TABLE WRAPPER FOR LINKS AND CONTACT */}
+          <div className="grid grid-cols-2 gap-4 lg:contents w-full pt-6 lg:pt-0 mt-4 lg:mt-0 border-t border-white/10 lg:border-none">
+            {/* QUICK LINKS */}
+            <div className="flex flex-col items-start lg:items-center justify-start">
 
-            <div className="px-6 py-2 border border-white/20 rounded-full text-[13px] font-medium text-white mb-5">
-              Quick Links
+              <div className="px-4 lg:px-6 py-2 border border-white/20 rounded-full text-[11px] lg:text-[13px] font-medium text-white mb-5 w-fit">
+                Quick Links
+              </div>
+
+              <ul className="flex flex-col items-start lg:items-center gap-3 text-[13px] text-slate-300">
+
+                <li className="text-left lg:text-center">
+                  <Link to="/" className="hover:text-white transition">
+                    Orbit
+                  </Link>
+                </li>
+
+                <li className="text-left lg:text-center">
+                  <Link to="/about" className="hover:text-white transition">
+                    Meet Zentrix
+                  </Link>
+                </li>
+
+                <li className="text-left lg:text-center">
+                  <Link to="/service" className="hover:text-white transition">
+                    Tech Space
+                  </Link>
+                </li>
+
+                <li className="text-left lg:text-center">
+                  <Link to="/your-next-step" className="hover:text-white transition">
+                    Your Next Step
+                  </Link>
+                </li>
+
+                <li className="text-left lg:text-center">
+                  <Link to="/career" className="hover:text-white transition">
+                    Careers
+                  </Link>
+                </li>
+
+                <li className="text-left lg:text-center">
+                  <Link to="/course" className="hover:text-white transition">
+                    Courses
+                  </Link>
+                </li>
+
+              </ul>
+
             </div>
 
-            <ul className="flex flex-col items-center gap-3 text-[13px] text-slate-300">
+            {/* CONTACT */}
+            <div className="flex flex-col items-start lg:items-end justify-start">
 
-              <li className="text-center">
-                <Link to="/" className="hover:text-white transition">
-                  Orbit
-                </Link>
-              </li>
+              <div className="px-4 lg:px-6 py-2 border border-white/20 rounded-full text-[11px] lg:text-[13px] font-medium text-white mb-5 w-fit">
+                Contact
+              </div>
 
-              <li className="text-center">
-                <Link to="/about" className="hover:text-white transition">
-                  Meet Zentrix
-                </Link>
-              </li>
+              <ul className="space-y-4 text-[13px] text-slate-300 text-left lg:text-right">
 
-              <li className="text-center">
-                <Link to="/service" className="hover:text-white transition">
-                  Tech Space
-                </Link>
-              </li>
+                <li>
+                  <a
+                    href="mailto:info.zentrixtechnology@gmail.com"
+                    className="hover:text-white transition break-all"
+                  >
+                    info.zentrixtechnology@gmail.com
+                  </a>
+                </li>
 
-              <li className="text-center">
-                <Link to="/your-next-step" className="hover:text-white transition">
-                  Your Next Step
-                </Link>
-              </li>
+                <li>
+                  <a
+                    href="tel:+919150973003"
+                    className="hover:text-white transition whitespace-nowrap"
+                  >
+                    +91 91509 73003
+                  </a>
+                </li>
 
-              <li className="text-center">
-                <Link to="/career" className="hover:text-white transition">
-                  Careers
-                </Link>
-              </li>
+                <li>
+                  Nagercoil
+                  <br />
+                  Tamilnadu
+                </li>
 
-              <li className="text-center">
-                <Link to="/course" className="hover:text-white transition">
-                  Courses
-                </Link>
-              </li>
+              </ul>
 
-            </ul>
-
-          </div>
-
-          {/* CONTACT */}
-          <div className="flex flex-col items-center lg:items-end">
-
-            <div className="px-6 py-2 border border-white/20 rounded-full text-[13px] font-medium text-white mb-5">
-              Contact
             </div>
-
-            <ul className="space-y-4 text-[13px] text-slate-300 text-center lg:text-right">
-
-              <li>
-                <a
-                  href="mailto:info.zentrixtechnology@gmail.com"
-                  className="hover:text-white transition"
-                >
-                  info.zentrixtechnology@gmail.com
-                </a>
-              </li>
-
-              <li>
-                <a
-                  href="tel:+919150973003"
-                  className="hover:text-white transition"
-                >
-                  +91 91509 73003
-                </a>
-              </li>
-
-              <li>
-                Nagercoil
-                <br />
-                Tamilnadu
-              </li>
-
-            </ul>
-
           </div>
 
         </div>

@@ -23,7 +23,7 @@ const InternshipProgram = () => {
   };
 
   return (
-    <section id="careers" className="py-24 relative overflow-hidden">
+    <section id="careers" className="py-10 md:py-24 relative overflow-hidden">
       
       {/* Background elements */}
       <div className="absolute left-0 top-1/2 -translate-y-1/2 w-96 h-96 bg-[var(--color-brand-purple)] opacity-10 blur-[120px] rounded-full pointer-events-none"></div>

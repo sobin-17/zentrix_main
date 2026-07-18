@@ -55,7 +55,7 @@ const ServicesOverview = () => {
   };
 
   return (
-    <section id="service" className="py-24 relative bg-transparent z-10">
+    <section id="service" className="py-10 md:py-24 relative bg-transparent z-10">
 
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         

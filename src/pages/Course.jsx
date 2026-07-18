@@ -322,7 +322,7 @@ function CourseCard({ course, index }) {
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: (index % 2) * 0.1 }}
       whileHover={{ y: -6, transition: { duration: 0.2, ease: 'easeOut' } }}
       style={{ willChange: 'transform, opacity' }}
-      className={`group relative rounded-[28px] overflow-hidden border border-white/10 bg-[#080808] cursor-pointer flex flex-col sm:flex-row h-full min-h-[300px] z-10 ${accent.cardBorder} ${accent.cardShadow}`}
+      className={`group relative rounded-[28px] overflow-hidden border border-white/10 bg-[#080808] cursor-pointer flex flex-col-reverse sm:flex-row h-full min-h-[300px] z-10 ${accent.cardBorder} ${accent.cardShadow}`}
     >
       {/* Background glow pseudo-element */}
       <div className={`absolute inset-0 bg-gradient-to-r from-transparent to-transparent opacity-0 transition-opacity duration-500 pointer-events-none z-0 ${accent.gradientHover} group-hover:opacity-100`} />
@@ -373,7 +373,8 @@ function CourseCard({ course, index }) {
         className="relative w-full sm:w-[45%] lg:w-[40%] overflow-hidden z-10 bg-[#0a0a0a]"
         style={{ minHeight: '220px' }}
       >
-        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#080808] to-transparent z-10 pointer-events-none" />
+        <div className="hidden sm:block absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#080808] to-transparent z-10 pointer-events-none" />
+        <div className="block sm:hidden absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#080808] to-transparent z-10 pointer-events-none" />
         <img
           src={course.image}
           alt={course.title}
@@ -475,7 +476,7 @@ const Course = () => {
       <ParticleBackground />
 
       {/* ═════════════════ HERO SECTION ═════════════════ */}
-      <section className="relative pt-28 pb-24 overflow-hidden">
+      <section className="relative pt-28 pb-10 lg:pb-24 overflow-hidden">
 
         {particles.map((p) => (
           <div
@@ -504,7 +505,8 @@ const Course = () => {
           className="
     relative z-20
     text-center
-    text-[100px]
+    text-[68px]
+    sm:text-[100px]
     md:text-[150px]
     lg:text-[190px]
     font-semibold
@@ -534,7 +536,7 @@ const Course = () => {
         </div>
 
         {/* Description on Arc */}
-        <div className="relative z-20 max-w-4xl mx-auto text-center mt-40 px-6">          <p
+        <div className="relative z-20 max-w-4xl mx-auto text-center mt-12 md:mt-40 px-6">          <p
           className="
         text-gray-300
         text-sm
@@ -592,7 +594,7 @@ const Course = () => {
       </section>
 
       {/* ══════════ COURSE CARDS ══════════ */}
-      <section className="relative max-w-7xl mx-auto px-6 pb-24 overflow-visible">
+      <section className="relative max-w-7xl mx-auto px-6 pb-10 lg:pb-24 overflow-visible">
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
@@ -615,7 +617,7 @@ const Course = () => {
       </section>
       {/* ================= CURRICULUM CORE FEATURES ================= */}
 
-      <section className="relative min-h-[70vh] flex flex-col justify-center items-center text-center px-6 overflow-hidden">
+      <section className="relative min-h-[40vh] md:min-h-[70vh] flex flex-col justify-center items-center text-center px-6 overflow-hidden">
 
         {/* Same Background Glow as 5-Stage Learning */}
         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[var(--color-brand-purple)]/10 blur-[140px] pointer-events-none" />
@@ -647,7 +649,7 @@ const Course = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="text-[56px] md:text-[72px] lg:text-[88px] font-bold text-white leading-tight"
+            className="text-[40px] sm:text-[56px] md:text-[72px] lg:text-[88px] font-bold text-white leading-tight"
           >
             Curriculum Core Features
           </motion.h2>
@@ -668,7 +670,7 @@ const Course = () => {
 
       </section>
       {/* ══════════ INTERNSHIP BENEFITS ══════════ */}
-      < section className="py-24 px-6 md:px-12 relative overflow-hidden" >
+      < section className="py-10 md:py-24 px-6 md:px-12 relative overflow-hidden" >
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[200px] bg-[var(--color-brand-purple)]/15 blur-[100px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto relative z-10">
@@ -742,7 +744,7 @@ const Course = () => {
       </section>
 
       {/* ══════════ 5-STAGE LEARNING ROADMAP ══════════ */}
-      <section className="py-24 px-6 md:px-12 relative overflow-hidden">
+      <section className="py-10 md:py-24 px-6 md:px-12 relative overflow-hidden">
 
         {particles.map((p) => (
           <div

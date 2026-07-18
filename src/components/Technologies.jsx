@@ -184,12 +184,12 @@ const Technologies = () => {
   const shardOpen = phase === 'cracking' || phase === 'emerging';
 
   return (
-    <section id="course" className="py-24 bg-transparent border-y border-white/5 text-center overflow-hidden">
+    <section id="course" className="py-10 md:py-24 bg-transparent border-y border-white/5 text-center overflow-hidden">
       <div className="container mx-auto px-6 md:px-12">
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-8">Technologies We Work With</h2>
 
         <motion.div
-          className="relative w-full h-[720px] md:h-[820px] max-w-6xl mx-auto mt-12"
+          className="relative w-full h-[380px] sm:h-[500px] md:h-[820px] max-w-6xl mx-auto mt-4 sm:mt-12"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-100px' }}
