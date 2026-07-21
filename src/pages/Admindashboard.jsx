@@ -2,6 +2,29 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
+  addCourse,
+  getCourses,
+  updateCourse,
+  deleteCourse as deleteCourseFromDB,
+} from "../services/courseService";
+import {
+  getEnrollments,
+  updateEnrollmentStatus,
+  deleteEnrollment
+} from "../services/enrollmentService";
+
+import {
+  addCareer,
+  getCareers,
+  updateCareer,
+  deleteCareer as deleteCareerFromDB,
+} from "../services/careerService";
+import {
+  getApplications,
+  updateApplicationStatus as updateAppStatusService,
+  deleteApplication as deleteAppService
+} from "../services/applicationService";
+import {
   LayoutDashboard, BookOpen, Grid3x3, PlayCircle, ClipboardList, Star,
   Award, Briefcase, FileText, Users, UserCog, Shield, Settings, Globe,
   Search, Bell, ChevronDown, Plus, Pencil, Trash2, Eye, X, Check,
@@ -231,86 +254,108 @@ function Toast({ message }) {
 }
 
 /* ────────────────────────────────────────────────────────────────────────
-   COURSE FORM MODAL (Full details + Image Upload)
+   COURSE FORM MODAL (Simplified with Dropdowns)
 ──────────────────────────────────────────────────────────────────────── */
 function CourseModal({ initial, onClose, onSave }) {
   const isEdit = Boolean(initial);
+  
+  // Default to the first seed course
+  const defaultCourse = seedCourses[0];
+
   const [form, setForm] = useState(
-    initial || {
-      title: '', subtitle: '', category: CATEGORIES[0], duration: '', level: LEVELS[0],
-      status: 'Draft', image: '', accentColor: '#a855f7', overview: '', curriculumText: '', skillsText: '',
-      internship: false, placement: true,
-    }
+    initial
+      ? {
+          id: initial.id || '',
+          title: initial.title || '',
+          subtitle: initial.subtitle || '',
+          category: initial.category || CATEGORIES[0],
+          duration: initial.duration || '',
+          level: initial.level || LEVELS[0],
+          status: initial.status || 'Draft',
+        }
+      : {
+          id: defaultCourse.id,
+          title: defaultCourse.title,
+          subtitle: '',
+          category: defaultCourse.category,
+          duration: defaultCourse.duration,
+          level: defaultCourse.level,
+          status: 'Published'
+        }
   );
-
-  const [imagePreview, setImagePreview] = useState(initial?.image || '');
-  const [selectedFile, setSelectedFile] = useState(null);
-
-  useEffect(() => {
-    if (initial) {
-      setForm({
-        ...initial,
-        skillsText: (initial.skills || []).join(', '),
-        curriculumText: Array.isArray(initial.curriculum) ? initial.curriculum.join('; ') : (initial.curriculum || ''),
-        overview: initial.overview || initial.description || '',
-      });
-      setImagePreview(initial.image || '');
-    }
-  }, [initial]);
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSelectedFile(file);
-      const reader = new FileReader();
-      reader.onload = (ev) => setImagePreview(ev.target.result);
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const cancelImage = () => {
-    setSelectedFile(null);
-    setImagePreview(initial?.image || '');
+  const handleCourseChange = (e) => {
+    const selectedId = e.target.value;
+    const predefined = seedCourses.find(c => c.id === selectedId) || seedCourses[0];
+    setForm(prev => ({
+      ...prev,
+      id: predefined.id,
+      title: predefined.title,
+      category: predefined.category,
+      duration: predefined.duration,
+      level: predefined.level
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.title.trim()) return;
+  
+    if (saving) return;
 
-    const skills = (form.skillsText || '').split(',').map((s) => s.trim()).filter(Boolean);
-    const curriculum = (form.curriculumText || '').split(';').map((s) => s.trim()).filter(Boolean);
-
+    // Grab the predefined data for this course to auto-attach the description, skills, image etc.
+    const predefined = seedCourses.find(c => c.id === form.id) || seedCourses[0];
+  
     const payload = {
-      id: isEdit ? initial.id : slugify(form.title),
+      ...(isEdit ? { firestoreId: initial.firestoreId } : {}),
+      id: form.id,
       title: form.title,
       subtitle: form.subtitle,
       category: form.category,
       duration: form.duration,
       level: form.level,
       status: form.status,
-      image: imagePreview || form.image,
-      accentColor: form.accentColor,
-      overview: form.overview,
-      curriculum,
-      skills,
-      internship: form.internship,
-      placement: form.placement,
+      // Pre-defined static fields that user no longer manually enters:
+      image: initial?.image || predefined.image || '',
+      accentColor: initial?.accentColor || predefined.accentColor || '#a855f7',
+      overview: initial?.overview || predefined.description || '',
+      description: predefined.description || '',
+      curriculum: initial?.curriculum || predefined.curriculum || [],
+      skills: initial?.skills || predefined.skills || [],
+      internship: initial?.internship ?? predefined.internship ?? false,
+      placement: initial?.placement ?? predefined.placement ?? true,
       students: isEdit ? initial.students : 0,
     };
     onSave(payload, isEdit);
   };
 
+  const activePredefined = seedCourses.find(c => c.id === form.id) || seedCourses[0];
+
   return (
     <ModalShell title={isEdit ? 'Edit Course' : 'Add New Course'} onClose={onClose}>
       <form onSubmit={handleSubmit} className="space-y-4">
+        
         <Field label="Course Title *">
-          <input required value={form.title} onChange={(e) => set('title', e.target.value)} className="input" placeholder="e.g. MERN Stack" />
+          <select 
+            value={form.id} 
+            onChange={handleCourseChange} 
+            className="input"
+            disabled={isEdit}
+          >
+            {seedCourses.map(c => (
+              <option key={c.id} value={c.id}>{c.title}</option>
+            ))}
+          </select>
         </Field>
 
+        <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-2">
+          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Predefined Description</p>
+          <p className="text-sm text-slate-300 leading-relaxed">{activePredefined.description}</p>
+        </div>
+
         <Field label="Subtitle">
-          <input value={form.subtitle} onChange={(e) => set('subtitle', e.target.value)} className="input" placeholder="Full Stack Development" />
+          <input value={form.subtitle} onChange={(e) => set('subtitle', e.target.value)} className="input" placeholder="e.g. Full Stack Development" />
         </Field>
 
         <div className="grid grid-cols-2 gap-4">
@@ -332,56 +377,10 @@ function CourseModal({ initial, onClose, onSave }) {
           </Field>
           <Field label="Status">
             <select value={form.status} onChange={(e) => set('status', e.target.value)} className="input">
-              <option>Draft</option>
-              <option>Published</option>
+               <option>Draft</option>
+               <option>Published</option>
             </select>
           </Field>
-        </div>
-
-        <Field label="Course Image">
-          <div className="space-y-3">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="block w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-500"
-            />
-            {imagePreview && (
-              <div className="relative inline-block">
-                <img src={imagePreview} alt="Preview" className="w-40 h-24 object-cover rounded-xl border border-white/20" />
-                <button
-                  type="button"
-                  onClick={cancelImage}
-                  className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center shadow"
-                >
-                  ✕
-                </button>
-              </div>
-            )}
-          </div>
-        </Field>
-
-        <Field label="Overview / Description">
-          <textarea rows={4} value={form.overview} onChange={(e) => set('overview', e.target.value)} className="input resize-none" placeholder="Build modern, scalable web applications using MERN Stack..." />
-        </Field>
-
-        <Field label="Curriculum (semicolon separated)">
-          <textarea rows={5} value={form.curriculumText} onChange={(e) => set('curriculumText', e.target.value)} className="input resize-none" placeholder="HTML, CSS & JavaScript Fundamentals;React.js — Components...;Capstone Live Project" />
-        </Field>
-
-        <Field label="Skills (comma separated)">
-          <input value={form.skillsText} onChange={(e) => set('skillsText', e.target.value)} className="input" placeholder="React, Node.js, MongoDB, Express.js" />
-        </Field>
-
-        <div className="flex gap-6">
-          <label className="flex items-center gap-2 text-sm text-slate-300">
-            <input type="checkbox" checked={form.internship} onChange={(e) => set('internship', e.target.checked)} className="accent-purple-600" />
-            Includes internship
-          </label>
-          <label className="flex items-center gap-2 text-sm text-slate-300">
-            <input type="checkbox" checked={form.placement} onChange={(e) => set('placement', e.target.checked)} className="accent-purple-600" />
-            Placement support
-          </label>
         </div>
 
         <ModalActions onClose={onClose} label={isEdit ? 'Save changes' : 'Add course'} />
@@ -396,57 +395,90 @@ function CourseModal({ initial, onClose, onSave }) {
 
 function CareerModal({ initial, onClose, onSave }) {
   const isEdit = Boolean(initial);
+  
+  // Default to the first seed career
+  const defaultCareer = seedCareers[0];
+
   const [form, setForm] = useState(
     initial
       ? {
-          ...initial,
-          responsibilitiesText: (initial.responsibilities || []).join('; '),
-          skillsText: (initial.skills || []).join(', '),
-          whatYouGetText: (initial.whatYouGet || []).join('; '),
+          id: initial.id || '',
+          title: initial.title || '',
+          type: initial.type || CAREER_TYPES[0],
+          experience: initial.experience || '',
+          location: initial.location || 'Nagercoil, Tamil Nadu',
+          status: initial.status || 'Active',
         }
       : {
-          title: '', type: CAREER_TYPES[0], experience: '', location: 'Nagercoil, Tamil Nadu', status: 'Active',
-          description: '', responsibilitiesText: '', skillsText: '', whatYouGetText: '',
+          id: defaultCareer.id,
+          title: defaultCareer.title,
+          type: defaultCareer.type,
+          experience: defaultCareer.experience,
+          location: defaultCareer.location,
+          status: 'Active',
         }
   );
 
-  useEffect(() => {
-    if (initial) {
-      setForm({
-        ...initial,
-        responsibilitiesText: (initial.responsibilities || []).join('; '),
-        skillsText: (initial.skills || []).join(', '),
-        whatYouGetText: (initial.whatYouGet || []).join('; '),
-      });
-    }
-  }, [initial]);
-
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+
+  const handleCareerChange = (e) => {
+    const selectedId = e.target.value;
+    const predefined = seedCareers.find(c => c.id === selectedId) || seedCareers[0];
+    setForm(prev => ({
+      ...prev,
+      id: predefined.id,
+      title: predefined.title,
+      type: predefined.type,
+      experience: predefined.experience,
+      location: predefined.location
+    }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.title.trim()) return;
-
-    const responsibilities = (form.responsibilitiesText || '').split(';').map((s) => s.trim()).filter(Boolean);
-    const skills = (form.skillsText || '').split(',').map((s) => s.trim()).filter(Boolean);
-    const whatYouGet = (form.whatYouGetText || '').split(';').map((s) => s.trim()).filter(Boolean);
+    const predefined = seedCareers.find(c => c.id === form.id) || seedCareers[0];
 
     onSave(
       {
-        id: isEdit ? initial.id : slugify(form.title),
-        title: form.title, type: form.type, experience: form.experience, location: form.location,
-        status: form.status, description: form.description, responsibilities, skills, whatYouGet,
+        ...(isEdit ? { firestoreId: initial.firestoreId } : {}),
+        id: form.id,
+        title: form.title, 
+        type: form.type, 
+        experience: form.experience, 
+        location: form.location,
+        status: form.status, 
+        description: initial?.description || predefined.description || '',
+        responsibilities: initial?.responsibilities || predefined.responsibilities || ['Contribute to real-world projects', 'Collaborate effectively with the team'], 
+        skills: initial?.skills || predefined.skills || ['Relevant domain skills', 'Strong communication'], 
+        whatYouGet: initial?.whatYouGet || predefined.whatYouGet || ['Experience Certificate', 'Performance-based Stipend'],
       },
       isEdit
     );
   };
 
+  const activePredefined = seedCareers.find(c => c.id === form.id) || seedCareers[0];
+
   return (
     <ModalShell title={isEdit ? 'Edit Career' : 'Add New Career'} onClose={onClose}>
       <form onSubmit={handleSubmit} className="space-y-4">
+        
         <Field label="Job Title *">
-          <input required value={form.title} onChange={(e) => set('title', e.target.value)} className="input" placeholder="e.g. Python Developer Intern" />
+          <select 
+            value={form.id} 
+            onChange={handleCareerChange} 
+            className="input"
+            disabled={isEdit}
+          >
+            {seedCareers.map(c => (
+               <option key={c.id} value={c.id}>{c.title}</option>
+            ))}
+          </select>
         </Field>
+
+        <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-2">
+          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Predefined Role Description</p>
+          <p className="text-sm text-slate-300 leading-relaxed">{activePredefined.description}</p>
+        </div>
 
         <div className="grid grid-cols-2 gap-4">
           <Field label="Type">
@@ -487,22 +519,6 @@ function CareerModal({ initial, onClose, onSave }) {
               ? 'Candidates can apply to this role on the public careers page.'
               : 'This role is hidden from new applicants but stays in your records.'}
           </p>
-        </Field>
-
-        <Field label="Role description">
-          <textarea rows={3} value={form.description} onChange={(e) => set('description', e.target.value)} className="input resize-none" placeholder="Responsibilities and what the intern will learn…" />
-        </Field>
-
-        <Field label="Responsibilities (semicolon separated)">
-          <textarea rows={5} value={form.responsibilitiesText} onChange={(e) => set('responsibilitiesText', e.target.value)} className="input resize-none" placeholder="Write clean, efficient Python code for backend development tasks; Assist in building RESTful APIs using Flask / FastAPI / Django" />
-        </Field>
-
-        <Field label="Skills Required (comma separated)">
-          <input value={form.skillsText} onChange={(e) => set('skillsText', e.target.value)} className="input" placeholder="Python, REST APIs, Git, SQL / MongoDB" />
-        </Field>
-
-        <Field label="What You Get (semicolon separated)">
-          <textarea rows={4} value={form.whatYouGetText} onChange={(e) => set('whatYouGetText', e.target.value)} className="input resize-none" placeholder="Merit-based stipend; Internship certificate provided; Hands-on real-world project exposure" />
         </Field>
 
         <ModalActions onClose={onClose} label={isEdit ? 'Save changes' : 'Add career'} />
@@ -558,13 +574,17 @@ function ModalActions({ onClose, label }) {
    DASHBOARD HOME
 ──────────────────────────────────────────────────────────────────────── */
 
-function DashboardHome({ courses, careers, goTo }) {
-  const totalStudents = courses.reduce((sum, c) => sum + (c.students || 0), 0);
+function DashboardHome({ courses, careers, enrollments = [], goTo }) {
+  const getCourseEnrollments = (courseId) => {
+    return enrollments.filter(e => e.courseId === courseId).length;
+  };
+
+  const totalStudents = enrollments.length;
   const totalApplicants = careers.reduce((sum, j) => sum + (j.applicants || 0), 0);
   const published = courses.filter((c) => c.status === 'Published').length;
   const openRoles = careers.filter((j) => j.status === 'Active').length;
 
-  const coursesByEnrollment = [...courses].sort((a, b) => (b.students || 0) - (a.students || 0));
+  const coursesByEnrollment = [...courses].sort((a, b) => getCourseEnrollments(b.id) - getCourseEnrollments(a.id));
   const careersByApplicants = [...careers].sort((a, b) => (b.applicants || 0) - (a.applicants || 0));
 
   return (
@@ -600,7 +620,7 @@ function DashboardHome({ courses, careers, goTo }) {
                 <span className="text-slate-300 truncate pr-4">{c.title}</span>
                 <span className="flex items-center gap-1.5 text-white font-semibold flex-shrink-0">
                   <Users className="w-3.5 h-3.5 text-slate-500" />
-                  {c.students || 0}
+                  {getCourseEnrollments(c.id)}
                 </span>
               </div>
             ))}
@@ -827,7 +847,7 @@ function CareersManager({ careers, query, onAdd, onEdit, onDelete }) {
    ENROLLMENTS MANAGER — click a course to see who enrolled in it.
 ──────────────────────────────────────────────────────────────────────── */
 
-function EnrollmentsManager({ courses, enrollments, onUpdateStatus }) {
+function EnrollmentsManager({ courses, enrollments, onUpdateStatus, onDeleteEnrollment }) {
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [query, setQuery] = useState('');
   const [expanded, setExpanded] = useState(null);
@@ -985,7 +1005,7 @@ function EnrollmentsManager({ courses, enrollments, onUpdateStatus }) {
                         <p className="text-slate-500 text-xs flex items-center gap-1.5 mt-0.5"><Phone className="w-3 h-3 text-slate-500" /> {s.phone}</p>
                       </td>
                       <td className="px-6 py-4 text-slate-300">{s.qualification}</td>
-                      <td className="px-6 py-4 text-slate-400 text-xs whitespace-nowrap">{s.enrolledDate}</td>
+                      <td className="px-6 py-4 text-slate-400 text-xs whitespace-nowrap">{s.enrolledDate ? new Date(s.enrolledDate).toLocaleDateString() : 'N/A'}</td>
                       <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
                         <select
                           value={s.status}
@@ -1008,9 +1028,38 @@ function EnrollmentsManager({ courses, enrollments, onUpdateStatus }) {
                             <p className="leading-relaxed">{s.message}</p>
                           </div>
                           <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 mt-3">
-                            <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> Enrolled on {s.enrolledDate}</span>
-                            {s.resume && <span className="flex items-center gap-1.5"><FileText className="w-3.5 h-3.5" /> {s.resume}</span>}
-                          </div>
+  <span className="flex items-center gap-1.5">
+    <Calendar className="w-3.5 h-3.5" />
+    Enrolled on {s.enrolledDate ? new Date(s.enrolledDate).toLocaleDateString() : 'N/A'}
+  </span>
+
+  {s.resume ? (
+    s.resume.startsWith('http') ? (
+      <a
+        href={s.resume}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-purple-600/20 text-purple-400 hover:bg-purple-600/30 transition"
+      >
+        <FileText className="w-4 h-4" />
+        View Resume
+      </a>
+    ) : (
+      <span className="inline-flex items-center gap-2 px-2 py-1 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs text-center max-w-[150px]">
+        {s.resume}
+      </span>
+    )
+  ) : (
+    <span className="text-slate-500 text-sm">No Resume</span>
+  )}
+  <button
+    onClick={(e) => { e.stopPropagation(); onDeleteEnrollment(s); }}
+    className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-red-600/10 text-red-500 hover:bg-red-600/20 transition ml-auto"
+  >
+    <Trash2 className="w-4 h-4" />
+    Delete Student
+  </button>
+</div>
                         </td>
                       </tr>
                     )}
@@ -1032,7 +1081,7 @@ function EnrollmentsManager({ courses, enrollments, onUpdateStatus }) {
    APPLICATIONS MANAGER
 ──────────────────────────────────────────────────────────────────────── */
 
-function ApplicationsManager({ careers, applications, updateStatus }) {
+function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp }) {
   const [selectedJob, setSelectedJob] = useState(null);
 
   if (!selectedJob) {
@@ -1048,12 +1097,12 @@ function ApplicationsManager({ careers, applications, updateStatus }) {
           {careers.map((career) => {
 
             const total = applications.filter(
-              a => a.careerId === career.id
+              a => a.careerId === (career.firestoreId || career.id)
             ).length;
 
             return (
               <div
-                key={career.id}
+                key={career.firestoreId || career.id || career.title}
                 className="bg-white/5 rounded-xl p-5 border border-white/10 flex justify-between items-center"
               >
 
@@ -1085,7 +1134,7 @@ function ApplicationsManager({ careers, applications, updateStatus }) {
   }
 
   const applicants = applications.filter(
-    a => a.careerId === selectedJob.id
+    a => a.careerId === (selectedJob.firestoreId || selectedJob.id)
   );
 
   return (
@@ -1150,7 +1199,7 @@ function ApplicationsManager({ careers, applications, updateStatus }) {
                     }
                     className="bg-black border px-2 py-1 rounded"
                   >
-
+                    <option>New</option>
                     <option>Pending</option>
 
                     <option>Shortlisted</option>
@@ -1164,29 +1213,41 @@ function ApplicationsManager({ careers, applications, updateStatus }) {
                 </td>
 
                 <td>
-
-                  {app.resumeUrl && (
-
-                    <a
-                      href={app.resumeUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-blue-400"
-                    >
-                      Open Resume
-                    </a>
-
+                  {app.resumeUrl ? (
+                    app.resumeUrl.startsWith('http') ? (
+                      <a
+                        href={app.resumeUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-blue-400 underline hover:text-blue-300 whitespace-nowrap text-sm"
+                      >
+                        Open Resume
+                      </a>
+                    ) : (
+                      <span className="text-red-400 text-[10px] uppercase font-bold tracking-widest break-words block max-w-[150px] leading-tight">
+                        {app.resumeUrl}
+                      </span>
+                    )
+                  ) : (
+                    <span className="text-slate-500 text-xs">No resume</span>
                   )}
-
                 </td>
 
-                <td>
+                <td className="flex items-center gap-2">
 
                   <button
                     onClick={()=>alert(JSON.stringify(app,null,2))}
-                    className="bg-purple-600 px-3 py-1 rounded"
+                    className="bg-purple-600 px-3 py-1 rounded text-sm font-medium"
                   >
                     View
+                  </button>
+
+                  <button
+                    onClick={() => onDeleteApp(app)}
+                    className="bg-red-600/20 text-red-500 px-2 py-1.5 rounded hover:bg-red-600/40 transition-colors"
+                    title="Delete Application"
+                  >
+                    <Trash2 className="w-4 h-4 text-red-400" />
                   </button>
 
                 </td>
@@ -1239,11 +1300,45 @@ export default function AdminDashboard() {
       color: colors[Math.floor(Math.random() * colors.length)],
     }));
   });
-  const [courses, setCourses] = useLocalStorageState('zentrix_admin_courses', seedCourses);
-  const [careers, setCareers] = useLocalStorageState('zentrix_admin_careers', seedCareers);
-  const [enrollments, setEnrollments] = useLocalStorageState('zentrix_admin_enrollments', seedEnrollments);
-  const [careerApplications, setCareerApplications] =
-useLocalStorageState("zentrix_admin_applications", []);
+  const [courses, setCourses] = useState([]);
+  const [careers, setCareers] = useState([]);
+  const [enrollments, setEnrollments] = useState([]);
+
+useEffect(() => {
+  loadEnrollments();
+}, []);
+
+const loadCareers = async () => {
+  try {
+    const data = await getCareers();
+    setCareers(data);
+  } catch (error) {
+    console.error("Failed to load careers:", error);
+  }
+};
+
+useEffect(() => {
+  loadCareers();
+}, []);
+
+const loadEnrollments = async () => {
+  const data = await getEnrollments();
+  setEnrollments(data);
+};
+  const [careerApplications, setCareerApplications] = useState([]);
+  
+  const loadApplications = async () => {
+    try {
+      const data = await getApplications();
+      setCareerApplications(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    loadApplications();
+  }, []);
   const [courseModal, setCourseModal] = useState(null);
   const [careerModal, setCareerModal] = useState(null);
   const [toast, setToast] = useState('');
@@ -1259,24 +1354,63 @@ useLocalStorageState("zentrix_admin_applications", []);
   const saveCourse = (payload, isEdit) => {
     setCourses((prev) => (isEdit ? prev.map((c) => (c.id === payload.id ? { ...c, ...payload } : c)) : [payload, ...prev]));
     setCourseModal(null);
-    flash(isEdit ? 'Course updated' : 'Course added');
-  };
-  const deleteCourse = (course) => {
-    if (window.confirm(`Delete "${course.title}"? This can't be undone.`)) {
-      setCourses((prev) => prev.filter((c) => c.id !== course.id));
-      flash('Course deleted');
+    flash(isEdit ? "Course updated" : "Course added");
+  } catch (err) {
+    console.error(err);
+    alert(err.message);
+  } finally {
+    setSavingCourse(false);
+  }
+};
+  const deleteCourse = async (course) => {
+    if (!window.confirm(`Delete "${course.title}"?`)) return;
+  
+    try {
+      await deleteCourseFromDB(course.firestoreId);
+  
+      await loadCourses();
+  
+      flash("Course deleted");
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const saveCareer = (payload, isEdit) => {
-    setCareers((prev) => (isEdit ? prev.map((j) => (j.id === payload.id ? { ...j, ...payload } : j)) : [payload, ...prev]));
-    setCareerModal(null);
-    flash(isEdit ? 'Career updated' : 'Career added');
+  const [savingCareer, setSavingCareer] = useState(false);
+
+  const saveCareer = async (payload, isEdit) => {
+    if (savingCareer) return;
+    setSavingCareer(true);
+    try {
+      const cleanData = Object.fromEntries(
+        Object.entries(payload).filter(([_, value]) => value !== undefined)
+      );
+      if (isEdit) {
+        await updateCareer(payload.firestoreId, cleanData);
+      } else {
+        await addCareer(cleanData);
+      }
+      await loadCareers();
+      setCareerModal(null);
+      flash(isEdit ? 'Career updated' : 'Career added');
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    } finally {
+      setSavingCareer(false);
+    }
   };
-  const deleteCareer = (career) => {
+
+  const deleteCareer = async (career) => {
     if (window.confirm(`Delete "${career.title}"? This can't be undone.`)) {
-      setCareers((prev) => prev.filter((j) => j.id !== career.id));
-      flash('Career deleted');
+      try {
+        await deleteCareerFromDB(career.firestoreId);
+        await loadCareers();
+        flash('Career deleted');
+      } catch (error) {
+        console.error(error);
+        alert("Failed to delete career");
+      }
     }
   };
 
@@ -1285,18 +1419,41 @@ useLocalStorageState("zentrix_admin_applications", []);
     flash(`${enrollment.name} marked as ${status}`);
   };
 
+  const deleteStudentEnrollment = async (enrollment) => {
+    if (!window.confirm(`Are you sure you want to completely remove ${enrollment.name} from this course?`)) return;
+    try {
+      await deleteEnrollment(enrollment.firestoreId);
+      await loadEnrollments();
+      flash(`${enrollment.name} was successfully removed`);
+    } catch (error) {
+      console.error("Error deleting enrollment:", error);
+      alert("Failed to delete enrollment");
+    }
+  };
+  
 
-  const updateApplicationStatus = (application, status) => {
 
-    setCareerApplications(prev =>
-        prev.map(item =>
-            item.id === application.id
-                ? { ...item, status }
-                : item
-        )
-    );
+  const updateApplicationStatus = async (application, status) => {
+    try {
+      await updateAppStatusService(application.firestoreId, status);
+      await loadApplications();
+      flash(`Application for ${application.name} marked as ${status}`);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-};
+  const removeApplication = async (application) => {
+    if (!window.confirm(`Are you sure you want to completely discard the application from ${application.name}?`)) return;
+    try {
+      await deleteAppService(application.firestoreId);
+      await loadApplications();
+      flash(`Application from ${application.name} was successfully removed.`);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to discard application.");
+    }
+  };
 
   const titles = {
     dashboard: 'Dashboard', courses: 'Courses', careers: 'Careers', enrollments: 'Enrollments', applications: 'Applications',
@@ -1330,7 +1487,7 @@ useLocalStorageState("zentrix_admin_applications", []);
         <Topbar query={query} setQuery={setQuery} />
 
         <main className="p-6 md:p-8 max-w-7xl mx-auto">
-          {active === 'dashboard' && <DashboardHome courses={courses} careers={careers} goTo={goTo} />}
+          {active === 'dashboard' && <DashboardHome courses={courses} careers={careers} enrollments={enrollments} goTo={goTo} />}
 
           {active === 'courses' && (
             <CoursesManager
@@ -1354,16 +1511,18 @@ useLocalStorageState("zentrix_admin_applications", []);
 
           {active === 'enrollments' && (
             <EnrollmentsManager
-              courses={courses}
-              enrollments={enrollments}
-              onUpdateStatus={updateEnrollmentStatus}
-            />
+  courses={courses}
+  enrollments={enrollments}
+  onUpdateStatus={changeEnrollmentStatus}
+  onDeleteEnrollment={deleteStudentEnrollment}
+/>
           )}
 
           {active === 'applications' && <ApplicationsManager
     careers={careers}
     applications={careerApplications}
     updateStatus={updateApplicationStatus}
+    onDeleteApp={removeApplication}
 />}
 
           {!['dashboard', 'courses', 'careers', 'enrollments', 'applications'].includes(active) && (

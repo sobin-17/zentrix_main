@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -31,16 +31,19 @@ const GlobalAtmosphere = () => (
   </div>
 );
 
-function App() {
+function AppLayout() {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin-dashboard');
+
   return (
-    
-    <Router>
-      <ScrollToTop />
-      <div className="bg-transparent text-white font-poppins relative w-full max-w-[100vw]">
-        <GlobalAtmosphere />
-        {/* Persistent Navbar */}
-        <Navbar />
-        {/* Persistent Floating Controls (Chatbot + Actions) */}
+    <div className="bg-transparent text-white font-poppins relative w-full max-w-[100vw]">
+      <GlobalAtmosphere />
+      
+      {/* Persistent Navbar */}
+      {!isAdmin && <Navbar />}
+      
+      {/* Persistent Floating Controls (Chatbot + Actions) */}
+      {!isAdmin && (
         <div className="fixed right-6 bottom-16 md:right-8 md:bottom-20 z-[9999] flex flex-col gap-3 items-end pointer-events-none">
           <div className="pointer-events-auto">
             <ChatIntegration />
@@ -49,35 +52,42 @@ function App() {
             <FloatingCTA />
           </div>
         </div>
+      )}
 
-        {/* Dynamic Page Content */}
-        <main className="relative scroll-smooth" id="main-scroll-container">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/service" element={<Service />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/course" element={<Course />} />
-            <Route path="/course/:courseId" element={<CourseDetail />} />
-            <Route path="/career" element={<Careers />} />
-            <Route path="/career/:jobId" element={<JobDetail />} />
-            <Route path="/ourproducts" element={<OurProducts />} />
-            <Route path="/ourporfolio" element={<OurPortfolio />} />
-            <Route path="/get-touch" element={<GetTouch />} />
-            <Route path="/get-in-touch" element={<GetInTouch />} />
-            
-            <Route path="/your-next-step" element={<YourNextStep />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/terms-and-conditions" element={<TermsConditions />} />
-            <Route path="/admin-dashboard" element={<Admindashboard/>}/>
-            <Route path="/admin-login" element={<AdminLogin />} />
-            <Route path="/admin-signup" element={<AdminSignup />} />
+      {/* Dynamic Page Content */}
+      <main className="relative scroll-smooth" id="main-scroll-container">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/service" element={<Service />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/course" element={<Course />} />
+          <Route path="/course/:courseId" element={<CourseDetail />} />
+          <Route path="/career" element={<Careers />} />
+          <Route path="/career/:jobId" element={<JobDetail />} />
+          <Route path="/ourproducts" element={<OurProducts />} />
+          <Route path="/ourporfolio" element={<OurPortfolio />} />
+          <Route path="/get-touch" element={<GetTouch />} />
+          <Route path="/get-in-touch" element={<GetInTouch />} />
+          
+          <Route path="/your-next-step" element={<YourNextStep />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-and-conditions" element={<TermsConditions />} />
+          <Route path="/admin-dashboard" element={<Admindashboard/>}/>
+        </Routes>
+        
+        {/* Persistent Footer */}
+        {!isAdmin && <Footer />}
+      </main>
+    </div>
+  );
+}
 
-          </Routes>
-          {/* Persistent Footer */}
-          <Footer />
-        </main>
-      </div>
+function App() {
+  return (
+    <Router>
+      <ScrollToTop />
+      <AppLayout />
     </Router>
   );
 }

@@ -129,7 +129,7 @@ function SectionLabel({ children }) {
 function CourseCard({ course, index }) {
 
   const getAccent = () => {
-    switch(course.slug) {
+    switch (course.id || course.slug) {
       case 'mern-stack': 
         return { 
           titleText: <><span className="text-white">MERN</span> <span className="text-blue-500 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]">STACK</span></>,
@@ -223,13 +223,13 @@ function CourseCard({ course, index }) {
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: (index % 2) * 0.1 }}
       whileHover={{ y: -6, transition: { duration: 0.2, ease: 'easeOut' } }}
       style={{ willChange: 'transform, opacity' }}
-      className={`group relative rounded-[28px] overflow-hidden border border-white/10 bg-[#080808] cursor-pointer flex flex-col-reverse sm:flex-row h-full min-h-[300px] z-10 ${accent.cardBorder} ${accent.cardShadow}`}
+      className={`group relative rounded-[28px] overflow-hidden border border-white/10 bg-[#080808] cursor-pointer flex flex-col h-full w-full min-h-[300px] z-10 ${accent.cardBorder} ${accent.cardShadow}`}
     >
       {/* Background glow pseudo-element */}
       <div className={`absolute inset-0 bg-gradient-to-r from-transparent to-transparent opacity-0 transition-opacity duration-500 pointer-events-none z-0 ${accent.gradientHover} group-hover:opacity-100`} />
 
       {/* Content */}
-      <div className="relative z-10 p-6 sm:p-8 flex flex-col justify-between w-full">
+      <div className="relative z-10 p-6 sm:p-8 flex flex-col justify-between w-full h-full flex-grow">
         <div>
           {/* Top Badges */}
           <div className="flex flex-wrap items-center gap-3 mb-6">
@@ -246,7 +246,7 @@ function CourseCard({ course, index }) {
           </h3>
 
           <p className="text-gray-300/80 text-sm leading-relaxed mb-6 font-normal line-clamp-3">
-            {course.description}
+            {course.description || course.overview}
           </p>
 
           {course.id === 'java-dev' && (
@@ -258,7 +258,7 @@ function CourseCard({ course, index }) {
           )}
         </div>
 
-        <Link to={`/course/${course.id}`} className="block w-max mt-auto relative z-20">
+        <Link to={`/course/${course.id || course.firestoreId}`} className="block w-max mt-auto relative z-20">
           <button
             className={`px-8 py-3.5 rounded-2xl font-bold text-sm tracking-wide ${accent.btn} flex items-center gap-2 relative overflow-hidden`}
             style={{ transition: 'box-shadow 0.25s ease, background-color 0.25s ease' }}
