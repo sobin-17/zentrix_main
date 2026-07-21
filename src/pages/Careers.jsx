@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 import { getCareers } from "../services/careerService";
 
 
-const [jobOpenings, setJobOpenings] = useState([]);
 const Careers = () => {
+  const [jobOpenings, setJobOpenings] = useState([]);
   const [expandedJobId, setExpandedJobId] = useState(null);
 
   useEffect(() => {
