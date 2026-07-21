@@ -3,6 +3,7 @@ import {
     addDoc,
     getDocs,
     doc,
+    updateDoc,
     deleteDoc,
   } from "firebase/firestore";
   import { db } from "../firebase";
@@ -22,4 +23,9 @@ import {
   
   export const deleteApplication = async (id) => {
     await deleteDoc(doc(db, "applications", id));
+  };
+  
+  export const updateApplicationStatus = async (id, status) => {
+    const docRef = doc(db, "applications", id);
+    await updateDoc(docRef, { status });
   };

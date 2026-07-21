@@ -1,8 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin, Clock, Briefcase, ChevronRight, Send, Loader2, X } from 'lucide-react';
 import emailjs from '@emailjs/browser';
+import { getCareers } from "../services/careerService";
+import { addApplication } from "../services/applicationService";
+import { storage } from "../firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 // ─── EmailJS credentials ─────────────────────────────────────────────────────
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
@@ -184,7 +188,7 @@ const PARTICLES = Array.from({ length: 50 }, (_, i) => {
 });
 
 /* ─── Application Form ───────────────────────────────────────────────── */
-const ApplyForm = ({ jobTitle }) => {
+const ApplyForm = ({ jobTitle, jobId }) => {
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '', resume: null });
   const [status, setStatus] = useState('idle'); // idle | sending | success | error
   const fileInputRef = useRef(null);
@@ -211,15 +215,56 @@ const ApplyForm = ({ jobTitle }) => {
     };
 
     try {
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        templateParams,
-        EMAILJS_PUBLIC_KEY
-      );
+      let resumeUrl = "";
+      if (form.resume) {
+        try {
+          const resumeRef = ref(storage, `career-resumes/${Date.now()}-${form.resume.name}`);
+          
+          const uploadTask = uploadBytes(resumeRef, form.resume);
+          const timeoutTask = new Promise((_, reject) => setTimeout(() => reject(new Error("Storage Timeout")), 5000));
+          await Promise.race([uploadTask, timeoutTask]);
+          
+          resumeUrl = await getDownloadURL(resumeRef);
+        } catch (storageErr) {
+          console.warn("Storage upload bypassed - likely restricted by Firebase rules.", storageErr);
+          resumeUrl = "Upload Failed - Firebase Storage Restricted";
+        }
+      }
+
+      const firestoreTask = addApplication({
+        careerId: jobId,
+        jobTitle: jobTitle,
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        message: form.message,
+        resumeUrl: resumeUrl,
+        status: "New",
+        appliedDate: new Date().toISOString()
+      });
+      const firestoreTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error("Firestore Timeout")), 5000));
+      await Promise.race([firestoreTask, firestoreTimeout]);
+
+      if (EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY) {
+        try {
+          const emailTask = emailjs.send(
+            EMAILJS_SERVICE_ID,
+            EMAILJS_TEMPLATE_ID,
+            templateParams,
+            EMAILJS_PUBLIC_KEY
+          );
+          const emailTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error("EmailJS Timeout")), 5000));
+          await Promise.race([emailTask, emailTimeout]);
+        } catch (emailErr) {
+          console.warn("EmailJS bypassed - likely blocked by network, adblockers, or timeout.", emailErr);
+        }
+      } else {
+        console.warn("EmailJS credentials missing - skipping email notification.");
+      }
+
       setStatus('success');
     } catch (err) {
-      console.error('EmailJS error:', err);
+      console.error(err);
       setStatus('error');
     }
   };
@@ -357,7 +402,41 @@ const ApplyForm = ({ jobTitle }) => {
 const JobDetail = () => {
   const { jobId } = useParams();
   const navigate = useNavigate();
-  const job = jobData[jobId];
+  
+  const [fetchedJob, setFetchedJob] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchJob = async () => {
+      try {
+        const fallback = jobData[jobId];
+        if (fallback) {
+          setFetchedJob(fallback);
+          setLoading(false);
+          return;
+        }
+
+        const careers = await getCareers();
+        const found = careers.find(j => j.id === jobId || j.firestoreId === jobId);
+        setFetchedJob(found);
+      } catch (err) {
+        console.error("Failed to fetch job:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchJob();
+  }, [jobId]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white">
+        <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+      </div>
+    );
+  }
+
+  const job = fetchedJob;
 
   if (!job) {
     return (
@@ -481,7 +560,7 @@ const JobDetail = () => {
                 Responsibilities
               </h2>
               <ul className="space-y-3">
-                {job.responsibilities.map((item, i) => (
+                {job.responsibilities?.map((item, i) => (
                   <li key={i} className="flex items-start gap-3 text-slate-300 text-sm leading-relaxed">
                     <ChevronRight className="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" />
                     {item}
@@ -496,7 +575,7 @@ const JobDetail = () => {
                 Skills Required
               </h2>
               <div className="flex flex-wrap gap-2">
-                {job.skills.map((skill) => (
+                {job.skills?.map((skill) => (
                   <span
                     key={skill}
                     className="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-300 border border-purple-500/40 bg-purple-500/10"
@@ -534,7 +613,7 @@ const JobDetail = () => {
               <p className="text-slate-500 text-sm mb-8">
                 Fill in your details and we'll get back to you shortly.
               </p>
-              <ApplyForm jobTitle={job.title} />
+              <ApplyForm jobTitle={job.title} jobId={job.firestoreId || job.id || 'unknown'} />
             </div>
           </motion.div>
 

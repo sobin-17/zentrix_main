@@ -68,13 +68,21 @@ const EnrollForm = ({ course }) => {
       let resumeUrl = "";
 
     if (form.resume) {
-      const resumeRef = ref(
-        storage,
-        `course-resumes/${Date.now()}-${form.resume.name}`
-      );
+      try {
+        const resumeRef = ref(
+          storage,
+          `course-resumes/${Date.now()}-${form.resume.name}`
+        );
 
-      await uploadBytes(resumeRef, form.resume);
-      resumeUrl = await getDownloadURL(resumeRef);
+        const uploadTask = uploadBytes(resumeRef, form.resume);
+        const timeoutTask = new Promise((_, reject) => setTimeout(() => reject(new Error("Storage Timeout")), 5000));
+        await Promise.race([uploadTask, timeoutTask]);
+
+        resumeUrl = await getDownloadURL(resumeRef);
+      } catch (storageErr) {
+        console.warn("Storage upload bypassed - likely restricted by Firebase rules.", storageErr);
+        resumeUrl = "Upload Failed - Firebase Storage Restricted";
+      }
     }
       await addEnrollment({
         courseId: course.id,
@@ -89,12 +97,22 @@ const EnrollForm = ({ course }) => {
         resume: resumeUrl,
       });
   
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        templateParams,
-        EMAILJS_PUBLIC_KEY
-      );
+      if (EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY) {
+        try {
+          const emailTask = emailjs.send(
+            EMAILJS_SERVICE_ID,
+            EMAILJS_TEMPLATE_ID,
+            templateParams,
+            EMAILJS_PUBLIC_KEY
+          );
+          const emailTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error("EmailJS Timeout")), 5000));
+          await Promise.race([emailTask, emailTimeout]);
+        } catch (emailErr) {
+          console.warn("EmailJS bypassed - likely blocked by network, adblockers, or timeout.", emailErr);
+        }
+      } else {
+        console.warn("EmailJS credentials missing - skipping email notification.");
+      }
   
       setStatus("success");
     } catch (err) {
