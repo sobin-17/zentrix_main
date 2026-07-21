@@ -281,7 +281,7 @@ const ApplyForm = ({ jobTitle, jobId }) => {
         </div>
         <h3 className="text-2xl font-bold text-white mb-3">Application Submitted!</h3>
         <p className="text-slate-400 max-w-sm mx-auto">
-          Thank you for applying for <span className="text-purple-400">{job.title}</span>.
+          Thank you for applying for <span className="text-purple-400">{jobTitle}</span>.
           Our HR team will review your application and reach out soon.
         </p>
       </motion.div>

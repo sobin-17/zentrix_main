@@ -242,7 +242,7 @@ const CourseDetail = () => {
         const courses = await getCourses();
 
         const selectedCourse = courses.find(
-          (c) => c.slug === courseId || c.id === courseId
+          (c) => c.slug === courseId || c.id === courseId || c.firestoreId === courseId
         );
 
         setCourse(selectedCourse || null);

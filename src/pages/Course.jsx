@@ -258,7 +258,7 @@ function CourseCard({ course, index }) {
           )}
         </div>
 
-        <Link to={`/course/${course.id}`} className="block w-max mt-auto relative z-20">
+        <Link to={`/course/${course.id || course.firestoreId}`} className="block w-max mt-auto relative z-20">
           <button
             className={`px-8 py-3.5 rounded-2xl font-bold text-sm tracking-wide ${accent.btn} flex items-center gap-2 relative overflow-hidden`}
             style={{ transition: 'box-shadow 0.25s ease, background-color 0.25s ease' }}
