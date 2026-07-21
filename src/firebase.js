@@ -1,19 +1,26 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
+import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBgdNPJWz7rsN0SmPgSP9uJRf3Ew1jgURI",
-  authDomain: "zentrix-e7f63.firebaseapp.com",
-  projectId: "zentrix-e7f63",
-  storageBucket: "zentrix-e7f63.firebasestorage.app",
-  messagingSenderId: "456702623824",
-  appId: "1:456702623824:web:ba8ead64a9ad65d73a9155",
-  measurementId: "G-9RJMKVT6NQ"
+  apiKey: "AIzaSyAvBFDbUbD9X5IljQBnMIpsl1DCtdmD_-s",
+  authDomain: "zentrix-e7f63-5a3d1.firebaseapp.com",
+  projectId: "zentrix-e7f63-5a3d1",
+  storageBucket: "zentrix-e7f63-5a3d1.firebasestorage.app",
+  messagingSenderId: "701823584761",
+  appId: "1:701823584761:web:72ac457cbbf55d9fa7d528",
+  measurementId: "G-GY3RZLK705"
 };
 
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const db = getFirestore(app);
 
-export { app, analytics, db };
+export const db = getFirestore(app);
+export const storage = getStorage(app);
+
+export default app;
+
+// Analytics only works in browser
+if (typeof window !== "undefined") {
+  getAnalytics(app);
+}

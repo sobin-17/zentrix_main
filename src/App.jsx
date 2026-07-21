@@ -22,6 +22,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import OurProducts from './pages/OurProducts';
 import OurPortfolio from './pages/OurPortfolio';
 import YourNextStep from './pages/Yournextstepnew';
+import Admindashboard from './pages/Admindashboard';
 
 const GlobalAtmosphere = () => (
   <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
@@ -67,6 +68,7 @@ function App() {
             <Route path="/your-next-step" element={<YourNextStep />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-and-conditions" element={<TermsConditions />} />
+            <Route path="/admin-dashboard" element={<Admindashboard/>}/>
 
           </Routes>
           {/* Persistent Footer */}

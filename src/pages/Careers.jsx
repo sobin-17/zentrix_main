@@ -1,75 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import { ChevronDown, ChevronUp, ArrowRight, Users, Lightbulb, TrendingUp, Handshake, BookOpen, Trophy, LineChart, Star, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { getCareers } from "../services/careerService";
 
-const jobOpenings = [
-  {
-    id: "python",
-    title: "Python Developer Intern",
-    experience: "3 – 6 Months",
-    type: "Internship",
-    location: "Nagercoil, Tamil Nadu",
-    description:
-      "Learn Python programming, backend development, automation, and real-world software development practices."
-  },
-  {
-    id: "mern",
-    title: "Mern Stack Intern",
-    experience: "3 Months",
-    type: "Internship",
-    location: "Nagercoil, Tamil Nadu",
-    description:
-      "Build modern web applications using MongoDB, Express.js, React, and Node.js through hands-on projects."
-  },
-  {
-    id: "uiux",
-    title: "UI / UX Intern",
-    experience: "3 Months",
-    type: "Internship",
-    location: "Nagercoil, Tamil Nadu",
-    description:
-      "Create user-friendly interfaces, wireframes, prototypes, and engaging digital experiences using industry-standard tools."
-  },
-  {
-    id: "graphic",
-    title: "Graphic Design Intern",
-    experience: "3 Months",
-    type: "Internship",
-    location: "Nagercoil, Tamil Nadu",
-    description:
-      "Design creative visuals, social media content, branding materials, and marketing assets."
-  },
-  {
-    id: "video",
-    title: "Video Editor Intern",
-    experience: "3 Months",
-    type: "Internship",
-    location: "Nagercoil, Tamil Nadu",
-    description:
-      "Edit and enhance videos, add visual effects, transitions, and create engaging multimedia content."
-  },
-  {
-    id: "digital",
-    title: "Digital Marketing Intern",
-    experience: "3 Months",
-    type: "Internship",
-    location: "Nagercoil, Tamil Nadu",
-    description:
-      "Learn social media marketing, content strategy, campaign management, and online brand promotion."
-  },
-  {
-    id: "seo",
-    title: "SEO Analyst Intern",
-    experience: "3 Months",
-    type: "Internship",
-    location: "Nagercoil, Tamil Nadu",
-    description:
-      "Optimize websites for search engines, conduct keyword research, and improve online visibility and rankings."
-  }
-];
+
+const [jobOpenings, setJobOpenings] = useState([]);
 const Careers = () => {
   const [expandedJobId, setExpandedJobId] = useState(null);
+
+  useEffect(() => {
+    const loadCareers = async () => {
+      try {
+        const careers = await getCareers();
+  
+        // Only show active careers
+        setJobOpenings(
+          careers.filter(job => job.status === "Active")
+        );
+      } catch (err) {
+        console.error(err);
+      }
+    };
+  
+    loadCareers();
+  }, []);
 
   const [particles] = useState(() => {
     const colors = ['#00c6ff', '#a855f7', '#ec4899', '#ffffff'];

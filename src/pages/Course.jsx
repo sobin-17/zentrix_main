@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from "react";
 import { motion, useInView } from 'framer-motion';
 import {
   BookOpen, Award, Target, Code, Briefcase, Users,
@@ -14,109 +14,10 @@ import Technologies from '../components/Technologies';
 import Footer from '../components/Footer';
 
 
+import { getCourses } from "../services/courseService";
+
 /* ─────────────────── DATA ─────────────────── */
 
-const courses = [
-  {
-    id: 'mern-stack',
-    title: 'MERN STACK',
-    category: 'Development',
-    duration: '6 Months',
-    level: 'Intermediate',
-    image: '/mern_stack.jpeg',
-    description:
-      'Build modern, scalable, and high-performance web applications using the MERN Stack. Learn dynamic UI, robust backends, and database-driven apps through real-world projects.',
-    icon: <Code className="w-5 h-5" />,
-    bgLabel: 'MERN STACK',
-    internship: true,
-    placement: true,
-  },
-  {
-    id: 'java-dev',
-    title: 'JAVA PROGRAMMING',
-    category: 'Development',
-    duration: '6 Months',
-    level: 'Intermediate',
-    image: '/java.jpeg',
-    description:
-      'Create fast, scalable web applications using the Java ecosystem. Build backend services with Spring and handle database-driven solutions through real-world projects.',
-    icon: <Cpu className="w-5 h-5" />,
-    bgLabel: 'JAVA',
-    internship: true,
-    placement: true,
-  },
-  {
-    id: 'ui-ux',
-    title: 'UI - UX DESIGNING',
-    category: 'Design',
-    duration: '3 Months',
-    level: 'Beginner',
-    image: '/ui_ux.jpeg',
-    description:
-      'Design intuitive and engaging digital experiences. Learn user-friendly interfaces, enhance usability, and craft visually appealing designs through user research and projects.',
-    icon: <Palette className="w-5 h-5" />,
-    bgLabel: 'UI-UX',
-    internship: false,
-    placement: true,
-  },
-  {
-    id: 'python-fullstack',
-    title: 'PYTHON FULL STACK DEVELOPMENT ',
-    category: 'Development',
-    duration: '6 Months',
-    level: 'Intermediate',
-    image: '/python.jpeg',
-    description:
-      'Design and develop modern, efficient web applications using Python full stack. Build interactive front-end and backend logic with Django or Flask.',
-    icon: <Code className="w-5 h-5" />,
-    bgLabel: 'PYTHON',
-    internship: true,
-    placement: true,
-  },
-  {
-    id: 'data-analytics',
-    title: 'DATA ANALYTICS',
-    category: 'Data Science',
-    duration: '6 Months',
-    level: 'Beginner – Intermediate',
-    image: '/data.jpeg',
-    description:
-      'Transform raw data into meaningful insights. Learn to clean, analyse and visualise data, build reports, and uncover patterns through real-world case studies.',
-    icon: <LineChart className="w-5 h-5" />,
-    bgLabel: 'DATA ANALYTICS',
-    internship: true,
-    placement: true,
-  },
-  {
-    id: 'data-science-ml',
-    title: 'DATA SCIENCE & MACHINE LEARNING',
-    category: 'Data Science',
-    duration: '3 Months',
-    level: 'Advanced',
-    image: '/data science.jpeg',
-    description:
-      'Harness data science and machine learning to build intelligent, data-driven solutions. Develop predictive models and implement algorithms that automate decision-making.',
-    icon: <BrainIcon className="w-5 h-5" />,
-    bgLabel: 'DATA SCIENCE & MACHINE LEARNING',
-    internship: false,
-    placement: true,
-  },
-  {
-    id: 'ai',
-    title: 'ARTIFICIAL INTELLIGENCE',
-    category: 'AI',
-    duration: '4 Months',
-    level: 'Advanced',
-    image: '/ai.jpeg',
-    description:
-      'Explore AI to create smart, adaptive solutions. Build intelligent systems, work with advanced algorithms, and develop AI-powered applications through real-world use cases.',
-    icon: <Target className="w-5 h-5" />,
-    bgLabel: 'ARTIFICIAL INTELLIGENCE',
-    internship: false,
-    placement: true,
-  },
-
-];
 
 const coreFeatures = [
   {
@@ -228,7 +129,7 @@ function SectionLabel({ children }) {
 function CourseCard({ course, index }) {
 
   const getAccent = () => {
-    switch (course.id) {
+    switch(course.slug) {
       case 'mern-stack': 
         return { 
           titleText: <><span className="text-white">MERN</span> <span className="text-blue-500 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]">STACK</span></>,
@@ -289,7 +190,7 @@ function CourseCard({ course, index }) {
           cardShadow: 'hover:shadow-[0_0_40px_rgba(16,185,129,0.25)]',
           gradientHover: 'group-hover:from-emerald-900/20'
         };
-      case 'ai': 
+      case 'ZTAI0001': 
         return { 
           titleText: <><span className="text-white">ARTIFICIAL</span> <span className="text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]">INTELLIGENCE</span></>,
           badge1: 'bg-red-900/80 text-red-300 border border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.5)]', 
@@ -333,7 +234,7 @@ function CourseCard({ course, index }) {
           {/* Top Badges */}
           <div className="flex flex-wrap items-center gap-3 mb-6">
             <span className={`px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider ${accent.badge1}`}>
-              {course.id === 'mern-stack' ? 'FULL STACK DEVELOPMENT' : course.category}
+              {course.slug === "mern-stack" ? 'FULL STACK DEVELOPMENT' : course.category}
             </span>
             <span className={`px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider border ${accent.badge2} flex items-center gap-1.5`}>
               <span className="opacity-70 text-blue-400">⏱</span> {course.duration}
@@ -439,6 +340,20 @@ function StageCard({ stage, index, total }) {
 /* ─────────────────── PAGE ─────────────────── */
 
 const Course = () => {
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    loadCourses();
+  }, []);
+
+  const loadCourses = async () => {
+    try {
+      const data = await getCourses();
+      setCourses(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const [particles] = useState(() => {
     const colors = ['#00c6ff', '#a855f7', '#ec4899', '#ffffff'];
@@ -579,24 +494,19 @@ const Course = () => {
       {/* ══════════ COURSE CARDS ══════════ */}
       <section className="relative max-w-7xl mx-auto px-6 pb-10 lg:pb-24 overflow-visible">
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-          {courses.map((course, index) => (
-
-            <div
-              key={course.id}
-              className="relative w-full h-full flex"
-            >
-              <CourseCard
-                course={course}
-                index={index}
-              />
-            </div>
-
-          ))}
-
-        </div>
-
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  {courses.map((course, index) => (
+    <div
+      key={course.id}
+      className="relative w-full h-full flex"
+    >
+      <CourseCard
+        course={course}
+        index={index}
+      />
+    </div>
+  ))}
+</div>
       </section>
       {/* ================= CURRICULUM CORE FEATURES ================= */}
 
