@@ -1,7 +1,7 @@
 import { useState } from "react";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { chatbotDb } from "./localNLP";
 import "./LeadForm.css";
-
-const BACKEND_URL = "http://localhost:5000";
 
 const LeadForm = ({ onSubmit, onSkip }) => {
   const [form, setForm] = useState({ name: "", email: "", phone: "", location: "" });
@@ -20,20 +20,16 @@ const LeadForm = ({ onSubmit, onSkip }) => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`${BACKEND_URL}/api/lead`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+      await addDoc(collection(chatbotDb, "leads"), {
+        name: form.name,
+        email: form.email,
+        phone: form.phone || "",
+        location: form.location || "",
+        createdAt: serverTimestamp(),
       });
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || "Server error");
-      }
       onSubmit(form.name);
     } catch (err) {
-      console.error("Lead save error:", err);
-      // Fallback: even if backend is down, let the user continue chatting
-      onSubmit(form.name);
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
