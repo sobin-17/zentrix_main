@@ -32,6 +32,8 @@ import {
   MessageSquare, Calendar,
 } from 'lucide-react';
 
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../firebase";
 /* ────────────────────────────────────────────────────────────────────────
    CONSTANTS / SEED DATA
 ──────────────────────────────────────────────────────────────────────── */
@@ -256,9 +258,9 @@ function Toast({ message }) {
 /* ────────────────────────────────────────────────────────────────────────
    COURSE FORM MODAL (Simplified with Dropdowns)
 ──────────────────────────────────────────────────────────────────────── */
-function CourseModal({ initial, onClose, onSave }) {
+function CourseModal({ initial, onClose, onSave, saving }) {
   const isEdit = Boolean(initial);
-  
+ 
   // Default to the first seed course
   const defaultCourse = seedCourses[0];
 
@@ -299,14 +301,14 @@ function CourseModal({ initial, onClose, onSave }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  
+ 
     if (saving) return;
 
     // Grab the predefined data for this course to auto-attach the description, skills, image etc.
     const predefined = seedCourses.find(c => c.id === form.id) || seedCourses[0];
-  
+ 
     const payload = {
       ...(isEdit ? { firestoreId: initial.firestoreId } : {}),
       id: form.id,
@@ -327,6 +329,7 @@ function CourseModal({ initial, onClose, onSave }) {
       placement: initial?.placement ?? predefined.placement ?? true,
       students: isEdit ? initial.students : 0,
     };
+ 
     onSave(payload, isEdit);
   };
 
@@ -335,11 +338,11 @@ function CourseModal({ initial, onClose, onSave }) {
   return (
     <ModalShell title={isEdit ? 'Edit Course' : 'Add New Course'} onClose={onClose}>
       <form onSubmit={handleSubmit} className="space-y-4">
-        
+       
         <Field label="Course Title *">
-          <select 
-            value={form.id} 
-            onChange={handleCourseChange} 
+          <select
+            value={form.id}
+            onChange={handleCourseChange}
             className="input"
             disabled={isEdit}
           >
@@ -383,7 +386,7 @@ function CourseModal({ initial, onClose, onSave }) {
           </Field>
         </div>
 
-        <ModalActions onClose={onClose} label={isEdit ? 'Save changes' : 'Add course'} />
+        <ModalActions onClose={onClose} label={isEdit ? 'Save changes' : 'Add course'} saving={saving} />
       </form>
     </ModalShell>
   );
@@ -395,7 +398,7 @@ function CourseModal({ initial, onClose, onSave }) {
 
 function CareerModal({ initial, onClose, onSave }) {
   const isEdit = Boolean(initial);
-  
+ 
   // Default to the first seed career
   const defaultCareer = seedCareers[0];
 
@@ -442,14 +445,14 @@ function CareerModal({ initial, onClose, onSave }) {
       {
         ...(isEdit ? { firestoreId: initial.firestoreId } : {}),
         id: form.id,
-        title: form.title, 
-        type: form.type, 
-        experience: form.experience, 
+        title: form.title,
+        type: form.type,
+        experience: form.experience,
         location: form.location,
-        status: form.status, 
+        status: form.status,
         description: initial?.description || predefined.description || '',
-        responsibilities: initial?.responsibilities || predefined.responsibilities || ['Contribute to real-world projects', 'Collaborate effectively with the team'], 
-        skills: initial?.skills || predefined.skills || ['Relevant domain skills', 'Strong communication'], 
+        responsibilities: initial?.responsibilities || predefined.responsibilities || ['Contribute to real-world projects', 'Collaborate effectively with the team'],
+        skills: initial?.skills || predefined.skills || ['Relevant domain skills', 'Strong communication'],
         whatYouGet: initial?.whatYouGet || predefined.whatYouGet || ['Experience Certificate', 'Performance-based Stipend'],
       },
       isEdit
@@ -461,11 +464,11 @@ function CareerModal({ initial, onClose, onSave }) {
   return (
     <ModalShell title={isEdit ? 'Edit Career' : 'Add New Career'} onClose={onClose}>
       <form onSubmit={handleSubmit} className="space-y-4">
-        
+       
         <Field label="Job Title *">
-          <select 
-            value={form.id} 
-            onChange={handleCareerChange} 
+          <select
+            value={form.id}
+            onChange={handleCareerChange}
             className="input"
             disabled={isEdit}
           >
@@ -1326,7 +1329,7 @@ const loadEnrollments = async () => {
   setEnrollments(data);
 };
   const [careerApplications, setCareerApplications] = useState([]);
-  
+ 
   const loadApplications = async () => {
     try {
       const data = await getApplications();
@@ -1343,6 +1346,19 @@ const loadEnrollments = async () => {
   const [careerModal, setCareerModal] = useState(null);
   const [toast, setToast] = useState('');
 
+  useEffect(() => {
+    loadCourses();
+  }, []);
+ 
+  const loadCourses = async () => {
+    try {
+      const data = await getCourses();
+      setCourses(data);
+    } catch (error) {
+      console.error("Error loading courses:", error);
+    }
+  };
+
   const flash = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
 
   const goTo = (view, action) => {
@@ -1351,8 +1367,23 @@ const loadEnrollments = async () => {
     if (action === 'add' && view === 'careers') setCareerModal('add');
   };
 
-  const saveCourse = (payload, isEdit) => {
-    setCourses((prev) => (isEdit ? prev.map((c) => (c.id === payload.id ? { ...c, ...payload } : c)) : [payload, ...prev]));
+  const [savingCourse, setSavingCourse] = useState(false);
+
+const saveCourse = async (payload, isEdit) => {
+  if (savingCourse) return; // block re-entrant calls
+  setSavingCourse(true);
+  try {
+    const cleanData = Object.fromEntries(
+      Object.entries(payload).filter(([_, value]) => value !== undefined)
+    );
+
+    if (isEdit) {
+      await updateCourse(payload.firestoreId, cleanData);
+    } else {
+      await addCourse(cleanData);
+    }
+
+    await loadCourses();
     setCourseModal(null);
     flash(isEdit ? "Course updated" : "Course added");
   } catch (err) {
@@ -1364,12 +1395,12 @@ const loadEnrollments = async () => {
 };
   const deleteCourse = async (course) => {
     if (!window.confirm(`Delete "${course.title}"?`)) return;
-  
+ 
     try {
       await deleteCourseFromDB(course.firestoreId);
-  
+ 
       await loadCourses();
-  
+ 
       flash("Course deleted");
     } catch (error) {
       console.error(error);
@@ -1414,9 +1445,19 @@ const loadEnrollments = async () => {
     }
   };
 
-  const updateEnrollmentStatus = (enrollment, status) => {
-    setEnrollments((prev) => prev.map((e) => (e.id === enrollment.id ? { ...e, status } : e)));
-    flash(`${enrollment.name} marked as ${status}`);
+  const changeEnrollmentStatus = async (enrollment, status) => {
+    try {
+      await updateEnrollmentStatus(
+        enrollment.firestoreId,
+        status
+      );
+ 
+      await loadEnrollments();
+ 
+      flash(`${enrollment.name} marked as ${status}`);
+    } catch (error) {
+      console.error("Error updating enrollment status:", error);
+    }
   };
 
   const deleteStudentEnrollment = async (enrollment) => {
@@ -1430,7 +1471,7 @@ const loadEnrollments = async () => {
       alert("Failed to delete enrollment");
     }
   };
-  
+ 
 
 
   const updateApplicationStatus = async (application, status) => {
@@ -1532,14 +1573,15 @@ const loadEnrollments = async () => {
       </div>
 
       <AnimatePresence>
-        {courseModal && (
-          <CourseModal
-            key="course-modal"
-            initial={courseModal === 'add' ? null : courseModal}
-            onClose={() => setCourseModal(null)}
-            onSave={saveCourse}
-          />
-        )}
+      {courseModal && (
+  <CourseModal
+    key="course-modal"
+    initial={courseModal === 'add' ? null : courseModal}
+    onClose={() => setCourseModal(null)}
+    onSave={saveCourse}
+    saving={savingCourse}
+  />
+)}
         {careerModal && (
           <CareerModal
             key="career-modal"
