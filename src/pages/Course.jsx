@@ -327,8 +327,8 @@ function CourseCard({ course, index }) {
       {/* Background glow pseudo-element */}
       <div className={`absolute inset-0 bg-gradient-to-r from-transparent to-transparent opacity-0 transition-opacity duration-500 pointer-events-none z-0 ${accent.gradientHover} group-hover:opacity-100`} />
 
-      {/* Content (Left) */}
-      <div className="relative z-10 p-6 sm:p-8 flex flex-col justify-between w-full sm:w-[55%] lg:w-[60%] lg:pr-2">
+      {/* Content */}
+      <div className="relative z-10 p-6 sm:p-8 flex flex-col justify-between w-full">
         <div>
           {/* Top Badges */}
           <div className="flex flex-wrap items-center gap-3 mb-6">
@@ -368,24 +368,7 @@ function CourseCard({ course, index }) {
         </Link>
       </div>
 
-      {/* Image (Right) */}
-      <div
-        className="relative w-full sm:w-[45%] lg:w-[40%] overflow-hidden z-10 bg-[#0a0a0a]"
-        style={{ minHeight: '220px' }}
-      >
-        <div className="hidden sm:block absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#080808] to-transparent z-10 pointer-events-none" />
-        <div className="block sm:hidden absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#080808] to-transparent z-10 pointer-events-none" />
-        <img
-          src={course.image}
-          alt={course.title}
-          loading="eager"
-          decoding="async"
-          className="absolute inset-0 w-full h-full object-cover object-right-bottom sm:object-right"
-          style={{ transition: 'transform 0.6s ease', transform: 'scale(1)' }}
-          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04)'}
-          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-        />
-      </div>
+
     </motion.div>
   );
 }

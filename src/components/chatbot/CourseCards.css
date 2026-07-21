@@ -1,0 +1,164 @@
+/* ── Container ────────────────────────────────────────── */
+.zx-course-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.zx-course-heading {
+  color: #a78bfa;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  letter-spacing: 0.3px;
+}
+
+/* ── Card ─────────────────────────────────────────────── */
+.zx-course-card {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 100%;
+  padding: 11px 13px;
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px solid rgba(124, 58, 237, 0.22);
+  border-radius: 12px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  box-sizing: border-box;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.zx-course-card:hover {
+  background: rgba(124, 58, 237, 0.13);
+  border-color: rgba(124, 58, 237, 0.45);
+}
+
+.zx-course-card--expanded {
+  border-color: rgba(124, 58, 237, 0.5);
+  background: rgba(124, 58, 237, 0.12);
+}
+
+/* ── Top row ──────────────────────────────────────────── */
+.zx-course-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.zx-course-name {
+  color: #e2d9f3;
+  font-size: 13px;
+  font-weight: 700;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.3;
+}
+
+/* ── Badges ───────────────────────────────────────────── */
+.zx-course-badges {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.zx-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 10.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.zx-badge--duration {
+  background: rgba(124, 58, 237, 0.25);
+  border: 1px solid rgba(124, 58, 237, 0.4);
+  color: #c4b5fd;
+}
+
+.zx-badge--mode {
+  background: rgba(79, 70, 229, 0.2);
+  border: 1px solid rgba(79, 70, 229, 0.35);
+  color: #a5b4fc;
+}
+
+/* ── Description ──────────────────────────────────────── */
+.zx-course-desc {
+  color: rgba(196, 181, 253, 0.70);
+  font-size: 11.5px;
+  line-height: 1.6;
+  margin: 0;
+  padding: 8px 10px;
+  background: rgba(124, 58, 237, 0.08);
+  border-radius: 8px;
+  border-left: 2px solid rgba(124, 58, 237, 0.4);
+  animation: zx-desc-in 0.2s ease;
+}
+
+@keyframes zx-desc-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Action buttons row ───────────────────────────────── */
+.zx-course-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 2px;
+}
+
+/* View Info button */
+.zx-desc-btn {
+  flex: 1;
+  padding: 7px 10px;
+  background: transparent;
+  border: 1px solid rgba(124, 58, 237, 0.30);
+  border-radius: 20px;
+  color: #a78bfa;
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.zx-desc-btn:hover {
+  background: rgba(124, 58, 237, 0.12);
+  border-color: rgba(124, 58, 237, 0.5);
+  color: #c4b5fd;
+}
+
+/* Apply Now button */
+.zx-apply-btn {
+  flex: 1;
+  padding: 7px 10px;
+  background: linear-gradient(135deg, #7C3AED, #4F46E5);
+  border: none;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.2s, transform 0.15s;
+  text-align: center;
+}
+
+.zx-apply-btn:hover {
+  opacity: 0.88;
+  transform: scale(1.02);
+}
+
+.zx-apply-btn:active {
+  transform: scale(0.97);
+}
