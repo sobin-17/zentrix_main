@@ -424,27 +424,17 @@ function CourseModal({ initial, onClose, onSave, saving }) {
               className="block w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-500"
             />
             {imagePreview && (
-              <div className="relative inline-block">
-                {c.image ? (
-  <img
-    src={c.image}
-    alt={c.title}
-    className="w-full h-full object-cover"
-  />
-) : (
-  <div className="w-full h-full flex items-center justify-center text-slate-500">
-    No Image
+  <div className="relative inline-block">
+    <img src={imagePreview} alt="Preview" className="w-40 h-24 object-cover rounded-xl border border-white/20" />
+    <button
+      type="button"
+      onClick={cancelImage}
+      className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center shadow"
+    >
+      ✕
+    </button>
   </div>
 )}
-                <button
-                  type="button"
-                  onClick={cancelImage}
-                  className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center shadow"
-                >
-                  ✕
-                </button>
-              </div>
-            )}
           </div>
         </Field>
 
@@ -513,13 +503,14 @@ function CareerModal({ initial, onClose, onSave }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.title.trim()) return;
-
+  
     const responsibilities = (form.responsibilitiesText || '').split(';').map((s) => s.trim()).filter(Boolean);
     const skills = (form.skillsText || '').split(',').map((s) => s.trim()).filter(Boolean);
     const whatYouGet = (form.whatYouGetText || '').split(';').map((s) => s.trim()).filter(Boolean);
-
+  
     onSave(
       {
+        ...(isEdit ? { firestoreId: initial.firestoreId } : {}),
         id: isEdit ? initial.id : slugify(form.title),
         title: form.title, type: form.type, experience: form.experience, location: form.location,
         status: form.status, description: form.description, responsibilities, skills, whatYouGet,
@@ -1434,15 +1425,39 @@ const saveCourse = async (payload, isEdit) => {
     }
   };
 
-  const saveCareer = (payload, isEdit) => {
-    setCareers((prev) => (isEdit ? prev.map((j) => (j.id === payload.id ? { ...j, ...payload } : j)) : [payload, ...prev]));
-    setCareerModal(null);
-    flash(isEdit ? 'Career updated' : 'Career added');
+  const saveCareer = async (payload, isEdit) => {
+    try {
+      const cleanData = Object.fromEntries(
+        Object.entries(payload).filter(([_, value]) => value !== undefined)
+      );
+  
+      if (isEdit) {
+        await updateCareer(payload.firestoreId, cleanData);
+      } else {
+        await addCareer(cleanData);
+      }
+  
+      await loadCareers();
+  
+      setCareerModal(null);
+  
+      flash(isEdit ? "Career updated" : "Career added");
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    }
   };
-  const deleteCareer = (career) => {
-    if (window.confirm(`Delete "${career.title}"? This can't be undone.`)) {
-      setCareers((prev) => prev.filter((j) => j.id !== career.id));
-      flash('Career deleted');
+  const deleteCareer = async (career) => {
+    if (!window.confirm(`Delete "${career.title}"?`)) return;
+  
+    try {
+      await deleteCareerFromDB(career.firestoreId);
+  
+      await loadCareers();
+  
+      flash("Career deleted");
+    } catch (error) {
+      console.error(error);
     }
   };
 
