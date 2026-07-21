@@ -1434,15 +1434,39 @@ const saveCourse = async (payload, isEdit) => {
     }
   };
 
-  const saveCareer = (payload, isEdit) => {
-    setCareers((prev) => (isEdit ? prev.map((j) => (j.id === payload.id ? { ...j, ...payload } : j)) : [payload, ...prev]));
-    setCareerModal(null);
-    flash(isEdit ? 'Career updated' : 'Career added');
+  const saveCareer = async (payload, isEdit) => {
+    try {
+      const cleanData = Object.fromEntries(
+        Object.entries(payload).filter(([_, value]) => value !== undefined)
+      );
+  
+      if (isEdit) {
+        await updateCareer(payload.firestoreId, cleanData);
+      } else {
+        await addCareer(cleanData);
+      }
+  
+      await loadCareers();
+  
+      setCareerModal(null);
+  
+      flash(isEdit ? "Career updated" : "Career added");
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    }
   };
-  const deleteCareer = (career) => {
-    if (window.confirm(`Delete "${career.title}"? This can't be undone.`)) {
-      setCareers((prev) => prev.filter((j) => j.id !== career.id));
-      flash('Career deleted');
+  const deleteCareer = async (career) => {
+    if (!window.confirm(`Delete "${career.title}"?`)) return;
+  
+    try {
+      await deleteCareerFromDB(career.firestoreId);
+  
+      await loadCareers();
+  
+      flash("Career deleted");
+    } catch (error) {
+      console.error(error);
     }
   };
 

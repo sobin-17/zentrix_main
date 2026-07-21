@@ -3,169 +3,173 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin, Clock, Briefcase, ChevronRight, Send, Loader2 } from 'lucide-react';
 import emailjs from '@emailjs/browser';
-
+import { addApplication } from "../services/applicationService";
+import { storage } from "../firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useEffect, } from "react";
+import { getCareers } from "../services/careerService";
 // ─── EmailJS credentials ─────────────────────────────────────────────────────
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 /* ─── All job data (mirrors Careers.jsx) ─────────────────────────────── */
-const jobData = {
-  python: {
-    id: 'python',
-    title: 'Python Developer Intern',
-    category: 'Software Development',
-    experience: '3 – 6 Months',
-    type: 'Internship',
-    location: 'Nagercoil, Tamil Nadu',
-    overview:
-      'We are seeking a motivated and enthusiastic Python Developer Intern to join our development team. The intern will work on real-world projects, contribute to software development activities, and gain hands-on experience in Python programming, web development, APIs, databases, and modern development practices.',
-    responsibilities: [
-      'Write clean, efficient Python code for backend development tasks',
-      'Assist in building RESTful APIs using Flask / FastAPI / Django',
-      'Work with SQL and NoSQL databases (MySQL, MongoDB)',
-      'Collaborate with the team to design and implement software solutions',
-      'Debug, test, and optimize existing applications',
-      'Participate in code reviews and technical discussions',
-      'Document code and maintain project wikis',
-    ],
-    skills: ['Python', 'REST APIs', 'Git', 'SQL / MongoDB', 'Problem Solving'],
-    stipend: 'Merit-based stipend',
-    certificate: 'Internship certificate provided',
-  },
-  mern: {
-    id: 'mern',
-    title: 'MERN Stack Intern',
-    category: 'Full Stack Development',
-    experience: '3 Months',
-    type: 'Internship',
-    location: 'Nagercoil, Tamil Nadu',
-    overview:
-      'Join our team to build modern web applications using MongoDB, Express.js, React, and Node.js through hands-on real-world projects. You will be exposed to the full development lifecycle from planning to deployment.',
-    responsibilities: [
-      'Build responsive UIs using React and Tailwind CSS',
-      'Develop Node.js / Express.js REST APIs',
-      'Integrate MongoDB databases for data persistence',
-      'Work with Git for version control and collaboration',
-      'Optimize application performance and user experience',
-      'Write unit tests and participate in code reviews',
-      'Deploy applications using cloud services',
-    ],
-    skills: ['React', 'Node.js', 'MongoDB', 'Express.js', 'REST APIs', 'Git'],
-    stipend: 'Merit-based stipend',
-    certificate: 'Internship certificate provided',
-  },
-  uiux: {
-    id: 'uiux',
-    title: 'UI / UX Intern',
-    category: 'Design',
-    experience: '3 Months',
-    type: 'Internship',
-    location: 'Nagercoil, Tamil Nadu',
-    overview:
-      'Create user-friendly interfaces, wireframes, prototypes, and engaging digital experiences using industry-standard tools. Work alongside developers and product managers to bring ideas to life.',
-    responsibilities: [
-      'Design wireframes, mockups and interactive prototypes',
-      'Conduct user research and usability testing',
-      'Create design systems, components and style guides',
-      'Collaborate with developers to ensure pixel-perfect implementation',
-      'Iterate designs based on feedback and analytics',
-      'Produce social media visuals and marketing materials',
-      'Maintain brand consistency across all deliverables',
-    ],
-    skills: ['Figma', 'Adobe XD', 'Prototyping', 'User Research', 'Design Systems'],
-    stipend: 'Merit-based stipend',
-    certificate: 'Internship certificate provided',
-  },
-  graphic: {
-    id: 'graphic',
-    title: 'Graphic Design Intern',
-    category: 'Design',
-    experience: '3 Months',
-    type: 'Internship',
-    location: 'Nagercoil, Tamil Nadu',
-    overview:
-      'Design creative visuals, social media content, branding materials, and marketing assets that elevate our brand identity and engage our audiences across all digital and print channels.',
-    responsibilities: [
-      'Create branded graphics for social media, ads and websites',
-      'Design logos, banners, flyers and marketing collateral',
-      'Develop visual concepts aligned with brand guidelines',
-      'Collaborate with the marketing team on campaigns',
-      'Prepare print-ready and digital-ready artwork',
-      'Participate in creative brainstorming sessions',
-      'Organise and manage design assets and files',
-    ],
-    skills: ['Photoshop', 'Illustrator', 'InDesign', 'Canva', 'Typography', 'Color Theory'],
-    stipend: 'Merit-based stipend',
-    certificate: 'Internship certificate provided',
-  },
-  video: {
-    id: 'video',
-    title: 'Video Editor Intern',
-    category: 'Media Production',
-    experience: '3 Months',
-    type: 'Internship',
-    location: 'Nagercoil, Tamil Nadu',
-    overview:
-      'Edit and enhance videos, add visual effects, transitions, and create engaging multimedia content for our brand channels, social media, and client deliverables.',
-    responsibilities: [
-      'Edit raw footage into polished, professional videos',
-      'Add motion graphics, transitions and visual effects',
-      'Colour grade and audio mix final deliverables',
-      'Create short-form content for Instagram, YouTube & TikTok',
-      'Collaborate with the creative team on storyboards',
-      'Manage and organise media assets efficiently',
-      'Export videos in formats optimised for different platforms',
-    ],
-    skills: ['Premiere Pro', 'After Effects', 'DaVinci Resolve', 'Motion Graphics', 'Colour Grading'],
-    stipend: 'Merit-based stipend',
-    certificate: 'Internship certificate provided',
-  },
-  digital: {
-    id: 'digital',
-    title: 'Digital Marketing Intern',
-    category: 'Marketing',
-    experience: '3 Months',
-    type: 'Internship',
-    location: 'Nagercoil, Tamil Nadu',
-    overview:
-      'Learn social media marketing, content strategy, campaign management, and online brand promotion. Work on live campaigns and help grow the Zentrix digital presence across multiple platforms.',
-    responsibilities: [
-      'Plan and schedule content across social media platforms',
-      'Assist in running paid ad campaigns (Meta, Google)',
-      'Write engaging captions, blogs and email newsletters',
-      'Track and report campaign KPIs and analytics',
-      'Research industry trends and competitor strategies',
-      'Engage with online communities and respond to followers',
-      'Support the team in influencer outreach and partnerships',
-    ],
-    skills: ['Social Media', 'Content Writing', 'Google Analytics', 'Meta Ads', 'Email Marketing'],
-    stipend: 'Merit-based stipend',
-    certificate: 'Internship certificate provided',
-  },
-  seo: {
-    id: 'seo',
-    title: 'SEO Analyst Intern',
-    category: 'Digital Marketing',
-    experience: '3 Months',
-    type: 'Internship',
-    location: 'Nagercoil, Tamil Nadu',
-    overview:
-      'Optimise websites for search engines, conduct keyword research, and improve online visibility and rankings. Gain hands-on experience with industry-leading SEO tools and strategies.',
-    responsibilities: [
-      'Conduct keyword research and competitive analysis',
-      'Perform on-page and off-page SEO optimisation',
-      'Audit websites for technical SEO issues',
-      'Build quality backlinks through outreach',
-      'Track rankings, traffic and conversions via Google Analytics',
-      'Create SEO reports and present insights to the team',
-      'Optimise meta tags, headings and content structure',
-    ],
-    skills: ['Google Search Console', 'SEMrush / Ahrefs', 'On-page SEO', 'Link Building', 'Analytics'],
-    stipend: 'Merit-based stipend',
-    certificate: 'Internship certificate provided',
-  },
-};
+// const jobData = {
+//   python: {
+//     id: 'python',
+//     title: 'Python Developer Intern',
+//     category: 'Software Development',
+//     experience: '3 – 6 Months',
+//     type: 'Internship',
+//     location: 'Nagercoil, Tamil Nadu',
+//     overview:
+//       'We are seeking a motivated and enthusiastic Python Developer Intern to join our development team. The intern will work on real-world projects, contribute to software development activities, and gain hands-on experience in Python programming, web development, APIs, databases, and modern development practices.',
+//     responsibilities: [
+//       'Write clean, efficient Python code for backend development tasks',
+//       'Assist in building RESTful APIs using Flask / FastAPI / Django',
+//       'Work with SQL and NoSQL databases (MySQL, MongoDB)',
+//       'Collaborate with the team to design and implement software solutions',
+//       'Debug, test, and optimize existing applications',
+//       'Participate in code reviews and technical discussions',
+//       'Document code and maintain project wikis',
+//     ],
+//     skills: ['Python', 'REST APIs', 'Git', 'SQL / MongoDB', 'Problem Solving'],
+//     stipend: 'Merit-based stipend',
+//     certificate: 'Internship certificate provided',
+//   },
+//   mern: {
+//     id: 'mern',
+//     title: 'MERN Stack Intern',
+//     category: 'Full Stack Development',
+//     experience: '3 Months',
+//     type: 'Internship',
+//     location: 'Nagercoil, Tamil Nadu',
+//     overview:
+//       'Join our team to build modern web applications using MongoDB, Express.js, React, and Node.js through hands-on real-world projects. You will be exposed to the full development lifecycle from planning to deployment.',
+//     responsibilities: [
+//       'Build responsive UIs using React and Tailwind CSS',
+//       'Develop Node.js / Express.js REST APIs',
+//       'Integrate MongoDB databases for data persistence',
+//       'Work with Git for version control and collaboration',
+//       'Optimize application performance and user experience',
+//       'Write unit tests and participate in code reviews',
+//       'Deploy applications using cloud services',
+//     ],
+//     skills: ['React', 'Node.js', 'MongoDB', 'Express.js', 'REST APIs', 'Git'],
+//     stipend: 'Merit-based stipend',
+//     certificate: 'Internship certificate provided',
+//   },
+//   uiux: {
+//     id: 'uiux',
+//     title: 'UI / UX Intern',
+//     category: 'Design',
+//     experience: '3 Months',
+//     type: 'Internship',
+//     location: 'Nagercoil, Tamil Nadu',
+//     overview:
+//       'Create user-friendly interfaces, wireframes, prototypes, and engaging digital experiences using industry-standard tools. Work alongside developers and product managers to bring ideas to life.',
+//     responsibilities: [
+//       'Design wireframes, mockups and interactive prototypes',
+//       'Conduct user research and usability testing',
+//       'Create design systems, components and style guides',
+//       'Collaborate with developers to ensure pixel-perfect implementation',
+//       'Iterate designs based on feedback and analytics',
+//       'Produce social media visuals and marketing materials',
+//       'Maintain brand consistency across all deliverables',
+//     ],
+//     skills: ['Figma', 'Adobe XD', 'Prototyping', 'User Research', 'Design Systems'],
+//     stipend: 'Merit-based stipend',
+//     certificate: 'Internship certificate provided',
+//   },
+//   graphic: {
+//     id: 'graphic',
+//     title: 'Graphic Design Intern',
+//     category: 'Design',
+//     experience: '3 Months',
+//     type: 'Internship',
+//     location: 'Nagercoil, Tamil Nadu',
+//     overview:
+//       'Design creative visuals, social media content, branding materials, and marketing assets that elevate our brand identity and engage our audiences across all digital and print channels.',
+//     responsibilities: [
+//       'Create branded graphics for social media, ads and websites',
+//       'Design logos, banners, flyers and marketing collateral',
+//       'Develop visual concepts aligned with brand guidelines',
+//       'Collaborate with the marketing team on campaigns',
+//       'Prepare print-ready and digital-ready artwork',
+//       'Participate in creative brainstorming sessions',
+//       'Organise and manage design assets and files',
+//     ],
+//     skills: ['Photoshop', 'Illustrator', 'InDesign', 'Canva', 'Typography', 'Color Theory'],
+//     stipend: 'Merit-based stipend',
+//     certificate: 'Internship certificate provided',
+//   },
+//   video: {
+//     id: 'video',
+//     title: 'Video Editor Intern',
+//     category: 'Media Production',
+//     experience: '3 Months',
+//     type: 'Internship',
+//     location: 'Nagercoil, Tamil Nadu',
+//     overview:
+//       'Edit and enhance videos, add visual effects, transitions, and create engaging multimedia content for our brand channels, social media, and client deliverables.',
+//     responsibilities: [
+//       'Edit raw footage into polished, professional videos',
+//       'Add motion graphics, transitions and visual effects',
+//       'Colour grade and audio mix final deliverables',
+//       'Create short-form content for Instagram, YouTube & TikTok',
+//       'Collaborate with the creative team on storyboards',
+//       'Manage and organise media assets efficiently',
+//       'Export videos in formats optimised for different platforms',
+//     ],
+//     skills: ['Premiere Pro', 'After Effects', 'DaVinci Resolve', 'Motion Graphics', 'Colour Grading'],
+//     stipend: 'Merit-based stipend',
+//     certificate: 'Internship certificate provided',
+//   },
+//   digital: {
+//     id: 'digital',
+//     title: 'Digital Marketing Intern',
+//     category: 'Marketing',
+//     experience: '3 Months',
+//     type: 'Internship',
+//     location: 'Nagercoil, Tamil Nadu',
+//     overview:
+//       'Learn social media marketing, content strategy, campaign management, and online brand promotion. Work on live campaigns and help grow the Zentrix digital presence across multiple platforms.',
+//     responsibilities: [
+//       'Plan and schedule content across social media platforms',
+//       'Assist in running paid ad campaigns (Meta, Google)',
+//       'Write engaging captions, blogs and email newsletters',
+//       'Track and report campaign KPIs and analytics',
+//       'Research industry trends and competitor strategies',
+//       'Engage with online communities and respond to followers',
+//       'Support the team in influencer outreach and partnerships',
+//     ],
+//     skills: ['Social Media', 'Content Writing', 'Google Analytics', 'Meta Ads', 'Email Marketing'],
+//     stipend: 'Merit-based stipend',
+//     certificate: 'Internship certificate provided',
+//   },
+//   seo: {
+//     id: 'seo',
+//     title: 'SEO Analyst Intern',
+//     category: 'Digital Marketing',
+//     experience: '3 Months',
+//     type: 'Internship',
+//     location: 'Nagercoil, Tamil Nadu',
+//     overview:
+//       'Optimise websites for search engines, conduct keyword research, and improve online visibility and rankings. Gain hands-on experience with industry-leading SEO tools and strategies.',
+//     responsibilities: [
+//       'Conduct keyword research and competitive analysis',
+//       'Perform on-page and off-page SEO optimisation',
+//       'Audit websites for technical SEO issues',
+//       'Build quality backlinks through outreach',
+//       'Track rankings, traffic and conversions via Google Analytics',
+//       'Create SEO reports and present insights to the team',
+//       'Optimise meta tags, headings and content structure',
+//     ],
+//     skills: ['Google Search Console', 'SEMrush / Ahrefs', 'On-page SEO', 'Link Building', 'Analytics'],
+//     stipend: 'Merit-based stipend',
+//     certificate: 'Internship certificate provided',
+//   },
+// };
 
 /* ─── Floating particles (reused style) ─────────────────────────────── */
 const PARTICLES = Array.from({ length: 50 }, (_, i) => {
@@ -184,7 +188,7 @@ const PARTICLES = Array.from({ length: 50 }, (_, i) => {
 });
 
 /* ─── Application Form ───────────────────────────────────────────────── */
-const ApplyForm = ({ jobTitle }) => {
+const ApplyForm = ({ job }) => {
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '', resume: null });
   const [status, setStatus] = useState('idle'); // idle | sending | success | error
 
@@ -198,28 +202,60 @@ const ApplyForm = ({ jobTitle }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus('sending');
-
-    const templateParams = {
-      to_email: 'hr.zentrixtechnology@gmail.com',
-      job_title: jobTitle,
-      from_name: form.name,
-      from_email: form.email,
-      from_phone: form.phone,
-      message: form.message || '(No additional message provided)',
-    };
-
+    setStatus("sending");
+  
     try {
+  
+      // Upload resume to Firebase Storage
+      let resumeUrl = "";
+  
+      if (form.resume) {
+        const resumeRef = ref(
+          storage,
+          `resumes/${Date.now()}_${form.resume.name}`
+        );
+  
+        await uploadBytes(resumeRef, form.resume);
+        resumeUrl = await getDownloadURL(resumeRef);
+      }
+  
+      // Save to Firestore
+      const docRef = await addApplication({
+        jobId: job.id,
+        jobTitle: job.title,
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        message: form.message,
+        resumeUrl,
+        status: "Pending",
+        appliedAt: new Date().toISOString(),
+      });
+      
+      console.log("Application saved:", docRef.id);
+  
+      // EmailJS
+      const templateParams = {
+        to_email: "hr.zentrixtechnology@gmail.com",
+        job_title: job.title,
+        from_name: form.name,
+        from_email: form.email,
+        from_phone: form.phone,
+        message: form.message || "(No additional message provided)",
+      };
+  
       await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
         templateParams,
         EMAILJS_PUBLIC_KEY
       );
-      setStatus('success');
+  
+      setStatus("success");
+  
     } catch (err) {
-      console.error('EmailJS error:', err);
-      setStatus('error');
+      console.error(err);
+      setStatus("error");
     }
   };
 
@@ -235,7 +271,7 @@ const ApplyForm = ({ jobTitle }) => {
         </div>
         <h3 className="text-2xl font-bold text-white mb-3">Application Submitted!</h3>
         <p className="text-slate-400 max-w-sm mx-auto">
-          Thank you for applying for <span className="text-purple-400">{jobTitle}</span>.
+          Thank you for applying for <span className="text-purple-400">{job.title}</span>.
           Our HR team will review your application and reach out soon.
         </p>
       </motion.div>
@@ -342,14 +378,50 @@ const ApplyForm = ({ jobTitle }) => {
 const JobDetail = () => {
   const { jobId } = useParams();
   const navigate = useNavigate();
-  const job = jobData[jobId];
+
+  const [job, setJob] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadJob = async () => {
+      try {
+        const careers = await getCareers();
+
+        // Find the career whose id matches the URL
+        const selectedJob = careers.find(
+          (career) => career.id === jobId
+        );
+
+        setJob(selectedJob || null);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadJob();
+  }, [jobId]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center text-white">
+        Loading...
+      </div>
+    );
+  }
 
   if (!job) {
     return (
       <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white">
         <h1 className="text-4xl font-bold mb-4">Role Not Found</h1>
-        <Link to="/career" className="text-purple-400 hover:text-purple-300 flex items-center gap-2">
-          <ArrowLeft className="w-4 h-4" /> Back to Careers
+
+        <Link
+          to="/career"
+          className="text-purple-400 hover:text-purple-300 flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Careers
         </Link>
       </div>
     );
@@ -466,12 +538,10 @@ const JobDetail = () => {
                 Responsibilities
               </h2>
               <ul className="space-y-3">
-                {job.responsibilities.map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-slate-300 text-sm leading-relaxed">
-                    <ChevronRight className="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" />
-                    {item}
-                  </li>
-                ))}
+              {job.responsibilities.map((item, index) => (
+  <li key={`${index}-${item}`}>
+  </li>
+))}
               </ul>
             </div>
 
@@ -481,14 +551,11 @@ const JobDetail = () => {
                 Skills Required
               </h2>
               <div className="flex flex-wrap gap-2">
-                {job.skills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-300 border border-purple-500/40 bg-purple-500/10"
-                  >
-                    {skill}
-                  </span>
-                ))}
+              {job.skills.map((skill, index) => (
+  <span key={`${skill}-${index}`}>
+    {skill}
+  </span>
+))}
               </div>
             </div>
 
@@ -498,12 +565,16 @@ const JobDetail = () => {
                 What You Get
               </h2>
               <ul className="space-y-3">
-                {[job.stipend, job.certificate, 'Hands-on real-world project exposure', 'Expert mentorship & guidance'].map((perk) => (
-                  <li key={perk} className="flex items-center gap-3 text-slate-300 text-sm">
-                    <span className="w-2 h-2 rounded-full bg-purple-500 flex-shrink-0" />
-                    {perk}
-                  </li>
-                ))}
+              {[
+  job.stipend,
+  job.certificate,
+  "Hands-on real-world project exposure",
+  "Expert mentorship & guidance",
+].map((perk, index) => (
+  <li key={`${index}-${perk}`}>
+    {perk}
+  </li>
+))}
               </ul>
             </div>
           </motion.div>
@@ -519,7 +590,7 @@ const JobDetail = () => {
               <p className="text-slate-500 text-sm mb-8">
                 Fill in your details and we'll get back to you shortly.
               </p>
-              <ApplyForm jobTitle={job.title} />
+              <ApplyForm job={job} />
             </div>
           </motion.div>
 
