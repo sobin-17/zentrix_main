@@ -15,6 +15,7 @@ import GetInTouch from "./pages/GetInTouch";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import FloatingCTA from './components/FloatingCTA';
+import ChatIntegration from './components/chatbot/ChatIntegration';
 import './firebase';
 import './index.css';
 import ScrollToTop from "./components/ScrollToTop";
@@ -37,7 +38,15 @@ function App() {
         <GlobalAtmosphere />
         {/* Persistent Navbar */}
         <Navbar />
-        <FloatingCTA />
+        {/* Persistent Floating Controls (Chatbot + Actions) */}
+        <div className="fixed right-6 bottom-16 md:right-8 md:bottom-20 z-[9999] flex flex-col gap-3 items-end pointer-events-none">
+          <div className="pointer-events-auto">
+            <ChatIntegration />
+          </div>
+          <div className="pointer-events-auto origin-bottom-right scale-[0.85] md:scale-100 transition-transform">
+            <FloatingCTA />
+          </div>
+        </div>
 
         {/* Dynamic Page Content */}
         <main className="relative scroll-smooth" id="main-scroll-container">

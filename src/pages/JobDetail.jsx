@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, MapPin, Clock, Briefcase, ChevronRight, Send, Loader2 } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, Briefcase, ChevronRight, Send, Loader2, X } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 
 // ─── EmailJS credentials ─────────────────────────────────────────────────────
@@ -187,6 +187,7 @@ const PARTICLES = Array.from({ length: 50 }, (_, i) => {
 const ApplyForm = ({ jobTitle }) => {
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '', resume: null });
   const [status, setStatus] = useState('idle'); // idle | sending | success | error
+  const fileInputRef = useRef(null);
 
   const handleChange = (e) => {
     if (e.target.name === 'resume') {
@@ -285,12 +286,26 @@ const ApplyForm = ({ jobTitle }) => {
         <div className="relative w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 transition-colors focus-within:border-purple-500 hover:border-white/20">
           <input
             required
+            ref={fileInputRef}
             type="file"
             name="resume"
             accept=".pdf,.doc,.docx"
             onChange={handleChange}
-            className="w-full text-white text-sm focus:outline-none cursor-pointer file:cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-500 transition-all"
+            className="w-full text-white text-sm focus:outline-none cursor-pointer file:cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-500 transition-all pr-12"
           />
+          {form.resume && (
+            <button
+              type="button"
+              onClick={() => {
+                setForm(prev => ({ ...prev, resume: null }));
+                if (fileInputRef.current) fileInputRef.current.value = '';
+              }}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-red-500 hover:text-red-400 p-1.5 bg-red-500/10 rounded-full transition-colors"
+              title="Remove file"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
 

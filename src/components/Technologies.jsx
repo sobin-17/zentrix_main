@@ -67,8 +67,8 @@ const Planet = ({ planet, radius, index, canEmerge, onArrived, isSelected, isDim
     const startX = 22 + (index % 3) * 8 - 12; // Slight variation around crack
     const startY = -20 + Math.sin(index) * 12;
 
-    const delay = index * 0.08; // Gentle stagger
-    const duration = 2.2 + index * 0.05;
+    const delay = index * 0.05; // Gentle stagger
+    const duration = 1.2 + index * 0.05;
 
     setTimeout(() => {
       animate(x, finalX, { duration, ease: 'easeOut' });
@@ -83,8 +83,8 @@ const Planet = ({ planet, radius, index, canEmerge, onArrived, isSelected, isDim
           }
         },
       });
-      animate(opacity, 1, { duration: 0.8, ease: 'easeOut' });
-      animate(scale, [0.3, 1.2, 1], { duration: 2.1, times: [0, 0.6, 1] });
+      animate(opacity, 1, { duration: 0.5, ease: 'easeOut' });
+      animate(scale, [0.3, 1.2, 1], { duration: 1.2, times: [0, 0.6, 1] });
     }, delay * 1000);
 
     // Set initial position near crack
@@ -107,7 +107,7 @@ const Planet = ({ planet, radius, index, canEmerge, onArrived, isSelected, isDim
   return (
     <motion.div
       className="absolute top-1/2 left-1/2 z-20"
-      style={{ x, y, opacity, scale, translateX: '-50%', translateY: '-50%' }}
+      style={{ x, y, opacity, scale, translateX: '-50%', translateY: '-50%', willChange: 'transform' }}
     >
       <motion.div
         animate={
@@ -145,7 +145,7 @@ const Technologies = () => {
     icon: <Layers color="#a855f7" className="w-12 h-12" />,
   };
 
-  const ORBIT_DURATION = 50;
+  const ORBIT_DURATION = 20;
   const ORBIT_DIRECTION = -1;
 
   const planets = [

@@ -211,16 +211,12 @@ const PARTICLES = Array.from({ length: 50 }, (_, i) => {
 /* ─── Enrollment form ─────────────────────────────────────────────────────── */
 const EnrollForm = ({ courseTitle }) => {
   const [form, setForm] = useState({
-    name: '', email: '', phone: '', qualification: '', message: '', resume: null,
+    name: '', email: '', phone: '', qualification: '', message: '',
   });
   const [status, setStatus] = useState('idle');
 
   const handleChange = (e) => {
-    if (e.target.name === 'resume') {
-      setForm({ ...form, resume: e.target.files[0] });
-    } else {
-      setForm({ ...form, [e.target.name]: e.target.value });
-    }
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -315,16 +311,7 @@ const EnrollForm = ({ courseTitle }) => {
         </select>
       </div>
 
-      {/* Resume */}
-      <div>
-        <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Resume / CV (optional)</label>
-        <div className="relative w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 transition-colors focus-within:border-purple-500 hover:border-white/20">
-          <input
-            type="file" name="resume" accept=".pdf,.doc,.docx" onChange={handleChange}
-            className="w-full text-white text-sm focus:outline-none cursor-pointer file:cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-500 transition-all"
-          />
-        </div>
-      </div>
+
 
       {/* Message */}
       <div>
