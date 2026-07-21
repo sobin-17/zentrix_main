@@ -2,23 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  addCourse,
-  getCourses,
-  updateCourse,
-  deleteCourse as deleteCourseFromDB,
-} from "../services/courseService";
-import {
-  getEnrollments,
-  updateEnrollmentStatus
-} from "../services/enrollmentService";
-
-import {
-  addCareer,
-  getCareers,
-  updateCareer,
-  deleteCareer as deleteCareerFromDB,
-} from "../services/careerService";
-import {
   LayoutDashboard, BookOpen, Grid3x3, PlayCircle, ClipboardList, Star,
   Award, Briefcase, FileText, Users, UserCog, Shield, Settings, Globe,
   Search, Bell, ChevronDown, Plus, Pencil, Trash2, Eye, X, Check,
@@ -26,8 +9,6 @@ import {
   MessageSquare, Calendar,
 } from 'lucide-react';
 
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "../firebase";
 /* ────────────────────────────────────────────────────────────────────────
    CONSTANTS / SEED DATA
 ──────────────────────────────────────────────────────────────────────── */
@@ -252,53 +233,26 @@ function Toast({ message }) {
 /* ────────────────────────────────────────────────────────────────────────
    COURSE FORM MODAL (Full details + Image Upload)
 ──────────────────────────────────────────────────────────────────────── */
-function CourseModal({ initial, onClose, onSave, saving }) {
+function CourseModal({ initial, onClose, onSave }) {
   const isEdit = Boolean(initial);
   const [form, setForm] = useState(
-    initial
-      ? {
-          title: initial.title || '',
-          subtitle: initial.subtitle || '',
-          category: initial.category || CATEGORIES[0],
-          duration: initial.duration || '',
-          level: initial.level || LEVELS[0],
-          status: initial.status || 'Draft',
-          image: initial.image || '',
-          accentColor: initial.accentColor || '#a855f7',
-          overview: initial.overview || initial.description || '',
-          curriculumText: Array.isArray(initial.curriculum) ? initial.curriculum.join('; ') : (initial.curriculum || ''),
-          skillsText: (initial.skills || []).join(', '),
-          internship: initial.internship ?? false,
-          placement: initial.placement ?? true,
-        }
-      : {
-          title: '', subtitle: '', category: CATEGORIES[0], duration: '', level: LEVELS[0],
-          status: 'Draft', image: '', accentColor: '#a855f7', overview: '', curriculumText: '', skillsText: '',
-          internship: false, placement: true,
-        }
+    initial || {
+      title: '', subtitle: '', category: CATEGORIES[0], duration: '', level: LEVELS[0],
+      status: 'Draft', image: '', accentColor: '#a855f7', overview: '', curriculumText: '', skillsText: '',
+      internship: false, placement: true,
+    }
   );
 
   const [imagePreview, setImagePreview] = useState(initial?.image || '');
   const [selectedFile, setSelectedFile] = useState(null);
 
-  
-
   useEffect(() => {
     if (initial) {
       setForm({
-        title: initial.title || '',
-        subtitle: initial.subtitle || '',
-        category: initial.category || CATEGORIES[0],
-        duration: initial.duration || '',
-        level: initial.level || LEVELS[0],
-        status: initial.status || 'Draft',
-        image: initial.image || '',
-        accentColor: initial.accentColor || '#a855f7',
-        overview: initial.overview || initial.description || '',
-        curriculumText: Array.isArray(initial.curriculum) ? initial.curriculum.join('; ') : (initial.curriculum || ''),
+        ...initial,
         skillsText: (initial.skills || []).join(', '),
-        internship: initial.internship ?? false,
-        placement: initial.placement ?? true,
+        curriculumText: Array.isArray(initial.curriculum) ? initial.curriculum.join('; ') : (initial.curriculum || ''),
+        overview: initial.overview || initial.description || '',
       });
       setImagePreview(initial.image || '');
     }
@@ -321,44 +275,14 @@ function CourseModal({ initial, onClose, onSave, saving }) {
     setImagePreview(initial?.image || '');
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-  
-    if (saving) return;
     if (!form.title.trim()) return;
-  
-    let imageUrl = form.image;
-  
-    // Upload new image if selected
-    if (selectedFile) {
-      try {
-        const imageRef = ref(
-          storage,
-          `courses/${Date.now()}_${selectedFile.name}`
-        );
-  
-        await uploadBytes(imageRef, selectedFile);
-  
-        imageUrl = await getDownloadURL(imageRef);
-      } catch (error) {
-        console.error("Image upload failed:", error);
-        alert("Image upload failed");
-        return;
-      }
-    }
-  
-    const skills = (form.skillsText || "")
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-  
-    const curriculum = (form.curriculumText || "")
-      .split(";")
-      .map((s) => s.trim())
-      .filter(Boolean);
-  
+
+    const skills = (form.skillsText || '').split(',').map((s) => s.trim()).filter(Boolean);
+    const curriculum = (form.curriculumText || '').split(';').map((s) => s.trim()).filter(Boolean);
+
     const payload = {
-      ...(isEdit ? { firestoreId: initial.firestoreId } : {}),
       id: isEdit ? initial.id : slugify(form.title),
       title: form.title,
       subtitle: form.subtitle,
@@ -366,7 +290,7 @@ function CourseModal({ initial, onClose, onSave, saving }) {
       duration: form.duration,
       level: form.level,
       status: form.status,
-      image: imageUrl,
+      image: imagePreview || form.image,
       accentColor: form.accentColor,
       overview: form.overview,
       curriculum,
@@ -375,7 +299,6 @@ function CourseModal({ initial, onClose, onSave, saving }) {
       placement: form.placement,
       students: isEdit ? initial.students : 0,
     };
-  
     onSave(payload, isEdit);
   };
 
@@ -424,17 +347,17 @@ function CourseModal({ initial, onClose, onSave, saving }) {
               className="block w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-500"
             />
             {imagePreview && (
-  <div className="relative inline-block">
-    <img src={imagePreview} alt="Preview" className="w-40 h-24 object-cover rounded-xl border border-white/20" />
-    <button
-      type="button"
-      onClick={cancelImage}
-      className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center shadow"
-    >
-      ✕
-    </button>
-  </div>
-)}
+              <div className="relative inline-block">
+                <img src={imagePreview} alt="Preview" className="w-40 h-24 object-cover rounded-xl border border-white/20" />
+                <button
+                  type="button"
+                  onClick={cancelImage}
+                  className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center shadow"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
           </div>
         </Field>
 
@@ -461,7 +384,7 @@ function CourseModal({ initial, onClose, onSave, saving }) {
           </label>
         </div>
 
-        <ModalActions onClose={onClose} label={isEdit ? 'Save changes' : 'Add course'} saving={saving} />
+        <ModalActions onClose={onClose} label={isEdit ? 'Save changes' : 'Add course'} />
       </form>
     </ModalShell>
   );
@@ -503,14 +426,13 @@ function CareerModal({ initial, onClose, onSave }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.title.trim()) return;
-  
+
     const responsibilities = (form.responsibilitiesText || '').split(';').map((s) => s.trim()).filter(Boolean);
     const skills = (form.skillsText || '').split(',').map((s) => s.trim()).filter(Boolean);
     const whatYouGet = (form.whatYouGetText || '').split(';').map((s) => s.trim()).filter(Boolean);
-  
+
     onSave(
       {
-        ...(isEdit ? { firestoreId: initial.firestoreId } : {}),
         id: isEdit ? initial.id : slugify(form.title),
         title: form.title, type: form.type, experience: form.experience, location: form.location,
         status: form.status, description: form.description, responsibilities, skills, whatYouGet,
@@ -1086,25 +1008,9 @@ function EnrollmentsManager({ courses, enrollments, onUpdateStatus }) {
                             <p className="leading-relaxed">{s.message}</p>
                           </div>
                           <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 mt-3">
-  <span className="flex items-center gap-1.5">
-    <Calendar className="w-3.5 h-3.5" />
-    Enrolled on {s.enrolledDate}
-  </span>
-
-  {s.resume ? (
-    <a
-      href={s.resume}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-purple-600/20 text-purple-400 hover:bg-purple-600/30 transition"
-    >
-      <FileText className="w-4 h-4" />
-      View Resume
-    </a>
-  ) : (
-    <span className="text-slate-500">No Resume</span>
-  )}
-</div>
+                            <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> Enrolled on {s.enrolledDate}</span>
+                            {s.resume && <span className="flex items-center gap-1.5"><FileText className="w-3.5 h-3.5" /> {s.resume}</span>}
+                          </div>
                         </td>
                       </tr>
                     )}
@@ -1333,49 +1239,14 @@ export default function AdminDashboard() {
       color: colors[Math.floor(Math.random() * colors.length)],
     }));
   });
-  const [courses, setCourses] = useState([]);
-  const [careers, setCareers] = useState([]);
-  const [enrollments, setEnrollments] = useState([]);
-
-useEffect(() => {
-  loadEnrollments();
-}, []);
-
-const loadCareers = async () => {
-  try {
-    const data = await getCareers();
-    setCareers(data);
-  } catch (error) {
-    console.error("Failed to load careers:", error);
-  }
-};
-
-useEffect(() => {
-  loadCareers();
-}, []);
-
-const loadEnrollments = async () => {
-  const data = await getEnrollments();
-  setEnrollments(data);
-};
+  const [courses, setCourses] = useLocalStorageState('zentrix_admin_courses', seedCourses);
+  const [careers, setCareers] = useLocalStorageState('zentrix_admin_careers', seedCareers);
+  const [enrollments, setEnrollments] = useLocalStorageState('zentrix_admin_enrollments', seedEnrollments);
   const [careerApplications, setCareerApplications] =
 useLocalStorageState("zentrix_admin_applications", []);
   const [courseModal, setCourseModal] = useState(null);
   const [careerModal, setCareerModal] = useState(null);
   const [toast, setToast] = useState('');
-
-  useEffect(() => {
-    loadCourses();
-  }, []);
-  
-  const loadCourses = async () => {
-    try {
-      const data = await getCourses();
-      setCourses(data);
-    } catch (error) {
-      console.error("Error loading courses:", error);
-    }
-  };
 
   const flash = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
 
@@ -1385,97 +1256,34 @@ useLocalStorageState("zentrix_admin_applications", []);
     if (action === 'add' && view === 'careers') setCareerModal('add');
   };
 
-  const [savingCourse, setSavingCourse] = useState(false);
-
-const saveCourse = async (payload, isEdit) => {
-  if (savingCourse) return; // block re-entrant calls
-  setSavingCourse(true);
-  try {
-    const cleanData = Object.fromEntries(
-      Object.entries(payload).filter(([_, value]) => value !== undefined)
-    );
-
-    if (isEdit) {
-      await updateCourse(payload.firestoreId, cleanData);
-    } else {
-      await addCourse(cleanData);
-    }
-
-    await loadCourses();
+  const saveCourse = (payload, isEdit) => {
+    setCourses((prev) => (isEdit ? prev.map((c) => (c.id === payload.id ? { ...c, ...payload } : c)) : [payload, ...prev]));
     setCourseModal(null);
-    flash(isEdit ? "Course updated" : "Course added");
-  } catch (err) {
-    console.error(err);
-    alert(err.message);
-  } finally {
-    setSavingCourse(false);
-  }
-};
-  const deleteCourse = async (course) => {
-    if (!window.confirm(`Delete "${course.title}"?`)) return;
-  
-    try {
-      await deleteCourseFromDB(course.firestoreId);
-  
-      await loadCourses();
-  
-      flash("Course deleted");
-    } catch (error) {
-      console.error(error);
+    flash(isEdit ? 'Course updated' : 'Course added');
+  };
+  const deleteCourse = (course) => {
+    if (window.confirm(`Delete "${course.title}"? This can't be undone.`)) {
+      setCourses((prev) => prev.filter((c) => c.id !== course.id));
+      flash('Course deleted');
     }
   };
 
-  const saveCareer = async (payload, isEdit) => {
-    try {
-      const cleanData = Object.fromEntries(
-        Object.entries(payload).filter(([_, value]) => value !== undefined)
-      );
-  
-      if (isEdit) {
-        await updateCareer(payload.firestoreId, cleanData);
-      } else {
-        await addCareer(cleanData);
-      }
-  
-      await loadCareers();
-  
-      setCareerModal(null);
-  
-      flash(isEdit ? "Career updated" : "Career added");
-    } catch (error) {
-      console.error(error);
-      alert(error.message);
-    }
+  const saveCareer = (payload, isEdit) => {
+    setCareers((prev) => (isEdit ? prev.map((j) => (j.id === payload.id ? { ...j, ...payload } : j)) : [payload, ...prev]));
+    setCareerModal(null);
+    flash(isEdit ? 'Career updated' : 'Career added');
   };
-  const deleteCareer = async (career) => {
-    if (!window.confirm(`Delete "${career.title}"?`)) return;
-  
-    try {
-      await deleteCareerFromDB(career.firestoreId);
-  
-      await loadCareers();
-  
-      flash("Career deleted");
-    } catch (error) {
-      console.error(error);
+  const deleteCareer = (career) => {
+    if (window.confirm(`Delete "${career.title}"? This can't be undone.`)) {
+      setCareers((prev) => prev.filter((j) => j.id !== career.id));
+      flash('Career deleted');
     }
   };
 
-  const changeEnrollmentStatus = async (enrollment, status) => {
-    try {
-      await updateEnrollmentStatus(
-        enrollment.firestoreId,
-        status
-      );
-  
-      await loadEnrollments();
-  
-      flash(`${enrollment.name} marked as ${status}`);
-    } catch (error) {
-      console.error("Error updating enrollment status:", error);
-    }
+  const updateEnrollmentStatus = (enrollment, status) => {
+    setEnrollments((prev) => prev.map((e) => (e.id === enrollment.id ? { ...e, status } : e)));
+    flash(`${enrollment.name} marked as ${status}`);
   };
-  
 
 
   const updateApplicationStatus = (application, status) => {
@@ -1546,10 +1354,10 @@ const saveCourse = async (payload, isEdit) => {
 
           {active === 'enrollments' && (
             <EnrollmentsManager
-  courses={courses}
-  enrollments={enrollments}
-  onUpdateStatus={changeEnrollmentStatus}
-/>
+              courses={courses}
+              enrollments={enrollments}
+              onUpdateStatus={updateEnrollmentStatus}
+            />
           )}
 
           {active === 'applications' && <ApplicationsManager
@@ -1565,15 +1373,14 @@ const saveCourse = async (payload, isEdit) => {
       </div>
 
       <AnimatePresence>
-      {courseModal && (
-  <CourseModal
-    key="course-modal"
-    initial={courseModal === 'add' ? null : courseModal}
-    onClose={() => setCourseModal(null)}
-    onSave={saveCourse}
-    saving={savingCourse}
-  />
-)}
+        {courseModal && (
+          <CourseModal
+            key="course-modal"
+            initial={courseModal === 'add' ? null : courseModal}
+            onClose={() => setCourseModal(null)}
+            onSave={saveCourse}
+          />
+        )}
         {careerModal && (
           <CareerModal
             key="career-modal"
