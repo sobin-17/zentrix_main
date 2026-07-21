@@ -409,15 +409,8 @@ const JobDetail = () => {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const fallback = jobData[jobId];
-        if (fallback) {
-          setFetchedJob(fallback);
-          setLoading(false);
-          return;
-        }
-
         const careers = await getCareers();
-        const found = careers.find(j => j.id === jobId || j.firestoreId === jobId);
+        const found = careers.find((j) => j.id === jobId || j.firestoreId === jobId);
         setFetchedJob(found);
       } catch (err) {
         console.error("Failed to fetch job:", err);
