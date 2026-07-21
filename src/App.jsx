@@ -22,7 +22,8 @@ import OurProducts from './pages/OurProducts';
 import OurPortfolio from './pages/OurPortfolio';
 import YourNextStep from './pages/Yournextstepnew';
 import Admindashboard from './pages/Admindashboard';
-
+import AdminLogin from './pages/AdminLogin';
+import AdminSignup from './pages/AdminSignup';
 const GlobalAtmosphere = () => (
   <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
     {/* Glows removed to prevent blur rendering artifacts */}
@@ -60,6 +61,8 @@ function App() {
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-and-conditions" element={<TermsConditions />} />
             <Route path="/admin-dashboard" element={<Admindashboard/>}/>
+            <Route path="/admin-login" element={<AdminLogin />} />
+            <Route path="/admin-signup" element={<AdminSignup />} />
 
           </Routes>
           {/* Persistent Footer */}
