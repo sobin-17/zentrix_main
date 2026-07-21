@@ -1,12 +1,15 @@
 import "./ChatbotIcon.css";
 
-const RobotIcon = ({ size = "100%" }) => (
-  <img 
-    src={encodeURI("/chatbot logo.png")} 
-    alt="Zentrix Chatbot" 
-    style={{ width: size, height: size, objectFit: 'cover', borderRadius: '50%' }} 
-  />
-);
+const RobotIcon = ({ size = "100%" }) => {
+  const dim = typeof size === 'number' ? `${size}px` : size;
+  return (
+    <img 
+      src={encodeURI("/chatbot logo.png")} 
+      alt="Zentrix Chatbot" 
+      style={{ width: dim, height: dim, objectFit: 'cover', borderRadius: '50%' }} 
+    />
+  );
+};
 
 const ChatbotIcon = ({ chatState, onToggle, hasNotification }) => {
 

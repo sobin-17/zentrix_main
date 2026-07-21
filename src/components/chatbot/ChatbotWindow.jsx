@@ -1,35 +1,24 @@
 import { useState, useRef, useEffect } from "react";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { loadIntentsFromFirestore, getFirestoreResponse, chatbotDb } from "./localNLP";
 import ChatMessage from "./ChatMessage";
 import QuickActions from "./QuickActions";
 import LeadForm from "./LeadForm";
 import TypingAnimation from "./TypingAnimation";
 import CourseCards from "./CourseCards";
-import PremiumRobot from "./PremiumRobot";
 import "./ChatbotWindow.css";
-
-// ── Flask backend URL ─────────────────────────────────────────────────────────
-const BACKEND_URL = "http://localhost:5000";
 
 const getTime = () =>
   new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
-// ── Call Flask NLP backend for chat response ──────────────────────────────────
+// ── Call NLP engine (which fetches from Firestore directly) ───────────────────
 const askBackend = async (message, userName = "Anonymous") => {
+  await new Promise((r) => setTimeout(r, 700 + Math.random() * 400));
   try {
-    const res = await fetch(`${BACKEND_URL}/api/chat`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        message,
-        session: { user_name: userName },
-      }),
-    });
-    if (!res.ok) throw new Error(`Server error: ${res.status}`);
-    const data = await res.json();
-    return data.response || null;
+    return await getFirestoreResponse(message);
   } catch (error) {
-    console.error("Backend error:", error);
-    return "I'm having trouble connecting right now. Please try again or reach us at 📧 hr.zentrixtechnology@gmail.com or 📞 +91 938423728";
+    console.error("NLP error:", error);
+    return "I'm having trouble connecting right now. Please try again or reach us at \ud83d\udce7 info@zentrix.com";
   }
 };
 
@@ -53,6 +42,10 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
   const bottomRef = useRef(null);
 
   useEffect(() => {
+    loadIntentsFromFirestore();
+  }, []);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping, showLeadForm]);
 
@@ -67,6 +60,27 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
     }, delay);
   };
 
+  const saveQuery = async (userMsg) => {
+    try {
+      await addDoc(collection(chatbotDb, "chatbot_queries"), {
+        message: userMsg,
+        userName: userName || "Anonymous",
+        createdAt: serverTimestamp(),
+      });
+    } catch (_) {}
+  };
+
+  const saveChatHistory = async (userMsg, botReply) => {
+    try {
+      await addDoc(collection(chatbotDb, "chat_history"), {
+        userMessage: userMsg,
+        botResponse: botReply,
+        userName: userName || "Anonymous",
+        timestamp: serverTimestamp(),
+      });
+    } catch (_) {}
+  };
+
   // ── Courses quick action — uses hardcoded CourseCards, NO Firestore fetch ─
   const handleCoursesAction = () => {
     setShowQuickActions(false);
@@ -76,6 +90,7 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
       ...prev,
       { id: Date.now(), type: "text", sender: "user", text: "Courses", time: getTime() },
     ]);
+    saveQuery("Courses");
 
     // Add bot intro message
     setMessages((prev) => [
@@ -114,7 +129,7 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
       { id: Date.now(), type: "text", sender: "user", text: `Apply for: ${courseName}`, time: getTime() },
     ]);
     addBotMessage(
-      `Great choice! 🎉 To apply for "${courseName}", please share your details and our team will get in touch.\n\n📧 Email: hr.zentrixtechnology@gmail.com\n📞 Phone: +91 938423728\nOr fill the lead form below!`,
+      `Great choice! 🎉 To apply for "${courseName}", please share your details and our team will get in touch.\n\n📧 Email: admissions@zentrix.com\n📞 Or fill the lead form below!`,
       800
     );
     if (!leadCaptured) {
@@ -134,12 +149,14 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
       ...prev,
       { id: Date.now(), type: "text", sender: "user", text: label, time: getTime() },
     ]);
+    saveQuery(label);
 
     setIsTyping(true);
     const reply = await askBackend(label, userName);
     setIsTyping(false);
 
     addBotMessage(reply, 0);
+    saveChatHistory(label, reply);
 
     if (!leadCaptured) {
       setTimeout(() => setShowLeadForm(true), 800);
@@ -175,6 +192,7 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
       ...prev,
       { id: Date.now(), type: "text", sender: "user", text, time: getTime() },
     ]);
+    saveQuery(text);
 
     if (!leadCaptured) {
       addBotMessage(
@@ -190,6 +208,7 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
     setIsTyping(false);
 
     addBotMessage(reply, 0);
+    saveChatHistory(text, reply);
   };
 
   if (chatState !== "open") return null;
@@ -199,11 +218,7 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
       {/* Header */}
       <div className="zx-header">
         <div className="zx-header-avatar">
-          <img 
-            src={encodeURI("/chatbot logo.png")} 
-            alt="Zentrix Assistant" 
-            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} 
-          />
+          <img src={encodeURI("/chatbot logo.png")} alt="Zentrix Chatbot" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} />
         </div>
         <div className="zx-header-info">
           <span className="zx-header-name">Zentrix Assistant</span>
@@ -239,21 +254,6 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
 
       {/* Messages */}
       <div className="zx-messages">
-        {/* Robot mascot shown once at top of chat */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "12px", paddingBottom: "4px" }}>
-          <img 
-            src={encodeURI("/chatbot logo.png")} 
-            alt="AI Assistant" 
-            style={{ width: 130, height: 130, objectFit: 'cover', borderRadius: '50%' }} 
-          />
-          <p style={{ margin: "4px 0 0", fontSize: "13px", fontWeight: 700, color: "#e2d9f3", letterSpacing: "0.2px", fontFamily: "inherit" }}>
-            Zentrix AI Assistant
-          </p>
-          <p style={{ margin: "2px 0 8px", fontSize: "10px", fontWeight: 600, color: "#a855f7", letterSpacing: "1.5px", textTransform: "uppercase", fontFamily: "inherit" }}>
-            Smart Guide
-          </p>
-        </div>
-
         {messages.map((msg, i) => (
           <div key={msg.id}>
             {msg.type === "text" && <ChatMessage message={msg} />}
