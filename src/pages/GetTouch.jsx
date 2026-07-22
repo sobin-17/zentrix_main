@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Send, User, Mail, Phone, MapPin, Clock, Zap, Users, ShieldCheck } from "lucide-react";
+import { addContactMessage } from "../services/contactService";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -33,10 +34,25 @@ const GetTouch = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // hook up to your backend / email service here
-    console.log(form);
+  
+    try {
+      await addContactMessage(form);
+  
+      alert("Message sent successfully!");
+  
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+  
+    } catch (error) {
+      console.error(error);
+      alert("Failed to send message.");
+    }
   };
 
   const perks = [
