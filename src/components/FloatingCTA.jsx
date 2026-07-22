@@ -14,7 +14,7 @@ const FloatingCTA = () => {
     >
       {/* WhatsApp Button — indigo -> violet (start of the family) */}
       <a
-        href="https://wa.me/91938423728"
+        href="https://wa.me/919150973003"
         target="_blank"
         rel="noopener noreferrer"
         className="group relative flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] shadow-[0_4px_15px_rgba(99,102,241,0.35)] hover:shadow-[0_0_25px_rgba(99,102,241,0.65)] transition-all duration-300 hover:scale-110"
@@ -33,7 +33,7 @@ const FloatingCTA = () => {
 
       {/* Call Button — violet -> purple (midpoint of the family) */}
       <a
-        href="tel:+91938423728"
+        href="tel:+919150973003"
         className="group relative flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br from-[#8B5CF6] to-[#A855F7] shadow-[0_4px_15px_rgba(139,92,246,0.35)] hover:shadow-[0_0_25px_rgba(139,92,246,0.65)] transition-all duration-300 hover:scale-110"
         title="Call Us"
       >
