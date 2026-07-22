@@ -25,6 +25,11 @@ import {
   deleteApplication as deleteAppService
 } from "../services/applicationService";
 import {
+  getContactMessages,
+  deleteContactMessage,
+} from "../services/contactService";
+import ContactMessagesManager from "../components/ContactMessagesManager";
+import {
   LayoutDashboard, BookOpen, Grid3x3, PlayCircle, ClipboardList, Star,
   Award, Briefcase, FileText, Users, UserCog, Shield, Settings, Globe,
   Search, Bell, ChevronDown, Plus, Pencil, Trash2, Eye, X, Check,
@@ -128,6 +133,7 @@ const NAV_SECTIONS = [
     items: [
       { key: 'careers', label: 'Careers', icon: Briefcase },
       { key: 'applications', label: 'Applications', icon: FileText },
+      { key: 'contacts', label: 'Contact Messages', icon: Mail },
       { key: 'opening careers', label: 'Opening Careers', icon: Briefcase },
       { key: 'closing careers', label: 'Closing Careers', icon: Briefcase },
     ],
@@ -136,8 +142,7 @@ const NAV_SECTIONS = [
     section: 'Users & Team',
     items: [
       { key: 'students', label: 'Students', icon: Users, soon: true },
-      { key: 'mentors', label: 'Team / Mentors', icon: UserCog, soon: true },
-      { key: 'admins', label: 'Admins', icon: Shield, soon: true },
+      
     ],
   },
 ];
@@ -252,10 +257,12 @@ function Topbar({ query, setQuery, handleLogout , admin ,notifications,notificat
             className="p-4 border-b border-white/5 hover:bg-white/5 transition-colors"
           >
             <p className="text-white text-sm font-medium">
-              {item.type === "enrollment"
-                ? `📚 ${item.name} enrolled`
-                : `💼 ${item.name} applied`}
-            </p>
+  {item.type === "enrollment" && `📚 ${item.name} enrolled`}
+
+  {item.type === "application" && `💼 ${item.name} applied`}
+
+  {item.type === "contact" && `📩 ${item.name} sent a message`}
+</p>
 
             <p className="text-slate-400 text-xs mt-1">
               {item.title}
@@ -1400,6 +1407,17 @@ const handleLogout = async () => {
   const [showNotifications, setShowNotifications] = useState(false);
   
 
+  const [contactMessages, setContactMessages] = useState([]);
+
+const loadContacts = async () => {
+  const data = await getContactMessages();
+  setContactMessages(data);
+};
+
+useEffect(() => {
+  loadContacts();
+}, []);
+
   const [admin, setAdmin] = useState(null);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -1456,6 +1474,16 @@ const loadEnrollments = async () => {
         title: a.jobTitle,
         time: a.appliedAt,
       })),
+
+      ...contactMessages
+  .filter(c => c.status === "New")
+  .map(c => ({
+    id: c.firestoreId,
+    type: "contact",
+    name: c.name,
+    title: c.message,
+    time: c.createdAt,
+  }))
   ].sort((a, b) => new Date(b.time) - new Date(a.time));
   
   const notificationCount = notifications.length;
@@ -1720,6 +1748,13 @@ const saveCourse = async (payload, isEdit) => {
             />
           )}
 
+{active === "contacts" && (
+  <ContactMessagesManager
+    messages={contactMessages}
+    onDelete={deleteContactMessage}
+  />
+)}
+
 {active === "opening careers" && (
   <CareersManager
     careers={openingCareers}
@@ -1756,7 +1791,7 @@ const saveCourse = async (payload, isEdit) => {
     onDeleteApp={removeApplication}
 />}
 
-          {!['dashboard', 'courses', 'careers',"opening careers","closing careers", 'enrollments', 'applications'].includes(active) && (
+          {!['dashboard', 'courses', 'careers',"opening careers","closing careers", 'enrollments', 'applications','contacts'].includes(active) && (
             <ComingSoon label={titles[active] || active} />
           )}
         </main>
