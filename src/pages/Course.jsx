@@ -642,79 +642,129 @@ const Course = () => {
       </section>
 
       {/* ══════════ 5-STAGE LEARNING ROADMAP ══════════ */}
-      <section className="py-10 md:py-24 px-6 md:px-12 relative overflow-hidden">
+      <section className="relative overflow-hidden py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12">
 
-        {particles.map((p) => (
-          <div
-            key={p.id}
-            className="service-particle"
-            style={{
-              width: p.size,
-              height: p.size,
-              top: p.top,
-              left: p.left,
-              backgroundColor: p.color,
-              boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-              '--tx': p.tx,
-              '--ty': p.ty,
-              '--duration': `${p.duration}s`,
-              '--delay': `${p.delay}s`,
-            }}
-          />
+  {/* Particles */}
+  {particles.map((p) => (
+    <div
+      key={p.id}
+      className="service-particle absolute"
+      style={{
+        width: p.size,
+        height: p.size,
+        top: p.top,
+        left: p.left,
+        backgroundColor: p.color,
+        boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+        "--tx": p.tx,
+        "--ty": p.ty,
+        "--duration": `${p.duration}s`,
+        "--delay": `${p.delay}s`,
+      }}
+    />
+  ))}
+
+  {/* Purple Glow */}
+  <div
+    className="
+      absolute
+      right-[-20%]
+      top-1/2
+      -translate-y-1/2
+      w-56 h-56
+      sm:w-80 sm:h-80
+      md:w-[420px] md:h-[420px]
+      lg:w-[550px] lg:h-[550px]
+      rounded-full
+      bg-[var(--color-brand-purple)]/10
+      blur-[80px]
+      md:blur-[120px]
+      lg:blur-[160px]
+      pointer-events-none
+    "
+  />
+
+  <div className="relative z-10 max-w-7xl mx-auto">
+
+    {/* Heading */}
+    <motion.div
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      className="text-center mb-10 sm:mb-14 md:mb-16 lg:mb-20"
+    >
+      <h2 className="font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl">
+        5-Stage Learning Process
+      </h2>
+    </motion.div>
+
+    {/* Marquee */}
+    <div className="relative overflow-hidden">
+
+      {/* Left Fade */}
+      <div className="absolute inset-y-0 left-0 z-20 w-8 sm:w-12 md:w-16 bg-gradient-to-r from-black via-black/70 to-transparent pointer-events-none" />
+
+      {/* Right Fade */}
+      <div className="absolute inset-y-0 right-0 z-20 w-8 sm:w-12 md:w-16 bg-gradient-to-l from-black via-black/70 to-transparent pointer-events-none" />
+
+      <motion.div
+        className="
+          flex
+          flex-nowrap
+          items-center
+          gap-4
+          sm:gap-6
+          md:gap-8
+          lg:gap-10
+          py-4
+          w-max
+          will-change-transform
+        "
+        animate={{
+          x: ["0%", "-50%"],
+        }}
+        transition={{
+          duration: 24,
+          repeat: Infinity,
+          repeatType: "loop",
+          ease: "linear",
+        }}
+      >
+        {[...learningStages, ...learningStages].map((stage, i) => (
+          <React.Fragment key={i}>
+
+            <div className="flex-shrink-0">
+              <StageCard
+                stage={stage}
+                index={i}
+                total={learningStages.length * 2}
+              />
+            </div>
+
+            {i !== learningStages.length * 2 - 1 && (
+              <div className="flex items-center justify-center flex-shrink-0 px-1 sm:px-2 md:px-3 lg:px-4">
+                <ChevronRight
+                  className="
+                    text-purple-400
+                    w-4 h-4
+                    sm:w-5 sm:h-5
+                    md:w-7 md:h-7
+                    lg:w-9 lg:h-9
+                  "
+                />
+              </div>
+            )}
+
+          </React.Fragment>
         ))}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[var(--color-brand-purple)]/10 blur-[140px] pointer-events-none" />
+      </motion.div>
 
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-20">
+    </div>
 
-            <motion.h2
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="text-4xl md:text-5xl font-bold"
-            >
-              5-Stage Learning Process
-            </motion.h2>
+  </div>
 
-          </div>
-
-          {/* Stages */}
-          <div className="overflow-hidden w-full py-6">
-
-            <motion.div
-              className="flex items-center gap-8 w-max"
-              animate={{
-                x: ["0%", "-50%"],
-              }}
-              transition={{
-                duration: 18,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            >
-              {[...learningStages, ...learningStages].map((stage, i) => (
-                <React.Fragment key={i}>
-
-                  <StageCard
-                    stage={stage}
-                    index={i}
-                    total={learningStages.length * 2}
-                  />
-
-                  {i !== learningStages.length * 2 - 1 && (
-                    <div className="flex items-center">
-                      <ChevronRight className="w-10 h-10 text-purple-400" />
-                    </div>
-                  )}
-
-                </React.Fragment>
-              ))}
-            </motion.div>
-
-          </div>
-        </div>
-      </section>
+</section>
 
       {/* ══════════ WHY CHOOSE ZENTRIX ══════════
       <WhyChooseUs /> */}
