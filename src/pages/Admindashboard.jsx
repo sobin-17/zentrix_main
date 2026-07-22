@@ -1790,8 +1790,9 @@ const saveCourse = async (payload, isEdit) => {
   );
 
   return (
-    <div className="flex min-h-screen bg-black font-poppins">
-      {particles.map((p) => (
+    <div className="flex min-h-screen bg-black font-poppins relative overflow-hidden w-full max-w-[100vw]">
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        {particles.map((p) => (
           <div
             key={p.id}
             className="service-particle"
@@ -1809,6 +1810,7 @@ const saveCourse = async (payload, isEdit) => {
             }}
           />
         ))}
+      </div>
       <Sidebar active={active} setActive={setActive} />
 
       <div className="flex-1 min-w-0">
