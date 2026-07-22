@@ -55,88 +55,184 @@ const Careers = () => {
     <main className="min-h-screen bg-black text-white pb-16 font-poppins relative overflow-hidden">
 
       {/* ================= HERO SECTION — Full-width banner ================= */}
-      <section className="relative w-full min-h-[32vh] lg:min-h-[85vh] overflow-hidden">        {/* Full-bleed hand image as banner background */}
-        <div className="absolute inset-0 w-full h-full z-0">
-          {/* Space dots / particles */}
-          {particles.map((p) => (
-            <div
-              key={p.id}
-              className="service-particle"
-              style={{
-                width: p.size,
-                height: p.size,
-                top: p.top,
-                left: p.left,
-                backgroundColor: p.color,
-                boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-                '--tx': p.tx,
-                '--ty': p.ty,
-                '--duration': `${p.duration}s`,
-                '--delay': `${p.delay}s`,
-              }}
-            />
-          ))}
-          {/* Hand image */}
-          <motion.img
-            src="/career_hand.png"
-            alt=""
-            className="absolute top-[18%] md:top-[8%] lg:top-auto lg:-bottom-18 right-[-5%] lg:right-0 w-[65%] md:w-[50%] lg:w-[80%] xl:w-full object-contain pointer-events-none opacity-90 lg:opacity-100 mix-blend-screen lg:mix-blend-normal"
-            initial={{ opacity: 0, scale: 0.9, y: -10 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            animate={{
-              y: [0, -10, 0],
-              rotate: [0, 1.5, 0, -1.5, 0],
-              scale: [1, 1.01, 1],
-            }}
-            transition={{
-              opacity: { duration: 1 },
-              scale: { duration: 5, repeat: Infinity, ease: "easeInOut" },
-              rotate: { duration: 8, repeat: Infinity, ease: "easeInOut" },
-              y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-            }}
-            whileHover={{
-              scale: 1.05,
-              y: -6,
-              filter: "brightness(1.15) drop-shadow(0 0 70px rgba(168,85,247,0.8))",
-              transition: { duration: 0.3 },
-            }}
-          />
-          {/* Purple Glow */}
-          <div className="absolute bottom-[-120px] left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-[#8B2EFF] opacity-30 blur-[220px] rounded-full"></div>
-        </div>
+      <section className="relative w-full min-h-[50vh] sm:min-h-[55vh] lg:min-h-[72vh] overflow-hidden">
 
-        {/* Hero text content — overlaid on image */}
-        <div className="absolute top-8 left-0 right-0 z-10 w-full max-w-7xl mx-auto px-6 md:px-12 pointer-events-none">
+  {/* Background */}
+  <div className="absolute inset-0 z-0 overflow-hidden">
 
-          <div className="flex flex-col lg:flex-row lg:items-start lg:gap-5">
+    {/* Particles */}
+    {particles.map((p) => (
+      <div
+        key={p.id}
+        className="service-particle absolute"
+        style={{
+          width: p.size,
+          height: p.size,
+          top: p.top,
+          left: p.left,
+          backgroundColor: p.color,
+          boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+          "--tx": p.tx,
+          "--ty": p.ty,
+          "--duration": `${p.duration}s`,
+          "--delay": `${p.delay}s`,
+        }}
+      />
+    ))}
 
-            {/* Career Heading */}
-            <h1 className="text-[64px] sm:text-[90px] md:text-[110px] lg:text-[150px] font-black leading-[1] lg:leading-[0.85] tracking-tight text-white relative z-10">
-              Career
-            </h1>
+    {/* Hand Image */}
+    <motion.img
+      src="/career_hand.png"
+      alt="Career opportunities at Zentrix Technologies"
+      className="
+  absolute
 
-            {/* Right Side */}
-            <div className="pt-1 sm:pt-3 lg:pt-6 max-w-[700px] relative z-10 pointer-events-auto">
+  top-[34%]
+  sm:top-[28%]
+  md:top-[22%]
+  lg:top-auto
 
-              <h2 className="text-white font-semibold text-[18px] sm:text-[22px] md:text-[26px] lg:text-[30px] leading-tight lg:leading-none">
-                "Your Career Our Mission"
-              </h2>
+  lg:bottom-[-18%]
+  xl:bottom-[-20%]
+  2xl:bottom-[-22%]
 
-              <p className="mt-2.5 lg:mt-2 text-gray-300 text-[13px] sm:text-[14px] md:text-[15px] lg:text-[16px] leading-[1.65] lg:leading-5 max-w-[650px] pr-4 sm:pr-0">
-                At Zentrix Technologies, we create opportunities to learn, create,
-                and innovate together.
-              </p>
+  right-[4%]
+  sm:right-[6%]
+  md:right-[8%]
+  lg:right-[10%]
+  xl:right-[12%]
+  2xl:right-[14%]
 
-            </div>
+  w-[88%]
+  sm:w-[80%]
+  md:w-[68%]
+  lg:w-[74%]
+  xl:w-[82%]
+  2xl:w-[88%]
 
-          </div>
+  object-contain
+  pointer-events-none
+  opacity-90
+  lg:opacity-100
+  mix-blend-screen
+  lg:mix-blend-normal
+"
+      initial={{ opacity: 0, scale: 0.9, y: -20 }}
+      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      animate={{
+        y: [0, -12, 0],
+        rotate: [0, 1.5, 0, -1.5, 0],
+        scale: [1, 1.015, 1],
+      }}
+      transition={{
+        opacity: { duration: 1.2 },
+        scale: { duration: 6, repeat: Infinity, ease: "easeInOut" },
+        rotate: { duration: 8, repeat: Infinity, ease: "easeInOut" },
+        y: { duration: 4.5, repeat: Infinity, ease: "easeInOut" },
+      }}
+    />
 
-        </div>
-        {/* Removed Duplicate Bottom Left Description as it was causing unnatural vertical layout jumps on tablets */}
-        {/* Bottom fade into page */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent z-10"></div>
-      </section>
+    {/* Purple Glow */}
+    <div
+      className="
+        absolute
+        left-1/2
+        -translate-x-1/2
+        bottom-[-120px]
+        sm:bottom-[-160px]
+        lg:bottom-[-200px]
+
+        w-[500px]
+        sm:w-[700px]
+        md:w-[900px]
+        lg:w-[1200px]
+
+        h-[250px]
+        sm:h-[350px]
+        md:h-[450px]
+        lg:h-[600px]
+
+        rounded-full
+        bg-[#8B2EFF]/30
+        blur-[140px]
+        md:blur-[180px]
+        lg:blur-[220px]
+      "
+    />
+  </div>
+
+  {/* Hero Content */}
+  <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-8 sm:pt-12 lg:pt-16">
+
+    <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6 lg:gap-12">
+
+      {/* Left */}
+      <div>
+
+        <h1
+          className="
+            text-white
+            font-black
+            leading-[0.9]
+            tracking-[-0.04em]
+
+            text-5xl
+            sm:text-7xl
+            md:text-8xl
+            lg:text-[120px]
+            xl:text-[150px]
+            2xl:text-[170px]
+          "
+        >
+          Career
+        </h1>
+
+      </div>
+
+      {/* Right */}
+      <div className="max-w-xl lg:pt-10">
+
+        <h2
+          className="
+            text-white
+            font-semibold
+
+            text-lg
+            sm:text-xl
+            md:text-2xl
+            lg:text-3xl
+          "
+        >
+          "Your Career Our Mission"
+        </h2>
+
+        <p
+          className="
+            mt-4
+            text-gray-300
+            leading-relaxed
+
+            text-sm
+            sm:text-base
+            md:text-lg
+          "
+        >
+          At Zentrix Technologies, we create opportunities to learn,
+          create, innovate, and grow together. Join a passionate team
+          building impactful technology while shaping your future.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  {/* Bottom Fade */}
+  <div className="absolute bottom-0 left-0 right-0 h-24 md:h-32 bg-gradient-to-t from-black via-black/90 to-transparent z-20" />
+
+</section>
 
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         {/* ================= WHY WORK WITH US ================= */}
@@ -529,321 +625,505 @@ const Careers = () => {
 
         </section>
         {/* ================= CURRENT OPENINGS ================= */}
-        <section id="openings" className="relative pt-4 md:pt-16 pb-12">
-          <div className="relative flex justify-center items-center">
-            {/* Space dots / particles */}
-            {particles.map((p) => (
-              <div
-                key={p.id}
-                className="service-particle"
-                style={{
-                  width: p.size,
-                  height: p.size,
-                  top: p.top,
-                  left: p.left,
-                  backgroundColor: p.color,
-                  boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-                  '--tx': p.tx,
-                  '--ty': p.ty,
-                  '--duration': `${p.duration}s`,
-                  '--delay': `${p.delay}s`,
-                }}
-              />
-            ))}
+        <section
+  id="openings"
+  className="relative overflow-hidden pt-8 sm:pt-10 md:pt-16 lg:pt-20 pb-12 md:pb-20"
+>
+  <div className="relative flex items-center justify-center">
 
-            {/* Background Image */}
-            <motion.img
-              src="/career_current1.png"
-              className="w-[1350px] md:w-[1450px] lg:w-[1550px] max-w-none h-auto object-contain -translate-y-4 md:-translate-y-12"
-              animate={{
-                y: [0, -10, 0],
-                scale: [1, 1.01, 1],
-              }}
-              transition={{
-                duration: 5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-            {/* Foreground particles — floats OVER the image */}
-            <div className="absolute inset-0 z-[5] pointer-events-none">
-              {particles.slice(40, 80).map((p) => (
-                <div
-                  key={p.id}
-                  className="service-particle"
-                  style={{
-                    width: p.size,
-                    height: p.size,
-                    top: p.top,
-                    left: p.left,
-                    backgroundColor: p.color,
-                    boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-                    '--tx': p.tx,
-                    '--ty': p.ty,
-                    '--duration': `${p.duration}s`,
-                    '--delay': `${p.delay}s`,
-                  }}
-                />
-              ))}
+    {/* Background Particles */}
+    {particles.map((p) => (
+      <div
+        key={p.id}
+        className="service-particle"
+        style={{
+          width: p.size,
+          height: p.size,
+          top: p.top,
+          left: p.left,
+          backgroundColor: p.color,
+          boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+          "--tx": p.tx,
+          "--ty": p.ty,
+          "--duration": `${p.duration}s`,
+          "--delay": `${p.delay}s`,
+        }}
+      />
+    ))}
+
+    {/* Hero Image */}
+    <motion.img
+      src="/career_current1.png"
+      alt="Current Openings"
+      className="
+        w-full
+        max-w-[340px]
+        sm:max-w-[520px]
+        md:max-w-[720px]
+        lg:max-w-[950px]
+        xl:max-w-[1150px]
+        2xl:max-w-[1350px]
+        h-auto
+        object-contain
+        mx-auto
+      "
+      animate={{
+        y: [0, -10, 0],
+        scale: [1, 1.01, 1],
+      }}
+      transition={{
+        duration: 5,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
+    />
+
+    {/* Foreground Particles */}
+    <div className="absolute inset-0 z-10 pointer-events-none">
+      {particles.slice(40, 80).map((p) => (
+        <div
+          key={p.id}
+          className="service-particle"
+          style={{
+            width: p.size,
+            height: p.size,
+            top: p.top,
+            left: p.left,
+            backgroundColor: p.color,
+            boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+            "--tx": p.tx,
+            "--ty": p.ty,
+            "--duration": `${p.duration}s`,
+            "--delay": `${p.delay}s`,
+          }}
+        />
+      ))}
+    </div>
+
+    {/* Hero Text */}
+    <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+
+      <h2
+        className="
+          text-white
+          font-black
+          leading-none
+          tracking-tight
+          text-5xl
+          sm:text-6xl
+          md:text-7xl
+          lg:text-8xl
+          xl:text-[130px]
+        "
+      >
+        Current
+      </h2>
+
+      <h3
+        className="
+          mt-1
+          sm:mt-2
+          md:mt-3
+          text-[#C88BFF]
+          font-extralight
+          tracking-tight
+          text-2xl
+          sm:text-3xl
+          md:text-4xl
+          lg:text-5xl
+          xl:text-6xl
+        "
+      >
+        Openings
+      </h3>
+
+    </div>
+  </div>
+
+  {/* Job Accordion */}
+  <div
+  className="
+    relative
+    z-20
+    max-w-4xl
+    mx-auto
+    px-4
+    sm:px-6
+    lg:px-0
+    flex
+    flex-col
+    gap-4
+    mt-4
+    sm:mt-6
+    md:mt-8
+    lg:mt-10
+  "
+>
+    {jobOpenings.map((job) => {
+      const isExpanded = expandedJobId === job.id;
+
+      return (
+        <div
+          key={job.id}
+          className={`rounded-2xl border overflow-hidden transition-all duration-300
+          ${
+            isExpanded
+              ? "border-[var(--color-brand-purple)] bg-white/[0.04]"
+              : "border-white/5 bg-white/[0.02] hover:bg-white/[0.04]"
+          }`}
+        >
+          <button
+            onClick={() => toggleJob(job.id)}
+            className="w-full px-5 sm:px-6 md:px-8 py-5 flex items-center justify-between gap-4 text-left"
+          >
+            <div className="flex-1 min-w-0">
+
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+
+                <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-[var(--color-brand-purple-light)]">
+                  {job.type}
+                </span>
+
+                <span className="px-2 py-0.5 rounded-md bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] sm:text-[11px] font-mono font-bold">
+                  {job.jobId || job.id}
+                </span>
+
+              </div>
+
+              <h4 className="text-lg sm:text-xl font-bold text-white">
+                {job.title}
+              </h4>
+
+              <div className="mt-2 flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-5 text-xs text-slate-400">
+
+                <span>{job.experience}</span>
+
+                <span className="hidden sm:block">&bull;</span>
+
+                <span>
+                  {job.department || "Tech & Engineering"}
+                </span>
+
+              </div>
             </div>
 
-            {/* Content on Image */}
-            <div className="absolute inset-0 flex flex-col items-center justify-start pt-[24%]">
+            <div className="flex-shrink-0">
+              {isExpanded ? (
+                <ChevronUp className="w-5 h-5 text-slate-400" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-slate-400" />
+              )}
+            </div>
+          </button>
 
-              <h2 className="text-white font-black leading-none tracking-tight
-                 text-[72px] sm:text-[95px] md:text-[120px] lg:text-[145px]">
-                Current
-              </h2>
+          {isExpanded && (
+            <div className="border-t border-white/5 bg-black/40 px-5 sm:px-6 md:px-8 py-6">
 
-              <h3 className="-mt-3 text-[#C88BFF]
-                 font-extralight tracking-tight
-                 text-[38px] sm:text-[42px] md:text-[52px] lg:text-[64px]">
-                Openings
-              </h3>
+              <h5 className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Role Description & Responsibilities
+              </h5>
+
+              <p className="mb-6 text-sm md:text-base leading-7 text-slate-300">
+                {job.description}
+              </p>
+
+              <Link
+                to={`/career/${job.jobId || job.id}`}
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--color-brand-purple)] px-5 sm:px-6 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-purple-700"
+              >
+                Apply Now ({job.jobId || job.id}) ↗
+              </Link>
 
             </div>
-
-          </div>
-
-
-          {/* Job listings accordion */}
-          <div className="max-w-4xl mx-auto flex flex-col gap-4 relative z-10 -mt-16">
-            {jobOpenings.map((job) => {
-              const isExpanded = expandedJobId === job.id;
-              return (
-                <div
-                  key={job.id}
-                  className={`border border-white/5 rounded-2xl transition-all duration-300 bg-white/[0.01] hover:bg-white/[0.03] overflow-hidden ${isExpanded ? 'border-[var(--color-brand-purple)] bg-white/[0.03]' : ''
-                    }`}
-                >
-                  {/* Collapsible Header */}
-                  <button
-                    onClick={() => toggleJob(job.id)}
-                    className="w-full px-6 py-6 md:px-8 text-left flex justify-between items-center cursor-pointer"
-                  >
-                    <div>
-                      <div className="flex items-center gap-3 mb-1">
-                        <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-brand-purple-light)]">
-                          {job.type}
-                        </span>
-                        <span className="px-2.5 py-0.5 rounded-md bg-purple-500/20 text-purple-300 text-[11px] font-mono font-bold border border-purple-500/30">
-                          {job.jobId || job.id}
-                        </span>
-                      </div>
-                      <h4 className="text-lg md:text-xl font-bold text-white mb-2">
-                        {job.title}
-                      </h4>
-                      <div className="flex items-center gap-6 text-xs text-slate-400">
-                        <span>{job.experience}</span>
-                        <span>&bull;</span>
-                        <span>{job.department || 'Tech & Engineering'}</span>
-                      </div>
-                    </div>
-                    <div>
-                      {isExpanded ? (
-                        <ChevronUp className="w-5 h-5 text-slate-400" />
-                      ) : (
-                        <ChevronDown className="w-5 h-5 text-slate-400" />
-                      )}
-                    </div>
-                  </button>
-
-                  {/* Expanded Content */}
-                  {isExpanded && (
-                    <div className="px-6 pb-6 md:px-8 md:pb-8 border-t border-white/5 pt-6 bg-black/40">
-                      <h5 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">
-                        Role Description & Responsibilities:
-                      </h5>
-                      <p className="text-slate-300 text-sm md:text-base leading-relaxed mb-6">
-                        {job.description}
-                      </p>
-                      <Link
-                        to={`/career/${job.jobId || job.id}`}
-                        className="inline-flex items-center gap-2 px-6 py-2.5 bg-[var(--color-brand-purple)] hover:bg-purple-700 text-white text-xs font-bold rounded-full transition-all tracking-wider uppercase"
-                      >
-                        Apply Now ({job.jobId || job.id}) <span>↗</span>
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </section>
+          )}
+        </div>
+      );
+    })}
+  </div>
+</section>
 
         {/* ================= GROWTH / OPPORTUNITIES ================= */}
-        <section className="py-12 text-center relative">
+        <section className="py-12 text-center relative overflow-hidden">
 
-          {/* Space dots / particles */}
-          {particles.map((p) => (
-            <div
-              key={p.id}
-              className="service-particle"
-              style={{
-                width: p.size,
-                height: p.size,
-                top: p.top,
-                left: p.left,
-                backgroundColor: p.color,
-                boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-                '--tx': p.tx,
-                '--ty': p.ty,
-                '--duration': `${p.duration}s`,
-                '--delay': `${p.delay}s`,
-              }}
-            />
-          ))}
+{/* Space dots / particles */}
+{particles.map((p) => (
+  <div
+    key={p.id}
+    className="service-particle"
+    style={{
+      width: p.size,
+      height: p.size,
+      top: p.top,
+      left: p.left,
+      backgroundColor: p.color,
+      boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+      '--tx': p.tx,
+      '--ty': p.ty,
+      '--duration': `${p.duration}s`,
+      '--delay': `${p.delay}s`,
+    }}
+  />
+))}
 
 
-          <div className="mb-16 text-left ml-6 md:ml-10 pr-6">
-            {/* Small Caption */}
-            <p className="text-[20px] md:text-[22px] font-normal text-[#8B8B8B] mb-4 tracking-[0.02em]">
-              What's Waiting for you
-            </p>
+<div className="mb-12 md:mb-16 text-left ml-4 sm:ml-6 md:ml-10 pr-4 sm:pr-6">
+  {/* Small Caption */}
+  <p className="text-[16px] sm:text-[20px] md:text-[22px] font-normal text-[#8B8B8B] mb-3 md:mb-4 tracking-[0.02em]">
+    What's Waiting for you
+  </p>
 
-            {/* Heading */}
-            <div className="flex flex-col md:flex-row md:items-end gap-0 md:gap-2">
+  {/* Heading */}
+  <div className="flex flex-col md:flex-row md:items-end gap-0 md:gap-2">
 
-              <h2 className="text-white font-bold leading-none
-                   text-[68px] sm:text-[90px] md:text-[110px] lg:text-[130px]
-                   tracking-[-0.05em]">
-                Growth
-              </h2>
+    <h2 className="text-white font-bold leading-none
+         text-[44px] xs:text-[52px] sm:text-[68px] md:text-[90px] lg:text-[110px] xl:text-[130px]
+         tracking-[-0.05em]">
+      Growth
+    </h2>
 
-              <span
-                className="text-[#8C8C8C] font-extralight
-                 text-[36px] sm:text-[42px] md:text-[52px] lg:text-[60px]
-                 leading-[1.1] md:leading-none md:mb-4"
-              >
-                Opportunities
-              </span>
+    <span
+      className="text-[#8C8C8C] font-extralight
+       text-[26px] xs:text-[30px] sm:text-[36px] md:text-[42px] lg:text-[52px] xl:text-[60px]
+       leading-[1.1] md:leading-none md:mb-4"
+    >
+      Opportunities
+    </span>
 
-            </div>
+  </div>
 
-          </div>
+</div>
 
-          {/* Diamond diagram */}
-          <div className="relative max-w-3xl mx-auto px-4" style={{ height: '820px' }}>
+{/* ============ MOBILE / TABLET (below md): stacked nodes ============ */}
+<div className="md:hidden flex flex-col items-center gap-10 px-6 max-w-sm mx-auto">
 
-            {/* Animated SVG Lines behind nodes */}
-            <svg
-              className="absolute inset-0 w-full h-full pointer-events-none"
-              style={{ zIndex: 0 }}
-              viewBox="0 0 780 780"
-              preserveAspectRatio="xMidYMid meet"
-            >
-              <defs>
-                <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#9d00ff" stopOpacity="0.2" />
-                  <stop offset="50%" stopColor="#d470ff" stopOpacity="1" />
-                  <stop offset="100%" stopColor="#9d00ff" stopOpacity="0.2" />
-                </linearGradient>
-              </defs>
+  {/* Experience */}
+  <div className="flex flex-col items-center">
+    <div
+      className="w-36 h-36 sm:w-40 sm:h-40 rounded-full p-[3px] animate-pulse-glow-purple"
+      style={{
+        background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
+        boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
+      }}
+    >
+      <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[18px] text-center px-4">
+        Experience
+      </div>
+    </div>
+    <p className="text-slate-300 text-[13px] sm:text-[14px] font-medium mt-4 max-w-[260px] text-center leading-6">
+      Hands-On Software Development Experience
+    </p>
+  </div>
 
-              {/* Static dim base lines — top & bottom now equal length */}
-              <line x1="390" y1="120" x2="150" y2="380" stroke="#9d00ff" strokeOpacity="0.25" strokeWidth="2.2" />
-              <line x1="390" y1="120" x2="630" y2="380" stroke="#9d00ff" strokeOpacity="0.25" strokeWidth="2.2" />
-              <line x1="150" y1="380" x2="390" y2="640" stroke="#9d00ff" strokeOpacity="0.25" strokeWidth="2.2" />
-              <line x1="630" y1="380" x2="390" y2="640" stroke="#9d00ff" strokeOpacity="0.25" strokeWidth="2.2" />
+  <div className="w-[2px] h-8" style={{ background: "linear-gradient(#9d00ff, rgba(157,0,255,0.15))" }} />
 
-              {/* Animated glowing lines */}
-              <line x1="390" y1="120" x2="150" y2="380" stroke="url(#lineGrad)" strokeWidth="3">
-                <animate attributeName="stroke-dashoffset" from="500" to="0" dur="2.5s" repeatCount="indefinite" />
-                <animate attributeName="stroke-dasharray" from="0 500" to="500 0" dur="2.5s" repeatCount="indefinite" />
-              </line>
-              <line x1="390" y1="120" x2="630" y2="380" stroke="url(#lineGrad)" strokeWidth="3">
-                <animate attributeName="stroke-dashoffset" from="500" to="0" dur="2.5s" begin="0.6s" repeatCount="indefinite" />
-                <animate attributeName="stroke-dasharray" from="0 500" to="500 0" dur="2.5s" begin="0.6s" repeatCount="indefinite" />
-              </line>
-              <line x1="150" y1="380" x2="390" y2="640" stroke="url(#lineGrad)" strokeWidth="3">
-                <animate attributeName="stroke-dashoffset" from="500" to="0" dur="2.5s" begin="1.2s" repeatCount="indefinite" />
-                <animate attributeName="stroke-dasharray" from="0 500" to="500 0" dur="2.5s" begin="1.2s" repeatCount="indefinite" />
-              </line>
-              <line x1="630" y1="380" x2="390" y2="640" stroke="url(#lineGrad)" strokeWidth="3">
-                <animate attributeName="stroke-dashoffset" from="500" to="0" dur="2.5s" begin="1.8s" repeatCount="indefinite" />
-                <animate attributeName="stroke-dasharray" from="0 500" to="500 0" dur="2.5s" begin="1.8s" repeatCount="indefinite" />
-              </line>
-            </svg>
+  {/* Mentorship */}
+  <div className="flex flex-col items-center">
+    <div
+      className="w-36 h-36 sm:w-40 sm:h-40 rounded-full p-[3px] animate-pulse-glow-purple"
+      style={{
+        animationDelay: "0.7s",
+        background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
+        boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
+      }}
+    >
+      <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[18px] text-center px-4">
+        Mentorship
+      </div>
+    </div>
+    <p className="text-slate-300 text-[13px] sm:text-[14px] font-medium mt-4 max-w-[270px] text-center leading-6">
+      Expert Mentorship &amp; Career Guidance
+    </p>
+  </div>
 
-            {/* ===================== NODES ===================== */}
+  <div className="w-[2px] h-8" style={{ background: "linear-gradient(#9d00ff, rgba(157,0,255,0.15))" }} />
 
-            {/* TOP — Experience */}
-            <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center" style={{ top: "20px", zIndex: 10 }}>
-              <p className="text-slate-300 text-[14px] font-medium mb-4 text-center whitespace-nowrap leading-6">
-                Hands-On Software Development Experience
-              </p>
-              <div
-                className="w-48 h-48 rounded-full p-[3px] animate-pulse-glow-purple"
-                style={{
-                  background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
-                  boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
-                }}
-              >
-                <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[24px] text-center px-4">
-                  Experience
-                </div>
-              </div>
-            </div>
+  {/* Career Growth */}
+  <div className="flex flex-col items-center">
+    <div
+      className="w-36 h-36 sm:w-40 sm:h-40 rounded-full p-[3px] animate-pulse-glow-purple"
+      style={{
+        animationDelay: "1.4s",
+        background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
+        boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
+      }}
+    >
+      <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[18px] text-center px-4">
+        Career Growth
+      </div>
+    </div>
+    <p className="text-slate-300 text-[13px] sm:text-[14px] font-medium mt-4 max-w-[270px] text-center leading-6">
+      Performance-Based Career Growth
+    </p>
+  </div>
 
-            {/* LEFT — Mentorship */}
-            <div className="absolute flex flex-col items-center" style={{ left: "10%", top: "49%", transform: "translateY(-50%)", zIndex: 10 }}>
-              <div
-                className="w-48 h-48 rounded-full p-[3px] animate-pulse-glow-purple"
-                style={{
-                  animationDelay: "0.7s",
-                  background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
-                  boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
-                }}
-              >
-                <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[24px] text-center px-4">
-                  Mentorship
-                </div>
-              </div>
-              <p className="text-slate-300 text-[14px] font-medium mt-4 max-w-[270px] text-center whitespace-nowrap leading-6">
-                Expert Mentorship &amp; Career Guidance
-              </p>
-            </div>
+  <div className="w-[2px] h-8" style={{ background: "linear-gradient(#9d00ff, rgba(157,0,255,0.15))" }} />
 
-            {/* RIGHT — Career Growth */}
-            <div className="absolute flex flex-col items-center" style={{ right: "10%", top: "49%", transform: "translateY(-50%)", zIndex: 10 }}>
-              <div
-                className="w-48 h-48 rounded-full p-[3px] animate-pulse-glow-purple"
-                style={{
-                  animationDelay: "1.4s",
-                  background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
-                  boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
-                }}
-              >
-                <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[24px] text-center px-4">
-                  Career<br />Growth
-                </div>
-              </div>
-              <p className="text-slate-300 text-[14px] font-medium mt-4 max-w-[270px] text-center whitespace-nowrap leading-6">
-                Performance-Based Career Growth
-              </p>
-            </div>
+  {/* Tech Ideas */}
+  <div className="flex flex-col items-center">
+    <div
+      className="w-36 h-36 sm:w-40 sm:h-40 rounded-full p-[3px] animate-pulse-glow-purple"
+      style={{
+        animationDelay: "2.1s",
+        background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
+        boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
+      }}
+    >
+      <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[18px] text-center px-4">
+        Tech Ideas
+      </div>
+    </div>
+    <p className="text-slate-300 text-[13px] sm:text-[14px] font-medium mt-4 max-w-[310px] text-center leading-6">
+      Exposure to Emerging Technologies &amp; Industry Practices
+    </p>
+  </div>
 
-            {/* BOTTOM — Tech Ideas */}
-            <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center" style={{ bottom: "20px", zIndex: 10 }}>
-              <div
-                className="w-48 h-48 rounded-full p-[3px] animate-pulse-glow-purple"
-                style={{
-                  animationDelay: "2.1s",
-                  background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
-                  boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
-                }}
-              >
-                <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[24px] text-center px-4">
-                  Tech<br />Ideas
-                </div>
-              </div>
-              <p className="text-slate-300 text-[14px] font-medium mt-4 max-w-[310px] text-center whitespace-nowrap leading-6">
-                Exposure to Emerging Technologies &amp; Industry Practices
-              </p>
-            </div>
+</div>
 
-          </div>
-        </section>
+{/* ============ DESKTOP (md and up): diamond diagram ============ */}
+<div
+  className="hidden md:block relative mx-auto px-4"
+  style={{ width: "min(90vw, 780px)", aspectRatio: "1 / 1" }}
+>
+
+  {/* Animated SVG Lines behind nodes */}
+  <svg
+    className="absolute inset-0 w-full h-full pointer-events-none"
+    style={{ zIndex: 0 }}
+    viewBox="0 0 100 100"
+    preserveAspectRatio="xMidYMid meet"
+  >
+    <defs>
+      <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="#9d00ff" stopOpacity="0.2" />
+        <stop offset="50%" stopColor="#d470ff" stopOpacity="1" />
+        <stop offset="100%" stopColor="#9d00ff" stopOpacity="0.2" />
+      </linearGradient>
+    </defs>
+
+    {/* Static dim base lines — top & bottom now equal length */}
+    <line x1="50" y1="15.4" x2="19.2" y2="48.7" stroke="#9d00ff" strokeOpacity="0.25" strokeWidth="0.3" />
+    <line x1="50" y1="15.4" x2="80.8" y2="48.7" stroke="#9d00ff" strokeOpacity="0.25" strokeWidth="0.3" />
+    <line x1="19.2" y1="48.7" x2="50" y2="82" stroke="#9d00ff" strokeOpacity="0.25" strokeWidth="0.3" />
+    <line x1="80.8" y1="48.7" x2="50" y2="82" stroke="#9d00ff" strokeOpacity="0.25" strokeWidth="0.3" />
+
+    {/* Animated glowing lines */}
+    <line x1="50" y1="15.4" x2="19.2" y2="48.7" stroke="url(#lineGrad)" strokeWidth="0.4">
+      <animate attributeName="stroke-dashoffset" from="140" to="0" dur="2.5s" repeatCount="indefinite" />
+      <animate attributeName="stroke-dasharray" from="0 140" to="140 0" dur="2.5s" repeatCount="indefinite" />
+    </line>
+    <line x1="50" y1="15.4" x2="80.8" y2="48.7" stroke="url(#lineGrad)" strokeWidth="0.4">
+      <animate attributeName="stroke-dashoffset" from="140" to="0" dur="2.5s" begin="0.6s" repeatCount="indefinite" />
+      <animate attributeName="stroke-dasharray" from="0 140" to="140 0" dur="2.5s" begin="0.6s" repeatCount="indefinite" />
+    </line>
+    <line x1="19.2" y1="48.7" x2="50" y2="82" stroke="url(#lineGrad)" strokeWidth="0.4">
+      <animate attributeName="stroke-dashoffset" from="140" to="0" dur="2.5s" begin="1.2s" repeatCount="indefinite" />
+      <animate attributeName="stroke-dasharray" from="0 140" to="140 0" dur="2.5s" begin="1.2s" repeatCount="indefinite" />
+    </line>
+    <line x1="80.8" y1="48.7" x2="50" y2="82" stroke="url(#lineGrad)" strokeWidth="0.4">
+      <animate attributeName="stroke-dashoffset" from="140" to="0" dur="2.5s" begin="1.8s" repeatCount="indefinite" />
+      <animate attributeName="stroke-dasharray" from="0 140" to="140 0" dur="2.5s" begin="1.8s" repeatCount="indefinite" />
+    </line>
+  </svg>
+
+  {/* ===================== NODES ===================== */}
+
+  {/* TOP — Experience */}
+  <div
+    className="absolute flex flex-col items-center"
+    style={{ left: "50%", top: "15.4%", transform: "translate(-50%, -50%)", zIndex: 10 }}
+  >
+    <p className="text-slate-300 text-[clamp(11px,1.1vw,14px)] font-medium mb-3 md:mb-4 text-center max-w-[220px] leading-6">
+      Hands-On Software Development Experience
+    </p>
+    <div
+      className="rounded-full p-[3px] animate-pulse-glow-purple"
+      style={{
+        width: "clamp(110px, 15vw, 192px)",
+        height: "clamp(110px, 15vw, 192px)",
+        background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
+        boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
+      }}
+    >
+      <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[clamp(16px,2vw,24px)] text-center px-4">
+        Experience
+      </div>
+    </div>
+  </div>
+
+  {/* LEFT — Mentorship */}
+  <div
+    className="absolute flex flex-col items-center"
+    style={{ left: "19.2%", top: "48.7%", transform: "translate(-50%, -50%)", zIndex: 10 }}
+  >
+    <div
+      className="rounded-full p-[3px] animate-pulse-glow-purple"
+      style={{
+        width: "clamp(110px, 15vw, 192px)",
+        height: "clamp(110px, 15vw, 192px)",
+        animationDelay: "0.7s",
+        background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
+        boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
+      }}
+    >
+      <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[clamp(16px,2vw,24px)] text-center px-4">
+        Mentorship
+      </div>
+    </div>
+    <p className="text-slate-300 text-[clamp(11px,1.1vw,14px)] font-medium mt-3 md:mt-4 max-w-[250px] text-center leading-6">
+      Expert Mentorship &amp; Career Guidance
+    </p>
+  </div>
+
+  {/* RIGHT — Career Growth */}
+  <div
+    className="absolute flex flex-col items-center"
+    style={{ left: "80.8%", top: "48.7%", transform: "translate(-50%, -50%)", zIndex: 10 }}
+  >
+    <div
+      className="rounded-full p-[3px] animate-pulse-glow-purple"
+      style={{
+        width: "clamp(110px, 15vw, 192px)",
+        height: "clamp(110px, 15vw, 192px)",
+        animationDelay: "1.4s",
+        background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
+        boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
+      }}
+    >
+      <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[clamp(16px,2vw,24px)] text-center px-4">
+        Career<br />Growth
+      </div>
+    </div>
+    <p className="text-slate-300 text-[clamp(11px,1.1vw,14px)] font-medium mt-3 md:mt-4 max-w-[250px] text-center leading-6">
+      Performance-Based Career Growth
+    </p>
+  </div>
+
+  {/* BOTTOM — Tech Ideas */}
+  <div
+    className="absolute flex flex-col items-center"
+    style={{ left: "50%", top: "82%", transform: "translate(-50%, -50%)", zIndex: 10 }}
+  >
+    <div
+      className="rounded-full p-[3px] animate-pulse-glow-purple"
+      style={{
+        width: "clamp(110px, 15vw, 192px)",
+        height: "clamp(110px, 15vw, 192px)",
+        animationDelay: "2.1s",
+        background: "conic-gradient(from 200deg, #ff3fd8, #9d00ff 55%, #9d00ff 100%)",
+        boxShadow: "0 0 30px rgba(180,60,255,0.55), 0 0 14px rgba(255,60,220,0.4)",
+      }}
+    >
+      <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-bold text-[clamp(16px,2vw,24px)] text-center px-4">
+        Tech<br />Ideas
+      </div>
+    </div>
+    <p className="text-slate-300 text-[clamp(11px,1.1vw,14px)] font-medium mt-3 md:mt-4 max-w-[310px] text-center leading-6">
+      Exposure to Emerging Technologies &amp; Industry Practices
+    </p>
+  </div>
+
+</div>
+</section>
 
       </div >
     </main >

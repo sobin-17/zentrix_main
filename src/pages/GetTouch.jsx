@@ -69,8 +69,7 @@ const GetTouch = () => {
   ];
 
   const locations = [
-    { title: "Nagercoil, Tamil Nadu", tag: "Head Office", detail: "Nagercoil, Tamil Nadu, India" },
-    { title: "Kerala Office", tag: "Branch Office", detail: "Kerala, India" },
+    { title: "Nagercoil, Tamil Nadu", tag: "Head Office", detail: "Nagercoil, Tamil Nadu, India" }
   ];
 
   return (
