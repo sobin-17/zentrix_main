@@ -34,6 +34,10 @@ import {
 
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../firebase";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
+import { useNavigate } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
 /* ────────────────────────────────────────────────────────────────────────
    CONSTANTS / SEED DATA
 ──────────────────────────────────────────────────────────────────────── */
@@ -42,6 +46,8 @@ const CATEGORIES = ['Development', 'Design', 'Data Science', 'AI'];
 const LEVELS = ['Beginner', 'Beginner – Intermediate', 'Intermediate', 'Advanced'];
 const CAREER_TYPES = ['Internship', 'Full-time', 'Part-time', 'Contract'];
 const ENROLLMENT_STATUSES = ['New', 'Contacted', 'Confirmed', 'Cancelled'];
+
+
 
 const seedCourses = [
   { id: 'mern-stack', title: 'MERN Stack', category: 'Development', duration: '6 Months', level: 'Intermediate', price: 1999, students: 254, status: 'Published', image: '/mern_stack.jpeg', description: 'Build modern, scalable, and high-performance web applications using the MERN Stack.', skills: ['React', 'Node.js', 'MongoDB', 'Express.js'], internship: true, placement: true },
@@ -186,7 +192,7 @@ function Sidebar({ active, setActive }) {
   );
 }
 
-function Topbar({ query, setQuery }) {
+function Topbar({ query, setQuery, handleLogout , admin ,notifications,notificationCount,showNotifications,setShowNotifications,markAllNotificationsAsRead,}) {
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between gap-4 px-6 py-4 bg-black/70 backdrop-blur-md border-b border-white/10">
       <div className="relative w-full max-w-md hidden md:block">
@@ -199,18 +205,93 @@ function Topbar({ query, setQuery }) {
         />
       </div>
       <div className="flex items-center gap-4 ml-auto">
-        <button className="relative w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition-colors">
-          <Bell className="w-4 h-4" />
-          <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-purple-600 text-[9px] font-bold flex items-center justify-center">3</span>
+      <div className="relative">
+  <button
+    onClick={() => setShowNotifications(!showNotifications)}
+    className="relative w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white"
+  >
+    <Bell className="w-4 h-4" />
+
+    {notificationCount > 0 && (
+      <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-[9px] font-bold flex items-center justify-center">
+        {notificationCount}
+      </span>
+    )}
+  </button>
+
+  {showNotifications && (
+  <div className="absolute right-0 mt-3 w-96 rounded-xl bg-[#111] border border-white/10 shadow-xl z-50">
+
+    {/* Header */}
+    <div className="flex items-center justify-between p-4 border-b border-white/10">
+      <h3 className="text-white font-semibold">
+        Notifications
+      </h3>
+
+      {notificationCount > 0 && (
+        <button
+          onClick={markAllNotificationsAsRead}
+          className="text-xs text-purple-400 hover:text-purple-300"
+        >
+          Mark all as read
         </button>
+      )}
+    </div>
+
+    {/* Notification List */}
+    <div className="max-h-80 overflow-y-auto">
+
+      {notifications.length === 0 ? (
+        <p className="text-slate-500 p-4 text-center">
+          No notifications
+        </p>
+      ) : (
+        notifications.map((item) => (
+          <div
+            key={item.id}
+            className="p-4 border-b border-white/5 hover:bg-white/5 transition-colors"
+          >
+            <p className="text-white text-sm font-medium">
+              {item.type === "enrollment"
+                ? `📚 ${item.name} enrolled`
+                : `💼 ${item.name} applied`}
+            </p>
+
+            <p className="text-slate-400 text-xs mt-1">
+              {item.title}
+            </p>
+
+            <p className="text-slate-500 text-[11px] mt-1">
+              {new Date(item.time).toLocaleString()}
+            </p>
+          </div>
+        ))
+      )}
+
+    </div>
+
+  </div>
+)}
+</div>
         <div className="flex items-center gap-2 pl-3 border-l border-white/10">
           <div className="w-9 h-9 rounded-full bg-purple-600 flex items-center justify-center text-sm font-bold text-white">HR</div>
           <div className="hidden sm:block leading-tight">
-            <p className="text-sm font-semibold text-white">HR</p>
-            <p className="text-xs text-slate-500">Admin</p>
-          </div>
+  <p className="text-sm font-semibold text-white">
+    {admin?.email?.split("@")[0]}
+  </p>
+  <p className="text-xs text-slate-500">
+    {admin?.email}
+  </p>
+</div>
           <ChevronDown className="w-4 h-4 text-slate-500" />
         </div>
+        <button
+  onClick={handleLogout}
+  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm"
+>
+  <LogOut className="w-4 h-4" />
+  Logout
+</button>
       </div>
     </header>
   );
@@ -1287,6 +1368,16 @@ function ComingSoon({ label }) {
 ──────────────────────────────────────────────────────────────────────── */
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
+
+const handleLogout = async () => {
+  try {
+    await signOut(auth);
+    navigate("/admin-login");
+  } catch (error) {
+    console.error(error);
+  }
+};
   const [active, setActive] = useState('dashboard');
   const [query, setQuery] = useState('');
   const [particles] = useState(() => {
@@ -1306,6 +1397,21 @@ export default function AdminDashboard() {
   const [courses, setCourses] = useState([]);
   const [careers, setCareers] = useState([]);
   const [enrollments, setEnrollments] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  
+
+  const [admin, setAdmin] = useState(null);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setAdmin({
+          email: user.email,
+        });
+      }
+    });
+  
+    return unsubscribe;
+  }, []);
 
 useEffect(() => {
   loadEnrollments();
@@ -1329,6 +1435,30 @@ const loadEnrollments = async () => {
   setEnrollments(data);
 };
   const [careerApplications, setCareerApplications] = useState([]);
+
+  const notifications = [
+    ...enrollments
+      .filter(e => e.status === "New")
+      .map(e => ({
+        id: e.firestoreId,
+        type: "enrollment",
+        name: e.name,
+        title: e.courseTitle || e.courseId,
+        time: e.enrolledDate,
+      })),
+  
+    ...careerApplications
+      .filter(a => a.status === "New")
+      .map(a => ({
+        id: a.firestoreId,
+        type: "application",
+        name: a.name,
+        title: a.jobTitle,
+        time: a.appliedAt,
+      })),
+  ].sort((a, b) => new Date(b.time) - new Date(a.time));
+  
+  const notificationCount = notifications.length;
  
   const loadApplications = async () => {
     try {
@@ -1336,6 +1466,28 @@ const loadEnrollments = async () => {
       setCareerApplications(data);
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const markAllNotificationsAsRead = async () => {
+    try {
+      // Update enrollments
+      for (const enrollment of enrollments.filter(e => e.status === "New")) {
+        await updateEnrollmentStatus(enrollment.firestoreId, "Contacted");
+      }
+  
+      // Update applications
+      for (const application of careerApplications.filter(a => a.status === "New")) {
+        await updateAppStatusService(application.firestoreId, "Pending");
+      }
+  
+      // Reload data
+      await loadEnrollments();
+      await loadApplications();
+  
+      setShowNotifications(false);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -1502,6 +1654,14 @@ const saveCourse = async (payload, isEdit) => {
     students: 'Students', mentors: 'Team / Mentors', admins: 'Admins',
   };
 
+  const openingCareers = careers.filter(
+    (career) => career.status === "Active"
+  );
+  
+  const closingCareers = careers.filter(
+    (career) => career.status === "Closed"
+  );
+
   return (
     <div className="flex min-h-screen bg-black font-poppins">
       {particles.map((p) => (
@@ -1525,7 +1685,17 @@ const saveCourse = async (payload, isEdit) => {
       <Sidebar active={active} setActive={setActive} />
 
       <div className="flex-1 min-w-0">
-        <Topbar query={query} setQuery={setQuery} />
+      <Topbar
+  query={query}
+  setQuery={setQuery}
+  handleLogout={handleLogout}
+  admin={admin}
+  notifications={notifications}
+  notificationCount={notificationCount}
+  showNotifications={showNotifications}
+  setShowNotifications={setShowNotifications}
+  markAllNotificationsAsRead={markAllNotificationsAsRead}
+/>
 
         <main className="p-6 md:p-8 max-w-7xl mx-auto">
           {active === 'dashboard' && <DashboardHome courses={courses} careers={careers} enrollments={enrollments} goTo={goTo} />}
@@ -1550,6 +1720,26 @@ const saveCourse = async (payload, isEdit) => {
             />
           )}
 
+{active === "opening careers" && (
+  <CareersManager
+    careers={openingCareers}
+    query={query}
+    onAdd={() => setCareerModal("add")}
+    onEdit={(j) => setCareerModal(j)}
+    onDelete={deleteCareer}
+  />
+)}
+
+{active === "closing careers" && (
+  <CareersManager
+    careers={closingCareers}
+    query={query}
+    onAdd={() => setCareerModal("add")}
+    onEdit={(j) => setCareerModal(j)}
+    onDelete={deleteCareer}
+  />
+)}
+
           {active === 'enrollments' && (
             <EnrollmentsManager
   courses={courses}
@@ -1566,7 +1756,7 @@ const saveCourse = async (payload, isEdit) => {
     onDeleteApp={removeApplication}
 />}
 
-          {!['dashboard', 'courses', 'careers', 'enrollments', 'applications'].includes(active) && (
+          {!['dashboard', 'courses', 'careers',"opening careers","closing careers", 'enrollments', 'applications'].includes(active) && (
             <ComingSoon label={titles[active] || active} />
           )}
         </main>

@@ -25,6 +25,7 @@ import YourNextStep from './pages/Yournextstepnew';
 import Admindashboard from './pages/Admindashboard';
 import AdminLogin from './pages/AdminLogin';
 import AdminSignup from './pages/AdminSignup';
+import ProtectedRoute from "./components/ProtectedRoute";
 const GlobalAtmosphere = () => (
   <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
     {/* Glows removed to prevent blur rendering artifacts */}
@@ -73,7 +74,17 @@ function AppLayout() {
           <Route path="/your-next-step" element={<YourNextStep />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsConditions />} />
-          <Route path="/admin-dashboard" element={<Admindashboard/>}/>
+          {/* <Route path="/admin-dashboard" element={<Admindashboard/>}/> */}
+          <Route path="/admin-signup" element={<AdminSignup />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route
+  path="/admin-dashboard"
+  element={
+    <ProtectedRoute>
+      <Admindashboard />
+    </ProtectedRoute>
+  }
+/>
         </Routes>
         
         {/* Persistent Footer */}
