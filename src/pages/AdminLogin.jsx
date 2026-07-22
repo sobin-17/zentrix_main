@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Eye, EyeOff, Lock, Mail, Loader2 } from "lucide-react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 
 const AdminLogin = () => {
@@ -21,21 +22,64 @@ const AdminLogin = () => {
     setError("");
 
     try {
+      // Login with Firebase Authentication
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
         password
       );
 
-      // Only allow admin
-      if (userCredential.user.email !== "admin@zentrixtechnology.com") {
-        setError("You are not authorized.");
+      const user = userCredential.user;
+
+      // Check if the user is an admin
+      const adminRef = doc(db, "admins", user.uid);
+      const adminSnap = await getDoc(adminRef);
+
+      if (!adminSnap.exists()) {
+        await auth.signOut();
+        setError("You are not authorized to access the admin dashboard.");
         return;
       }
 
-      navigate("/admin");
+      // Optional: verify role field
+      const adminData = adminSnap.data();
+
+      if (adminData.role !== "admin") {
+        await auth.signOut();
+        setError("Admin access denied.");
+        return;
+      }
+
+      // Success
+      navigate("/admin-dashboard");
+
     } catch (err) {
-      setError("Invalid email or password.");
+      console.error(err);
+
+      switch (err.code) {
+        case "auth/invalid-credential":
+          setError("Invalid email or password.");
+          break;
+
+        case "auth/user-not-found":
+          setError("User not found.");
+          break;
+
+        case "auth/wrong-password":
+          setError("Incorrect password.");
+          break;
+
+        case "auth/too-many-requests":
+          setError("Too many attempts. Please try again later.");
+          break;
+
+        case "auth/network-request-failed":
+          setError("Network error. Check your internet connection.");
+          break;
+
+        default:
+          setError(err.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -75,13 +119,11 @@ const AdminLogin = () => {
         )}
 
         <div className="mb-5">
-
           <label className="text-gray-300 text-sm mb-2 block">
             Email
           </label>
 
           <div className="flex items-center bg-white/5 border border-white/10 rounded-xl px-4">
-
             <Mail className="w-5 h-5 text-purple-400" />
 
             <input
@@ -90,20 +132,17 @@ const AdminLogin = () => {
               className="w-full bg-transparent outline-none px-3 py-4 text-white"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
-
           </div>
-
         </div>
 
         <div className="mb-8">
-
           <label className="text-gray-300 text-sm mb-2 block">
             Password
           </label>
 
           <div className="flex items-center bg-white/5 border border-white/10 rounded-xl px-4">
-
             <Lock className="w-5 h-5 text-purple-400" />
 
             <input
@@ -112,6 +151,7 @@ const AdminLogin = () => {
               className="w-full bg-transparent outline-none px-3 py-4 text-white"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
 
             <button
@@ -124,14 +164,13 @@ const AdminLogin = () => {
                 <Eye className="text-gray-400" />
               )}
             </button>
-
           </div>
-
         </div>
 
         <button
+          type="submit"
           disabled={loading}
-          className="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-semibold flex justify-center items-center gap-2 hover:scale-[1.02] transition"
+          className="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-semibold flex justify-center items-center gap-2 hover:scale-[1.02] transition disabled:opacity-60"
         >
           {loading ? (
             <>
@@ -142,9 +181,7 @@ const AdminLogin = () => {
             "Login"
           )}
         </button>
-
       </form>
-
     </div>
   );
 };
