@@ -139,11 +139,10 @@ const ContactMessagesManager = ({ messages = [], onDelete }) => {
 
                   <td className="p-4">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        msg.status === "New"
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${msg.status === "New"
                           ? "bg-green-600/20 text-green-400"
                           : "bg-zinc-700 text-gray-300"
-                      }`}
+                        }`}
                     >
                       {msg.status || "New"}
                     </span>
