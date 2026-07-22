@@ -20,15 +20,28 @@ import {
   deleteCareer as deleteCareerFromDB,
 } from "../services/careerService";
 import {
+  generateNextJobId,
+  ensureCareerJobIds,
+  DEFAULT_SEED_CAREERS,
+  getPredefinedDetailsForRole,
+} from "../utils/jobIdHelper";
+import {
+  generateNextCourseId,
+  ensureCourseIds,
+  DEFAULT_SEED_COURSES,
+} from "../utils/courseIdHelper";
+import {
   getApplications,
   updateApplicationStatus as updateAppStatusService,
   deleteApplication as deleteAppService
 } from "../services/applicationService";
 import {
   getContactMessages,
-  deleteContactMessage,
+  updateContactMessageStatus,
+  deleteContactMessage as deleteContactMessageFromDB,
 } from "../services/contactService";
 import ContactMessagesManager from "../components/ContactMessagesManager";
+import AdminsManager from "../components/AdminsManager";
 import {
   LayoutDashboard, BookOpen, Grid3x3, PlayCircle, ClipboardList, Star,
   Award, Briefcase, FileText, Users, UserCog, Shield, Settings, Globe,
@@ -54,25 +67,9 @@ const ENROLLMENT_STATUSES = ['New', 'Contacted', 'Confirmed', 'Cancelled'];
 
 
 
-const seedCourses = [
-  { id: 'mern-stack', title: 'MERN Stack', category: 'Development', duration: '6 Months', level: 'Intermediate', price: 1999, students: 254, status: 'Published', image: '/mern_stack.jpeg', description: 'Build modern, scalable, and high-performance web applications using the MERN Stack.', skills: ['React', 'Node.js', 'MongoDB', 'Express.js'], internship: true, placement: true },
-  { id: 'java-dev', title: 'Java Programming', category: 'Development', duration: '6 Months', level: 'Intermediate', price: 1499, students: 198, status: 'Published', image: '/java.jpeg', description: 'Create fast, scalable web applications using the Java ecosystem.', skills: ['Java', 'Spring Boot', 'Hibernate', 'MySQL'], internship: true, placement: true },
-  { id: 'ui-ux', title: 'UI – UX Designing', category: 'Design', duration: '3 Months', level: 'Beginner', price: 999, students: 134, status: 'Published', image: '/ui_ux.jpeg', description: 'Design intuitive and engaging digital experiences.', skills: ['Figma', 'Adobe XD', 'Prototyping'], internship: false, placement: true },
-  { id: 'python-fullstack', title: 'Python Full Stack', category: 'Development', duration: '6 Months', level: 'Intermediate', price: 1999, students: 176, status: 'Published', image: '/python.jpeg', description: 'Design and develop modern web applications using Python full stack.', skills: ['Python', 'Django', 'Flask', 'React'], internship: true, placement: true },
-  { id: 'data-analytics', title: 'Data Analytics', category: 'Data Science', duration: '6 Months', level: 'Beginner – Intermediate', price: 1299, students: 156, status: 'Published', image: '/data.jpeg', description: 'Transform raw data into meaningful insights.', skills: ['Python', 'SQL', 'Pandas', 'Power BI'], internship: true, placement: true },
-  { id: 'data-science-ml', title: 'Data Science & ML', category: 'Data Science', duration: '3 Months', level: 'Advanced', price: 1999, students: 100, status: 'Draft', image: '/data science.jpeg', description: 'Harness data science and machine learning to build intelligent solutions.', skills: ['Scikit-Learn', 'TensorFlow', 'NLP'], internship: false, placement: true },
-  { id: 'ZTAI0001', title: 'Artificial Intelligence', category: 'AI', duration: '4 Months', level: 'Advanced', price: 2499, students: 88, status: 'Published', image: '/ai.jpeg', description: 'Explore AI to create smart, adaptive solutions.', skills: ['TensorFlow', 'OpenCV', 'LLMs'], internship: false, placement: true },
-];
+const seedCourses = DEFAULT_SEED_COURSES;
 
-const seedCareers = [
-  { id: 'python', title: 'Python Developer Intern', type: 'Internship', experience: '3 – 6 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', description: 'Learn Python programming, backend development, automation, and real-world software development practices.' },
-  { id: 'mern', title: 'Mern Stack Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', description: 'Build modern web applications using MongoDB, Express.js, React, and Node.js through hands-on projects.' },
-  { id: 'uiux', title: 'UI / UX Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', description: 'Create user-friendly interfaces, wireframes, prototypes, and engaging digital experiences.' },
-  { id: 'graphic', title: 'Graphic Design Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', description: 'Design creative visuals, social media content, branding materials, and marketing assets.' },
-  { id: 'video', title: 'Video Editor Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', description: 'Edit and enhance videos, add visual effects, transitions, and create engaging multimedia content.' },
-  { id: 'digital', title: 'Digital Marketing Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', description: 'Learn social media marketing, content strategy, campaign management, and online brand promotion.' },
-  { id: 'seo', title: 'SEO Analyst Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', description: 'Optimize websites for search engines, conduct keyword research, and improve online visibility.' },
-];
+const seedCareers = DEFAULT_SEED_CAREERS;
 
 const seedEnrollments = [
   { id: 'enr-1', courseId: 'mern-stack', name: 'Aisha Bello', email: 'aisha.bello@example.com', phone: '+91 98765 11111', qualification: 'B.E / B.Tech', message: 'Excited to build full-stack apps and eventually work on production systems.', resume: 'aisha_bello_resume.pdf', enrolledDate: '2026-07-16', status: 'Confirmed' },
@@ -141,8 +138,8 @@ const NAV_SECTIONS = [
   {
     section: 'Users & Team',
     items: [
+      { key: 'admins', label: 'Admins', icon: UserCog },
       { key: 'students', label: 'Students', icon: Users, soon: true },
-      
     ],
   },
 ];
@@ -197,7 +194,18 @@ function Sidebar({ active, setActive }) {
   );
 }
 
-function Topbar({ query, setQuery, handleLogout , admin ,notifications,notificationCount,showNotifications,setShowNotifications,markAllNotificationsAsRead,}) {
+function Topbar({
+  query,
+  setQuery,
+  handleLogout,
+  admin,
+  notifications,
+  notificationCount,
+  showNotifications,
+  setShowNotifications,
+  markAllNotificationsAsRead,
+  onSelectNotification,
+}) {
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between gap-4 px-6 py-4 bg-black/70 backdrop-blur-md border-b border-white/10">
       <div className="relative w-full max-w-md hidden md:block">
@@ -225,18 +233,18 @@ function Topbar({ query, setQuery, handleLogout , admin ,notifications,notificat
   </button>
 
   {showNotifications && (
-  <div className="absolute right-0 mt-3 w-96 rounded-xl bg-[#111] border border-white/10 shadow-xl z-50">
+  <div className="absolute right-0 mt-3 w-96 rounded-xl bg-[#111] border border-white/10 shadow-xl z-50 overflow-hidden">
 
     {/* Header */}
-    <div className="flex items-center justify-between p-4 border-b border-white/10">
-      <h3 className="text-white font-semibold">
-        Notifications
+    <div className="flex items-center justify-between p-4 border-b border-white/10 bg-white/[0.02]">
+      <h3 className="text-white font-semibold text-sm">
+        Notifications ({notificationCount})
       </h3>
 
       {notificationCount > 0 && (
         <button
           onClick={markAllNotificationsAsRead}
-          className="text-xs text-purple-400 hover:text-purple-300"
+          className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
         >
           Mark all as read
         </button>
@@ -244,31 +252,36 @@ function Topbar({ query, setQuery, handleLogout , admin ,notifications,notificat
     </div>
 
     {/* Notification List */}
-    <div className="max-h-80 overflow-y-auto">
+    <div className="max-h-80 overflow-y-auto divide-y divide-white/5">
 
       {notifications.length === 0 ? (
-        <p className="text-slate-500 p-4 text-center">
-          No notifications
+        <p className="text-slate-500 p-6 text-center text-xs">
+          No new notifications
         </p>
       ) : (
         notifications.map((item) => (
           <div
             key={item.id}
-            className="p-4 border-b border-white/5 hover:bg-white/5 transition-colors"
+            onClick={() => onSelectNotification && onSelectNotification(item)}
+            className="p-4 hover:bg-purple-600/10 transition-colors cursor-pointer group"
           >
-            <p className="text-white text-sm font-medium">
-  {item.type === "enrollment" && `📚 ${item.name} enrolled`}
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-white text-xs font-semibold group-hover:text-purple-300 transition-colors">
+                {item.type === "enrollment" && `📚 ${item.name} enrolled`}
+                {item.type === "application" && `💼 ${item.name} applied`}
+                {item.type === "contact" && `📩 ${item.name} sent a message`}
+              </p>
 
-  {item.type === "application" && `💼 ${item.name} applied`}
+              <span className="text-[10px] text-purple-400 font-bold uppercase tracking-wider group-hover:underline flex-shrink-0">
+                View Full Info →
+              </span>
+            </div>
 
-  {item.type === "contact" && `📩 ${item.name} sent a message`}
-</p>
-
-            <p className="text-slate-400 text-xs mt-1">
+            <p className="text-slate-400 text-xs mt-1.5 line-clamp-2 leading-relaxed">
               {item.title}
             </p>
 
-            <p className="text-slate-500 text-[11px] mt-1">
+            <p className="text-slate-500 text-[10px] mt-2">
               {new Date(item.time).toLocaleString()}
             </p>
           </div>
@@ -346,7 +359,7 @@ function Toast({ message }) {
 /* ────────────────────────────────────────────────────────────────────────
    COURSE FORM MODAL (Simplified with Dropdowns)
 ──────────────────────────────────────────────────────────────────────── */
-function CourseModal({ initial, onClose, onSave, saving }) {
+function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
   const isEdit = Boolean(initial);
  
   // Default to the first seed course
@@ -356,6 +369,7 @@ function CourseModal({ initial, onClose, onSave, saving }) {
     initial
       ? {
           id: initial.id || '',
+          courseId: initial.courseId || '',
           title: initial.title || '',
           subtitle: initial.subtitle || '',
           category: initial.category || CATEGORIES[0],
@@ -365,6 +379,7 @@ function CourseModal({ initial, onClose, onSave, saving }) {
         }
       : {
           id: defaultCourse.id,
+          courseId: defaultCourse.courseId,
           title: defaultCourse.title,
           subtitle: '',
           category: defaultCourse.category,
@@ -375,6 +390,10 @@ function CourseModal({ initial, onClose, onSave, saving }) {
   );
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+
+  const currentCourseId = isEdit
+    ? (initial?.courseId || initial?.id)
+    : generateNextCourseId(form.category || form.title || form.id, courses);
 
   const handleCourseChange = (e) => {
     const selectedId = e.target.value;
@@ -398,7 +417,7 @@ function CourseModal({ initial, onClose, onSave, saving }) {
     const predefined = seedCourses.find(c => c.id === form.id) || seedCourses[0];
  
     const payload = {
-      ...(isEdit ? { firestoreId: initial.firestoreId } : {}),
+      ...(isEdit ? { firestoreId: initial.firestoreId, courseId: initial.courseId } : { courseId: currentCourseId }),
       id: form.id,
       title: form.title,
       subtitle: form.subtitle,
@@ -484,9 +503,9 @@ function CourseModal({ initial, onClose, onSave, saving }) {
    CAREER FORM MODAL
 ──────────────────────────────────────────────────────────────────────── */
 
-function CareerModal({ initial, onClose, onSave }) {
+function CareerModal({ initial, careers = [], onClose, onSave }) {
   const isEdit = Boolean(initial);
- 
+
   // Default to the first seed career
   const defaultCareer = seedCareers[0];
 
@@ -494,6 +513,7 @@ function CareerModal({ initial, onClose, onSave }) {
     initial
       ? {
           id: initial.id || '',
+          jobId: initial.jobId || '',
           title: initial.title || '',
           type: initial.type || CAREER_TYPES[0],
           experience: initial.experience || '',
@@ -502,6 +522,7 @@ function CareerModal({ initial, onClose, onSave }) {
         }
       : {
           id: defaultCareer.id,
+          jobId: defaultCareer.jobId,
           title: defaultCareer.title,
           type: defaultCareer.type,
           experience: defaultCareer.experience,
@@ -511,6 +532,10 @@ function CareerModal({ initial, onClose, onSave }) {
   );
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+
+  const currentJobId = isEdit
+    ? (initial?.jobId || initial?.id)
+    : generateNextJobId(form.id || form.title, careers);
 
   const handleCareerChange = (e) => {
     const selectedId = e.target.value;
@@ -527,21 +552,24 @@ function CareerModal({ initial, onClose, onSave }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const predefined = seedCareers.find(c => c.id === form.id) || seedCareers[0];
+    const predefinedSeed = seedCareers.find(c => c.id === form.id) || seedCareers[0];
+    const roleDetails = getPredefinedDetailsForRole(form.id || form.title);
 
     onSave(
       {
-        ...(isEdit ? { firestoreId: initial.firestoreId } : {}),
+        ...(isEdit ? { firestoreId: initial.firestoreId, jobId: initial.jobId } : { jobId: currentJobId }),
         id: form.id,
         title: form.title,
         type: form.type,
         experience: form.experience,
         location: form.location,
         status: form.status,
-        description: initial?.description || predefined.description || '',
-        responsibilities: initial?.responsibilities || predefined.responsibilities || ['Contribute to real-world projects', 'Collaborate effectively with the team'],
-        skills: initial?.skills || predefined.skills || ['Relevant domain skills', 'Strong communication'],
-        whatYouGet: initial?.whatYouGet || predefined.whatYouGet || ['Experience Certificate', 'Performance-based Stipend'],
+        category: roleDetails.category,
+        overview: initial?.overview || initial?.description || predefinedSeed.description || roleDetails.overview,
+        description: initial?.description || predefinedSeed.description || roleDetails.overview,
+        responsibilities: initial?.responsibilities || predefinedSeed.responsibilities || roleDetails.responsibilities,
+        skills: initial?.skills || predefinedSeed.skills || roleDetails.skills,
+        whatYouGet: initial?.whatYouGet || predefinedSeed.whatYouGet || roleDetails.whatYouGet,
       },
       isEdit
     );
@@ -552,7 +580,14 @@ function CareerModal({ initial, onClose, onSave }) {
   return (
     <ModalShell title={isEdit ? 'Edit Career' : 'Add New Career'} onClose={onClose}>
       <form onSubmit={handleSubmit} className="space-y-4">
-       
+        
+        <div className="flex items-center justify-between bg-purple-500/10 border border-purple-500/30 rounded-xl p-3.5 mb-2">
+          <span className="text-xs font-semibold text-purple-300 uppercase tracking-wider">Assigned Job ID:</span>
+          <span className="px-3 py-1 rounded-lg bg-purple-600 text-white font-mono font-bold text-sm tracking-widest shadow-[0_0_10px_rgba(157,0,255,0.3)]">
+            {currentJobId}
+          </span>
+        </div>
+
         <Field label="Job Title *">
           <select
             value={form.id}
@@ -818,6 +853,7 @@ function CoursesManager({ courses, query, onAdd, onEdit, onDelete }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-slate-500 text-xs uppercase tracking-wider border-b border-white/5">
+              <th className="px-6 py-3 font-semibold">Course ID</th>
               <th className="px-6 py-3 font-semibold">Course</th>
               <th className="px-6 py-3 font-semibold">Category</th>
               <th className="px-6 py-3 font-semibold">Students</th>
@@ -827,7 +863,12 @@ function CoursesManager({ courses, query, onAdd, onEdit, onDelete }) {
           </thead>
           <tbody>
             {filtered.map((c) => (
-              <tr key={c.id} className="border-b border-white/5 hover:bg-white/[0.02]">
+              <tr key={c.firestoreId || c.courseId || c.id} className="border-b border-white/5 hover:bg-white/[0.02]">
+                <td className="px-6 py-4 font-mono font-bold text-xs">
+                  <span className="px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                    {c.courseId || c.id}
+                  </span>
+                </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-white/5 overflow-hidden flex-shrink-0">
@@ -844,13 +885,13 @@ function CoursesManager({ courses, query, onAdd, onEdit, onDelete }) {
                 <td className="px-6 py-4"><StatusPill status={c.status} /></td>
                 <td className="px-6 py-4">
                   <div className="flex items-center justify-end gap-2">
-                    <Link to={`/course/${c.id}`} target="_blank" className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+                    <Link to={`/course/${c.courseId || c.id}`} target="_blank" className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors" title="Open Course Page">
                       <Eye className="w-3.5 h-3.5" />
                     </Link>
-                    <button onClick={() => onEdit(c)} className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+                    <button onClick={() => onEdit(c)} className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors" title="Edit Course">
                       <Pencil className="w-3.5 h-3.5" />
                     </button>
-                    <button onClick={() => onDelete(c)} className="w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 flex items-center justify-center text-red-400 transition-colors">
+                    <button onClick={() => onDelete(c)} className="w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 flex items-center justify-center text-red-400 transition-colors" title="Delete Course">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -893,6 +934,7 @@ function CareersManager({ careers, query, onAdd, onEdit, onDelete }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-slate-500 text-xs uppercase tracking-wider border-b border-white/5">
+              <th className="px-6 py-3 font-semibold">Job ID</th>
               <th className="px-6 py-3 font-semibold">Job Title</th>
               <th className="px-6 py-3 font-semibold">Type</th>
               <th className="px-6 py-3 font-semibold">Experience</th>
@@ -903,7 +945,12 @@ function CareersManager({ careers, query, onAdd, onEdit, onDelete }) {
           </thead>
           <tbody>
             {filtered.map((j) => (
-              <tr key={j.id} className="border-b border-white/5 hover:bg-white/[0.02]">
+              <tr key={j.firestoreId || j.jobId || j.id} className="border-b border-white/5 hover:bg-white/[0.02]">
+                <td className="px-6 py-4 font-mono font-bold text-xs">
+                  <span className="px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                    {j.jobId || j.id}
+                  </span>
+                </td>
                 <td className="px-6 py-4 text-white font-medium">{j.title}</td>
                 <td className="px-6 py-4 text-slate-300">{j.type}</td>
                 <td className="px-6 py-4 text-slate-300">{j.experience}</td>
@@ -911,13 +958,13 @@ function CareersManager({ careers, query, onAdd, onEdit, onDelete }) {
                 <td className="px-6 py-4"><StatusPill status={j.status} /></td>
                 <td className="px-6 py-4">
                   <div className="flex items-center justify-end gap-2">
-                    <Link to={`/career/${j.id}`} target="_blank" className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+                    <Link to={`/career/${j.jobId || j.id}`} target="_blank" className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors" title="Open Role Detail Page">
                       <Eye className="w-3.5 h-3.5" />
                     </Link>
-                    <button onClick={() => onEdit(j)} className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+                    <button onClick={() => onEdit(j)} className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors" title="Edit Role">
                       <Pencil className="w-3.5 h-3.5" />
                     </button>
-                    <button onClick={() => onDelete(j)} className="w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 flex items-center justify-center text-red-400 transition-colors">
+                    <button onClick={() => onDelete(j)} className="w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 flex items-center justify-center text-red-400 transition-colors" title="Delete Role">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -925,7 +972,7 @@ function CareersManager({ careers, query, onAdd, onEdit, onDelete }) {
               </tr>
             ))}
             {filtered.length === 0 && (
-              <tr><td colSpan={6} className="px-6 py-10 text-center text-slate-500">No careers match "{query}".</td></tr>
+              <tr><td colSpan={7} className="px-6 py-10 text-center text-slate-500">No careers match "{query}".</td></tr>
             )}
           </tbody>
         </table>
@@ -1537,9 +1584,11 @@ useEffect(() => {
 const loadCareers = async () => {
   try {
     const data = await getCareers();
-    setCareers(data);
+    const formatted = ensureCareerJobIds(data);
+    setCareers(formatted);
   } catch (error) {
     console.error("Failed to load careers:", error);
+    setCareers([]);
   }
 };
 
@@ -1607,10 +1656,16 @@ const loadEnrollments = async () => {
       for (const application of careerApplications.filter(a => a.status === "New")) {
         await updateAppStatusService(application.firestoreId, "Pending");
       }
+
+      // Update contact messages
+      for (const contact of contactMessages.filter(c => c.status === "New")) {
+        await updateContactMessageStatus(contact.firestoreId, "Read");
+      }
   
       // Reload data
       await loadEnrollments();
       await loadApplications();
+      await loadContacts();
   
       setShowNotifications(false);
     } catch (error) {
@@ -1632,9 +1687,11 @@ const loadEnrollments = async () => {
   const loadCourses = async () => {
     try {
       const data = await getCourses();
-      setCourses(data);
+      const formatted = ensureCourseIds(data);
+      setCourses(formatted);
     } catch (error) {
       console.error("Error loading courses:", error);
+      setCourses([]);
     }
   };
 
@@ -1659,6 +1716,8 @@ const saveCourse = async (payload, isEdit) => {
     if (isEdit) {
       await updateCourse(payload.firestoreId, cleanData);
     } else {
+      const nextCourseId = generateNextCourseId(cleanData.category || cleanData.title || cleanData.id, courses);
+      cleanData.courseId = nextCourseId;
       await addCourse(cleanData);
     }
 
@@ -1674,15 +1733,21 @@ const saveCourse = async (payload, isEdit) => {
 };
   const deleteCourse = async (course) => {
     if (!window.confirm(`Delete "${course.title}"?`)) return;
- 
+
     try {
-      await deleteCourseFromDB(course.firestoreId);
- 
+      if (course.firestoreId) {
+        await deleteCourseFromDB(course.firestoreId);
+      }
+      setCourses((prev) => prev.filter((c) =>
+        (c.firestoreId && c.firestoreId !== course.firestoreId) ||
+        (c.courseId && c.courseId !== course.courseId) ||
+        (c.id && c.id !== course.id)
+      ));
       await loadCourses();
- 
       flash("Course deleted");
     } catch (error) {
       console.error(error);
+      alert("Failed to delete course");
     }
   };
 
@@ -1698,6 +1763,8 @@ const saveCourse = async (payload, isEdit) => {
       if (isEdit) {
         await updateCareer(payload.firestoreId, cleanData);
       } else {
+        const nextJobId = generateNextJobId(cleanData.id || cleanData.title, careers);
+        cleanData.jobId = nextJobId;
         await addCareer(cleanData);
       }
       await loadCareers();
@@ -1714,7 +1781,14 @@ const saveCourse = async (payload, isEdit) => {
   const deleteCareer = async (career) => {
     if (window.confirm(`Delete "${career.title}"? This can't be undone.`)) {
       try {
-        await deleteCareerFromDB(career.firestoreId);
+        if (career.firestoreId) {
+          await deleteCareerFromDB(career.firestoreId);
+        }
+        setCareers((prev) => prev.filter((c) =>
+          (c.firestoreId && c.firestoreId !== career.firestoreId) ||
+          (c.jobId && c.jobId !== career.jobId) ||
+          (c.id && c.id !== career.id)
+        ));
         await loadCareers();
         flash('Career deleted');
       } catch (error) {
@@ -1775,6 +1849,20 @@ const saveCourse = async (payload, isEdit) => {
     }
   };
 
+  const removeContactMessage = async (idOrMsg) => {
+    const id = typeof idOrMsg === 'object' ? idOrMsg?.firestoreId : idOrMsg;
+    if (!id) return;
+    try {
+      await deleteContactMessageFromDB(id);
+      setContactMessages((prev) => prev.filter((m) => m.firestoreId !== id));
+      await loadContacts();
+      flash("Contact message deleted");
+    } catch (error) {
+      console.error("Error deleting contact message:", error);
+      alert("Failed to delete contact message");
+    }
+  };
+
   const titles = {
     dashboard: 'Dashboard', courses: 'Courses', careers: 'Careers', enrollments: 'Enrollments', applications: 'Applications',
     categories: 'Categories', lessons: 'Lessons', reviews: 'Reviews', certificates: 'Certificates',
@@ -1788,6 +1876,35 @@ const saveCourse = async (payload, isEdit) => {
   const closingCareers = careers.filter(
     (career) => career.status === "Closed"
   );
+
+  const handleNotificationClick = async (item) => {
+    setShowNotifications(false);
+    if (!item) return;
+
+    try {
+      if (item.type === 'contact') {
+        if (item.id) {
+          await updateContactMessageStatus(item.id, 'Read');
+          await loadContacts();
+        }
+        setActive('contacts');
+      } else if (item.type === 'application') {
+        if (item.id) {
+          await updateAppStatusService(item.id, 'Pending');
+          await loadApplications();
+        }
+        setActive('applications');
+      } else if (item.type === 'enrollment') {
+        if (item.id) {
+          await updateEnrollmentStatus(item.id, 'Contacted');
+          await loadEnrollments();
+        }
+        setActive('enrollments');
+      }
+    } catch (err) {
+      console.error('Error marking notification as read:', err);
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-black font-poppins relative overflow-hidden w-full max-w-[100vw]">
@@ -1824,6 +1941,7 @@ const saveCourse = async (payload, isEdit) => {
   showNotifications={showNotifications}
   setShowNotifications={setShowNotifications}
   markAllNotificationsAsRead={markAllNotificationsAsRead}
+  onSelectNotification={handleNotificationClick}
 />
 
         <main className="p-6 md:p-8 max-w-7xl mx-auto">
@@ -1852,7 +1970,7 @@ const saveCourse = async (payload, isEdit) => {
 {active === "contacts" && (
   <ContactMessagesManager
     messages={contactMessages}
-    onDelete={deleteContactMessage}
+    onDelete={removeContactMessage}
   />
 )}
 
@@ -1892,7 +2010,9 @@ const saveCourse = async (payload, isEdit) => {
     onDeleteApp={removeApplication}
 />}
 
-          {!['dashboard', 'courses', 'careers',"opening careers","closing careers", 'enrollments', 'applications','contacts'].includes(active) && (
+          {active === 'admins' && <AdminsManager />}
+
+          {!['dashboard', 'courses', 'careers', "opening careers", "closing careers", 'enrollments', 'applications', 'contacts', 'admins'].includes(active) && (
             <ComingSoon label={titles[active] || active} />
           )}
         </main>
@@ -1900,18 +2020,20 @@ const saveCourse = async (payload, isEdit) => {
 
       <AnimatePresence>
       {courseModal && (
-  <CourseModal
-    key="course-modal"
-    initial={courseModal === 'add' ? null : courseModal}
-    onClose={() => setCourseModal(null)}
-    onSave={saveCourse}
-    saving={savingCourse}
-  />
-)}
+        <CourseModal
+          key="course-modal"
+          initial={courseModal === 'add' ? null : courseModal}
+          courses={courses}
+          onClose={() => setCourseModal(null)}
+          onSave={saveCourse}
+          saving={savingCourse}
+        />
+      )}
         {careerModal && (
           <CareerModal
             key="career-modal"
             initial={careerModal === 'add' ? null : careerModal}
+            careers={careers}
             onClose={() => setCareerModal(null)}
             onSave={saveCareer}
           />

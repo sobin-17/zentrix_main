@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin, Clock, Briefcase, ChevronRight, Send, Loader2, X } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import { getCareers } from "../services/careerService";
+import { ensureCareerJobIds, getPredefinedDetailsForRole } from "../utils/jobIdHelper";
 import { addApplication } from "../services/applicationService";
 import { storage } from "../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -432,8 +433,17 @@ const JobDetail = () => {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const careers = await getCareers();
-        const found = careers.find((j) => j.id === jobId || j.firestoreId === jobId);
+        const rawCareers = await getCareers();
+        const careers = ensureCareerJobIds(rawCareers);
+        const searchId = (jobId || '').toLowerCase();
+
+        const found = careers.find(
+          (j) =>
+            (j.jobId && j.jobId.toLowerCase() === searchId) ||
+            (j.id && j.id.toLowerCase() === searchId) ||
+            (j.firestoreId && j.firestoreId.toLowerCase() === searchId)
+        );
+
         setFetchedJob(found);
       } catch (err) {
         console.error("Failed to fetch job:", err);
@@ -469,6 +479,18 @@ const JobDetail = () => {
       </div>
     );
   }
+
+  const predefined = getPredefinedDetailsForRole(job.id || job.title || job.jobId);
+
+  const hasSpecificResp = job.responsibilities && job.responsibilities.length > 0 && !job.responsibilities[0].includes('Contribute to real-world');
+  const hasSpecificSkills = job.skills && job.skills.length > 0 && !job.skills[0].includes('Relevant domain skills');
+  const hasSpecificGet = job.whatYouGet && job.whatYouGet.length > 0 && !job.whatYouGet[0].includes('Hands-on real-world');
+
+  const responsibilities = hasSpecificResp ? job.responsibilities : predefined.responsibilities;
+  const skills = hasSpecificSkills ? job.skills : predefined.skills;
+  const whatYouGet = hasSpecificGet ? job.whatYouGet : predefined.whatYouGet;
+  const overview = job.overview || job.description || predefined.overview;
+  const category = job.category || predefined.category;
 
   return (
     <main className="min-h-screen bg-black text-white font-poppins relative overflow-x-hidden">
@@ -532,10 +554,15 @@ const JobDetail = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          {/* Category badge */}
-          <span className="inline-block px-4 py-1.5 rounded-full border border-white/20 text-white/80 text-sm font-medium mb-6 bg-white/5">
-            {job.category}
-          </span>
+          {/* Category & Job ID badges */}
+          <div className="flex items-center gap-3 mb-6">
+            <span className="inline-block px-4 py-1.5 rounded-full border border-white/20 text-white/80 text-sm font-medium bg-white/5">
+              {category}
+            </span>
+            <span className="px-3.5 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-mono font-bold border border-purple-500/30">
+              JOB ID: {job.jobId || job.id}
+            </span>
+          </div>
 
           {/* Title */}
           <h1 className="text-5xl md:text-7xl font-black text-white leading-none mb-6 tracking-tight">
@@ -544,7 +571,7 @@ const JobDetail = () => {
 
           {/* Overview */}
           <p className="text-slate-400 text-base md:text-lg leading-relaxed max-w-3xl mb-10">
-            {job.overview}
+            {overview}
           </p>
 
           {/* Meta pills */}
@@ -581,7 +608,7 @@ const JobDetail = () => {
                 Responsibilities
               </h2>
               <ul className="space-y-3">
-                {job.responsibilities?.map((item, i) => (
+                {responsibilities.map((item, i) => (
                   <li key={i} className="flex items-start gap-3 text-slate-300 text-sm leading-relaxed">
                     <ChevronRight className="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" />
                     {item}
@@ -596,7 +623,7 @@ const JobDetail = () => {
                 Skills Required
               </h2>
               <div className="flex flex-wrap gap-2">
-                {job.skills?.map((skill) => (
+                {skills.map((skill) => (
                   <span
                     key={skill}
                     className="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-300 border border-purple-500/40 bg-purple-500/10"
@@ -613,16 +640,12 @@ const JobDetail = () => {
                 What You Get
               </h2>
               <ul className="space-y-3">
-              {[
-  job.stipend,
-  job.certificate,
-  "Hands-on real-world project exposure",
-  "Expert mentorship & guidance",
-].map((perk, index) => (
-  <li key={`${index}-${perk}`}>
-    {perk}
-  </li>
-))}
+                {whatYouGet.map((perk, index) => (
+                  <li key={`${index}-${perk}`} className="flex items-start gap-3 text-slate-300 text-sm leading-relaxed">
+                    <ChevronRight className="w-4 h-4 text-purple-400 flex-shrink-0 mt-0.5" />
+                    {perk}
+                  </li>
+                ))}
               </ul>
             </div>
           </motion.div>

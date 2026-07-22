@@ -15,6 +15,7 @@ import Footer from '../components/Footer';
 
 
 import { getCourses } from "../services/courseService";
+import { ensureCourseIds } from "../utils/courseIdHelper";
 
 /* ─────────────────── DATA ─────────────────── */
 
@@ -236,6 +237,9 @@ function CourseCard({ course, index }) {
             <span className={`px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider ${accent.badge1}`}>
               {course.slug === "mern-stack" ? 'FULL STACK DEVELOPMENT' : course.category}
             </span>
+            <span className="px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-mono font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+              {course.courseId || course.id}
+            </span>
             <span className={`px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider border ${accent.badge2} flex items-center gap-1.5`}>
               <span className="opacity-70 text-blue-400">⏱</span> {course.duration}
             </span>
@@ -258,7 +262,7 @@ function CourseCard({ course, index }) {
           )}
         </div>
 
-        <Link to={`/course/${course.id || course.firestoreId}`} className="block w-max mt-auto relative z-20">
+        <Link to={`/course/${course.courseId || course.id || course.firestoreId}`} className="block w-max mt-auto relative z-20">
           <button
             className={`px-8 py-3.5 rounded-2xl font-bold text-sm tracking-wide ${accent.btn} flex items-center gap-2 relative overflow-hidden`}
             style={{ transition: 'box-shadow 0.25s ease, background-color 0.25s ease' }}
@@ -349,7 +353,8 @@ const Course = () => {
   const loadCourses = async () => {
     try {
       const data = await getCourses();
-      setCourses(data);
+      const formatted = ensureCourseIds(data);
+      setCourses(formatted);
     } catch (error) {
       console.error(error);
     }

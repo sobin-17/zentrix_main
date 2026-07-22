@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import { getCourses } from "../services/courseService";
+import { ensureCourseIds } from "../utils/courseIdHelper";
 import { addEnrollment } from "../services/enrollmentService";
 
 import { storage } from "../firebase";
@@ -236,10 +237,16 @@ const CourseDetail = () => {
       try {
         setLoading(true);
 
-        const courses = await getCourses();
+        const rawCourses = await getCourses();
+        const courses = ensureCourseIds(rawCourses);
+        const searchId = (courseId || '').toLowerCase();
 
         const selectedCourse = courses.find(
-          (c) => c.slug === courseId || c.id === courseId || c.firestoreId === courseId
+          (c) =>
+            (c.courseId && c.courseId.toLowerCase() === searchId) ||
+            (c.slug && c.slug.toLowerCase() === searchId) ||
+            (c.id && c.id.toLowerCase() === searchId) ||
+            (c.firestoreId && c.firestoreId.toLowerCase() === searchId)
         );
 
         setCourse(selectedCourse || null);
@@ -334,10 +341,15 @@ if (!course) {
         {/* ── Course header ───────────────────────────────────── */}
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>
 
-          {/* Category badge */}
-          <span className="inline-block px-4 py-1.5 rounded-full border border-white/20 text-white/80 text-sm font-medium mb-6 bg-white/5">
-            {course.category}
-          </span>
+          {/* Category & Course ID badges */}
+          <div className="flex items-center gap-3 mb-6">
+            <span className="inline-block px-4 py-1.5 rounded-full border border-white/20 text-white/80 text-sm font-medium bg-white/5">
+              {course.category}
+            </span>
+            <span className="px-3.5 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-mono font-bold border border-purple-500/30">
+              COURSE ID: {course.courseId || course.id}
+            </span>
+          </div>
 
           {/* Title */}
           <h1 className="text-5xl md:text-7xl font-black text-white leading-none mb-3 tracking-tight">

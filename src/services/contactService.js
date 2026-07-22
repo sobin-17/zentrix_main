@@ -4,6 +4,7 @@ import {
   addDoc,
   getDocs,
   deleteDoc,
+  updateDoc,
   doc,
 } from "firebase/firestore";
 
@@ -26,6 +27,11 @@ export const getContactMessages = async () => {
     firestoreId: doc.id,
     ...doc.data(),
   }));
+};
+
+export const updateContactMessageStatus = async (id, status) => {
+  if (!id) return;
+  await updateDoc(doc(db, "contactMessages", id), { status });
 };
 
 export const deleteContactMessage = async (id) => {

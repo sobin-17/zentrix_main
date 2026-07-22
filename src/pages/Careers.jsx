@@ -3,6 +3,7 @@ import { ChevronDown, ChevronUp, ArrowRight, Users, Lightbulb, TrendingUp, Hands
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { getCareers } from "../services/careerService";
+import { ensureCareerJobIds } from "../utils/jobIdHelper";
 
 
 const Careers = () => {
@@ -12,17 +13,18 @@ const Careers = () => {
   useEffect(() => {
     const loadCareers = async () => {
       try {
-        const careers = await getCareers();
-  
+        const rawCareers = await getCareers();
+        const formatted = ensureCareerJobIds(rawCareers);
+
         // Only show active careers
         setJobOpenings(
-          careers.filter(job => job.status === "Active")
+          formatted.filter(job => job.status === "Active")
         );
       } catch (err) {
         console.error(err);
       }
     };
-  
+
     loadCareers();
   }, []);
 
@@ -620,8 +622,13 @@ const Careers = () => {
                     className="w-full px-6 py-6 md:px-8 text-left flex justify-between items-center cursor-pointer"
                   >
                     <div>
-                      <div className="text-xs font-semibold uppercase tracking-wider text-[var(--color-brand-purple-light)] mb-1">
-                        {job.type}
+                      <div className="flex items-center gap-3 mb-1">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-brand-purple-light)]">
+                          {job.type}
+                        </span>
+                        <span className="px-2.5 py-0.5 rounded-md bg-purple-500/20 text-purple-300 text-[11px] font-mono font-bold border border-purple-500/30">
+                          {job.jobId || job.id}
+                        </span>
                       </div>
                       <h4 className="text-lg md:text-xl font-bold text-white mb-2">
                         {job.title}
@@ -629,7 +636,7 @@ const Careers = () => {
                       <div className="flex items-center gap-6 text-xs text-slate-400">
                         <span>{job.experience}</span>
                         <span>&bull;</span>
-                        <span>{job.department}</span>
+                        <span>{job.department || 'Tech & Engineering'}</span>
                       </div>
                     </div>
                     <div>
@@ -651,10 +658,10 @@ const Careers = () => {
                         {job.description}
                       </p>
                       <Link
-                        to={`/career/${job.id}`}
+                        to={`/career/${job.jobId || job.id}`}
                         className="inline-flex items-center gap-2 px-6 py-2.5 bg-[var(--color-brand-purple)] hover:bg-purple-700 text-white text-xs font-bold rounded-full transition-all tracking-wider uppercase"
                       >
-                        Apply Now <span>↗</span>
+                        Apply Now ({job.jobId || job.id}) <span>↗</span>
                       </Link>
                     </div>
                   )}
