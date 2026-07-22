@@ -26,6 +26,8 @@ import Admindashboard from './pages/Admindashboard';
 import AdminLogin from './pages/AdminLogin';
 import AdminSignup from './pages/AdminSignup';
 import ProtectedRoute from "./components/ProtectedRoute";
+import ResumeViewer from './pages/ResumeViewer';
+
 const GlobalAtmosphere = () => (
   <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
     {/* Glows removed to prevent blur rendering artifacts */}
@@ -34,7 +36,7 @@ const GlobalAtmosphere = () => (
 
 function AppLayout() {
   const location = useLocation();
-  const isAdmin = location.pathname.startsWith('/admin-dashboard');
+  const isAdmin = location.pathname.startsWith('/admin-dashboard') || location.pathname.startsWith('/view-resume');
 
   return (
     <div className="bg-transparent text-white font-poppins relative w-full max-w-[100vw]">
@@ -78,13 +80,21 @@ function AppLayout() {
           <Route path="/admin-signup" element={<AdminSignup />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route
-  path="/admin-dashboard"
-  element={
-    <ProtectedRoute>
-      <Admindashboard />
-    </ProtectedRoute>
-  }
-/>
+            path="/admin-dashboard"
+            element={
+              <ProtectedRoute>
+                <Admindashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/view-resume"
+            element={
+              <ProtectedRoute>
+                <ResumeViewer />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
         
         {/* Persistent Footer */}

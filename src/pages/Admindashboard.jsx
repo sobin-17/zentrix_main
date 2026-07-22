@@ -1172,21 +1172,52 @@ function EnrollmentsManager({ courses, enrollments, onUpdateStatus, onDeleteEnro
    APPLICATIONS MANAGER
 ──────────────────────────────────────────────────────────────────────── */
 
+const openPdfInNewTab = (resumeUrl, title = 'Resume.pdf') => {
+  if (!resumeUrl) return;
+
+  if (resumeUrl.startsWith('data:')) {
+    try {
+      const arr = resumeUrl.split(',');
+      const mimeMatch = arr[0].match(/:(.*?);/);
+      const mime = mimeMatch ? mimeMatch[1] : 'application/pdf';
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      const blob = new Blob([u8arr], { type: mime });
+      const blobUrl = URL.createObjectURL(blob);
+      const newWin = window.open(blobUrl, '_blank');
+      if (newWin) {
+        newWin.document.title = title;
+      }
+      return;
+    } catch (err) {
+      console.error("Failed to convert base64 to blob URL:", err);
+    }
+  }
+
+  window.open(resumeUrl, '_blank');
+};
+
 function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp }) {
   const [selectedJob, setSelectedJob] = useState(null);
+  const [activeApplicant, setActiveApplicant] = useState(null);
+  const [previewPdfUrl, setPreviewPdfUrl] = useState(null);
 
   if (!selectedJob) {
     return (
       <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-white">Career Applications</h2>
+            <p className="text-slate-400 text-xs mt-1">Review candidate applications and stored resumes</p>
+          </div>
+        </div>
 
-        <h2 className="text-2xl font-bold text-white">
-          Career Applications
-        </h2>
-
-        <div className="grid gap-4">
-
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {careers.map((career) => {
-
             const total = applications.filter(
               a => a.careerId === (career.firestoreId || career.id)
             ).length;
@@ -1194,32 +1225,30 @@ function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp 
             return (
               <div
                 key={career.firestoreId || career.id || career.title}
-                className="bg-white/5 rounded-xl p-5 border border-white/10 flex justify-between items-center"
+                className="bg-white/[0.03] border border-white/10 hover:border-purple-500/40 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between"
               >
-
                 <div>
-                  <h3 className="text-white font-semibold">
-                    {career.title}
-                  </h3>
-
-                  <p className="text-slate-400 text-sm">
-                    {total} Applications
-                  </p>
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <span className="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-semibold">
+                      {career.type || 'Internship'}
+                    </span>
+                    <span className="text-xs text-slate-500 font-medium">{total} Applications</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2">{career.title}</h3>
+                  <p className="text-slate-400 text-xs line-clamp-2 mb-6">{career.description || career.overview}</p>
                 </div>
 
                 <button
                   onClick={() => setSelectedJob(career)}
-                  className="bg-purple-600 px-4 py-2 rounded-lg"
+                  className="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_15px_rgba(157,0,255,0.2)]"
                 >
-                  View Applicants
+                  <Eye className="w-4 h-4" />
+                  View Applicants ({total})
                 </button>
-
               </div>
             );
           })}
-
         </div>
-
       </div>
     );
   }
@@ -1229,130 +1258,200 @@ function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp 
   );
 
   return (
-    <div>
-
+    <div className="space-y-6">
       <button
         onClick={() => setSelectedJob(null)}
-        className="mb-6 text-purple-400"
+        className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors cursor-pointer"
       >
-        ← Back
+        <ArrowLeft className="w-4 h-4" /> Back to job categories
       </button>
 
-      <h2 className="text-2xl text-white font-bold mb-6">
-        {selectedJob.title}
-      </h2>
-
-      <div className="overflow-auto rounded-xl">
-
-        <table className="w-full">
-
-          <thead className="bg-white/5">
-
-            <tr>
-
-              <th>Name</th>
-
-              <th>Email</th>
-
-              <th>Phone</th>
-
-              <th>Status</th>
-
-              <th>Resume</th>
-
-              <th>Action</th>
-
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            {applicants.map(app => (
-
-              <tr
-                key={app.id}
-                className="border-b border-white/10"
-              >
-
-                <td>{app.name}</td>
-
-                <td>{app.email}</td>
-
-                <td>{app.phone}</td>
-
-                <td>
-
-                  <select
-                    value={app.status}
-                    onChange={(e)=>
-                      updateStatus(app,e.target.value)
-                    }
-                    className="bg-black border px-2 py-1 rounded"
-                  >
-                    <option>New</option>
-                    <option>Pending</option>
-
-                    <option>Shortlisted</option>
-
-                    <option>Approved</option>
-
-                    <option>Rejected</option>
-
-                  </select>
-
-                </td>
-
-                <td>
-                  {app.resumeUrl ? (
-                    app.resumeUrl.startsWith('http') ? (
-                      <a
-                        href={app.resumeUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-blue-400 underline hover:text-blue-300 whitespace-nowrap text-sm"
-                      >
-                        Open Resume
-                      </a>
-                    ) : (
-                      <span className="text-red-400 text-[10px] uppercase font-bold tracking-widest break-words block max-w-[150px] leading-tight">
-                        {app.resumeUrl}
-                      </span>
-                    )
-                  ) : (
-                    <span className="text-slate-500 text-xs">No resume</span>
-                  )}
-                </td>
-
-                <td className="flex items-center gap-2">
-
-                  <button
-                    onClick={()=>alert(JSON.stringify(app,null,2))}
-                    className="bg-purple-600 px-3 py-1 rounded text-sm font-medium"
-                  >
-                    View
-                  </button>
-
-                  <button
-                    onClick={() => onDeleteApp(app)}
-                    className="bg-red-600/20 text-red-500 px-2 py-1.5 rounded hover:bg-red-600/40 transition-colors"
-                    title="Delete Application"
-                  >
-                    <Trash2 className="w-4 h-4 text-red-400" />
-                  </button>
-
-                </td>
-
-              </tr>
-
-            ))}
-
-          </tbody>
-
-        </table>
-
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-bold text-white flex items-center gap-3">
+            <Briefcase className="w-5 h-5 text-purple-400" />
+            {selectedJob.title}
+          </h2>
+          <p className="text-slate-400 text-xs mt-1">Total Applicants: {applicants.length}</p>
+        </div>
       </div>
 
+      <div className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden shadow-xl">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead>
+              <tr className="text-slate-400 text-xs uppercase tracking-wider border-b border-white/10 bg-white/5">
+                <th className="px-6 py-4 font-semibold">Applicant</th>
+                <th className="px-6 py-4 font-semibold">Contact Info</th>
+                <th className="px-6 py-4 font-semibold">Applied Date</th>
+                <th className="px-6 py-4 font-semibold">Status</th>
+                <th className="px-6 py-4 font-semibold">Resume PDF</th>
+                <th className="px-6 py-4 font-semibold text-right">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody className="divide-y divide-white/5">
+              {applicants.map(app => (
+                <tr key={app.firestoreId || app.id} className="hover:bg-white/[0.02] transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-purple-600/20 border border-purple-500/40 text-purple-300 text-xs font-bold flex items-center justify-center flex-shrink-0">
+                        {app.name ? app.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase() : 'AP'}
+                      </div>
+                      <div>
+                        <p className="text-white font-semibold text-sm">{app.name}</p>
+                        <p className="text-slate-500 text-xs truncate max-w-[200px]">{app.message || 'No additional message'}</p>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td className="px-6 py-4 text-xs">
+                    <p className="text-slate-300 flex items-center gap-1.5"><Mail className="w-3 h-3 text-purple-400" /> {app.email}</p>
+                    <p className="text-slate-400 flex items-center gap-1.5 mt-1"><Phone className="w-3 h-3 text-purple-400" /> {app.phone}</p>
+                  </td>
+
+                  <td className="px-6 py-4 text-slate-400 text-xs whitespace-nowrap">
+                    {app.appliedDate ? new Date(app.appliedDate).toLocaleDateString() : 'N/A'}
+                  </td>
+
+                  <td className="px-6 py-4">
+                    <select
+                      value={app.status || 'New'}
+                      onChange={(e) => updateStatus(app, e.target.value)}
+                      className="bg-black/60 border border-white/10 text-xs font-semibold rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-purple-500 cursor-pointer"
+                    >
+                      <option value="New">New</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Shortlisted">Shortlisted</option>
+                      <option value="Approved">Approved</option>
+                      <option value="Rejected">Rejected</option>
+                    </select>
+                  </td>
+
+                  <td className="px-6 py-4">
+                    {app.resumeUrl && (app.resumeUrl.startsWith('http') || app.resumeUrl.startsWith('data:')) ? (
+                      <button
+                        onClick={() => openPdfInNewTab(app.resumeUrl, `${app.name}_Resume.pdf`)}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 text-xs font-medium transition-all cursor-pointer"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        View Resume
+                      </button>
+                    ) : (
+                      <span className="text-red-400 text-xs font-medium bg-red-500/10 px-2.5 py-1 rounded-md border border-red-500/20 inline-block">
+                        {app.resumeUrl ? 'No valid URL' : 'No Resume'}
+                      </span>
+                    )}
+                  </td>
+
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => setActiveApplicant(app)}
+                        className="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold transition-colors cursor-pointer"
+                      >
+                        View Details
+                      </button>
+
+                      <button
+                        onClick={() => onDeleteApp(app)}
+                        className="p-1.5 rounded-lg bg-red-600/10 text-red-400 hover:bg-red-600/20 hover:text-red-300 transition-colors cursor-pointer"
+                        title="Delete Application"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+
+              {applicants.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
+                    No applications submitted for this role yet.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Applicant Detail Modal */}
+      {activeApplicant && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-[#111] border border-white/10 rounded-2xl max-w-lg w-full p-6 space-y-6 shadow-2xl relative">
+            <button
+              onClick={() => setActiveApplicant(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-full bg-white/5 transition-colors cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div>
+              <span className="text-xs font-bold uppercase tracking-widest text-purple-400">Application Details</span>
+              <h3 className="text-xl font-bold text-white mt-1">{activeApplicant.name}</h3>
+              <p className="text-slate-400 text-xs">{selectedJob.title}</p>
+            </div>
+
+            <div className="space-y-3 bg-white/5 p-4 rounded-xl text-xs">
+              <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                <span className="text-slate-400">Email:</span>
+                <span className="text-white font-medium">{activeApplicant.email}</span>
+              </div>
+              <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                <span className="text-slate-400">Phone:</span>
+                <span className="text-white font-medium">{activeApplicant.phone}</span>
+              </div>
+              <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                <span className="text-slate-400">Applied Date:</span>
+                <span className="text-white font-medium">
+                  {activeApplicant.appliedDate ? new Date(activeApplicant.appliedDate).toLocaleString() : 'N/A'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-slate-400">Status:</span>
+                <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-semibold">
+                  {activeApplicant.status || 'New'}
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Message / Pitch</h4>
+              <p className="text-slate-300 text-sm bg-white/5 p-4 rounded-xl leading-relaxed max-h-40 overflow-y-auto">
+                {activeApplicant.message || 'No additional message provided.'}
+              </p>
+            </div>
+
+            <div className="flex items-center justify-between gap-3 pt-2">
+              {activeApplicant.resumeUrl && (activeApplicant.resumeUrl.startsWith('http') || activeApplicant.resumeUrl.startsWith('data:')) ? (
+                <button
+                  onClick={() => openPdfInNewTab(activeApplicant.resumeUrl, `${activeApplicant.name}_Resume.pdf`)}
+                  className="flex-1 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(157,0,255,0.3)] cursor-pointer"
+                >
+                  <FileText className="w-4 h-4" />
+                  View Resume PDF
+                </button>
+              ) : (
+                <button
+                  disabled
+                  className="flex-1 py-3 rounded-xl bg-white/5 text-slate-500 font-semibold text-xs text-center cursor-not-allowed"
+                >
+                  No Resume PDF Available
+                </button>
+              )}
+
+              <button
+                onClick={() => setActiveApplicant(null)}
+                className="px-5 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-semibold transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

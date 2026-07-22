@@ -67,23 +67,20 @@ const EnrollForm = ({ course }) => {
 
       let resumeUrl = "";
 
-    if (form.resume) {
-      try {
-        const resumeRef = ref(
-          storage,
-          `course-resumes/${Date.now()}-${form.resume.name}`
-        );
+      if (form.resume) {
+        try {
+          const resumeRef = ref(
+            storage,
+            `course-resumes/${Date.now()}-${form.resume.name}`
+          );
 
-        const uploadTask = uploadBytes(resumeRef, form.resume);
-        const timeoutTask = new Promise((_, reject) => setTimeout(() => reject(new Error("Storage Timeout")), 5000));
-        await Promise.race([uploadTask, timeoutTask]);
-
-        resumeUrl = await getDownloadURL(resumeRef);
-      } catch (storageErr) {
-        console.warn("Storage upload bypassed - likely restricted by Firebase rules.", storageErr);
-        resumeUrl = "Upload Failed - Firebase Storage Restricted";
+          await uploadBytes(resumeRef, form.resume);
+          resumeUrl = await getDownloadURL(resumeRef);
+        } catch (storageErr) {
+          console.warn("Storage upload failed - check Firebase Storage rules or network.", storageErr);
+          resumeUrl = "Upload Failed - Firebase Storage Error";
+        }
       }
-    }
       await addEnrollment({
         courseId: course.id,
         courseTitle: course.title,

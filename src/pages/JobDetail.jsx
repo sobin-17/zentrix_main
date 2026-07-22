@@ -187,6 +187,15 @@ const PARTICLES = Array.from({ length: 50 }, (_, i) => {
   };
 });
 
+const fileToDataURL = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
+};
+
 /* ─── Application Form ───────────────────────────────────────────────── */
 const ApplyForm = ({ jobTitle, jobId }) => {
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '', resume: null });
@@ -205,66 +214,80 @@ const ApplyForm = ({ jobTitle, jobId }) => {
     e.preventDefault();
     setStatus('sending');
 
-    const templateParams = {
-      to_email: 'hr.zentrixtechnology@gmail.com',
-      job_title: jobTitle,
-      from_name: form.name,
-      from_email: form.email,
-      from_phone: form.phone,
-      message: form.message || '(No additional message provided)',
-    };
-
     try {
       let resumeUrl = "";
+
       if (form.resume) {
         try {
-          const resumeRef = ref(storage, `career-resumes/${Date.now()}-${form.resume.name}`);
-          
-          const uploadTask = uploadBytes(resumeRef, form.resume);
-          const timeoutTask = new Promise((_, reject) => setTimeout(() => reject(new Error("Storage Timeout")), 5000));
-          await Promise.race([uploadTask, timeoutTask]);
-          
-          resumeUrl = await getDownloadURL(resumeRef);
+          const cleanFileName = form.resume.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          const resumeRef = ref(storage, `career-resumes/${Date.now()}_${cleanFileName}`);
+
+          const uploadPromise = uploadBytes(resumeRef, form.resume).then(async () => {
+            return await getDownloadURL(resumeRef);
+          });
+
+          const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Storage timeout")), 5000)
+          );
+
+          const result = await Promise.race([uploadPromise, timeoutPromise]);
+          if (result && result.startsWith('http')) {
+            resumeUrl = result;
+          } else {
+            throw new Error("Invalid storage result");
+          }
         } catch (storageErr) {
-          console.warn("Storage upload bypassed - likely restricted by Firebase rules.", storageErr);
-          resumeUrl = "Upload Failed - Firebase Storage Restricted";
+          console.warn("Firebase Storage unavailable or restricted. Falling back to Data URL:", storageErr);
+          try {
+            resumeUrl = await fileToDataURL(form.resume);
+          } catch (dataUrlErr) {
+            console.error("Failed to read file as Data URL:", dataUrlErr);
+            resumeUrl = "Upload Failed - Read Error";
+          }
         }
       }
 
-      const firestoreTask = addApplication({
-        careerId: jobId,
-        jobTitle: jobTitle,
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        message: form.message,
-        resumeUrl: resumeUrl,
+      const applicationData = {
+        careerId: jobId || 'general',
+        jobTitle: jobTitle || 'General Application',
+        name: form.name.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        message: form.message ? form.message.trim() : '',
+        resumeUrl: resumeUrl || 'No resume uploaded',
         status: "New",
         appliedDate: new Date().toISOString()
-      });
-      const firestoreTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error("Firestore Timeout")), 5000));
-      await Promise.race([firestoreTask, firestoreTimeout]);
+      };
+
+      const firestorePromise = addApplication(applicationData);
+      const firestoreTimeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Database write timed out")), 10000)
+      );
+
+      await Promise.race([firestorePromise, firestoreTimeout]);
 
       if (EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY) {
-        try {
-          const emailTask = emailjs.send(
-            EMAILJS_SERVICE_ID,
-            EMAILJS_TEMPLATE_ID,
-            templateParams,
-            EMAILJS_PUBLIC_KEY
-          );
-          const emailTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error("EmailJS Timeout")), 5000));
-          await Promise.race([emailTask, emailTimeout]);
-        } catch (emailErr) {
-          console.warn("EmailJS bypassed - likely blocked by network, adblockers, or timeout.", emailErr);
-        }
-      } else {
-        console.warn("EmailJS credentials missing - skipping email notification.");
+        const templateParams = {
+          to_email: 'hr.zentrixtechnology@gmail.com',
+          job_title: jobTitle,
+          from_name: form.name,
+          from_email: form.email,
+          from_phone: form.phone,
+          message: form.message || '(No additional message provided)',
+          resume_url: resumeUrl,
+        };
+
+        emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID,
+          templateParams,
+          EMAILJS_PUBLIC_KEY
+        ).catch(err => console.warn("EmailJS notification error:", err));
       }
 
       setStatus('success');
     } catch (err) {
-      console.error(err);
+      console.error("Submission failed:", err);
       setStatus('error');
     }
   };
