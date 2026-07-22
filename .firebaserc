@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "zentrix-e7f63"
-  }
+    "default": "zentrix-e7f63-5a3d1"
+  },
+  "targets": {},
+  "etags": {}
 }
