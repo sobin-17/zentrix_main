@@ -568,7 +568,7 @@ const Course = () => {
 
       </section>
       {/* ══════════ INTERNSHIP BENEFITS ══════════ */}
-      < section className="py-10 md:py-24 px-6 md:px-12 relative overflow-hidden" >
+      <section className="py-8 md:py-16 px-6 md:px-12 relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[200px] bg-[var(--color-brand-purple)]/15 blur-[100px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto relative z-10">
@@ -642,7 +642,7 @@ const Course = () => {
       </section>
 
       {/* ══════════ 5-STAGE LEARNING ROADMAP ══════════ */}
-      <section className="py-10 md:py-24 px-6 md:px-12 relative overflow-hidden">
+      <section className="py-8 md:py-16 px-6 md:px-12 relative overflow-hidden">
 
         {particles.map((p) => (
           <div
@@ -665,7 +665,7 @@ const Course = () => {
         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[var(--color-brand-purple)]/10 blur-[140px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-20">
+          <div className="text-center mb-8 md:mb-12">
 
             <motion.h2
               variants={fadeUp}
