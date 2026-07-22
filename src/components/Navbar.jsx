@@ -44,7 +44,7 @@ useEffect(() => {
   return (
     <nav
       className={`sticky top-0 z-[100] w-full px-6 md:px-12 flex items-center justify-between transition-all duration-300 ${
-        scrolled ? 'bg-[#0a0514]/90 backdrop-blur-md border-b border-purple-500/20 py-3 md:py-4 shadow-[0_4px_30px_rgba(0,0,0,0.5)]' : 'bg-transparent py-4 md:py-6'
+        scrolled ? 'bg-[#0a0514]/90 backdrop-blur-md py-3 md:py-4 shadow-[0_4px_30px_rgba(0,0,0,0.5)]' : 'bg-transparent py-4 md:py-6'
       }`}
     >
       {/* Logo */}
