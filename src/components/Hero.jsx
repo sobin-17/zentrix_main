@@ -80,7 +80,7 @@ const Hero = () => {
   });
 
   return (
-    <section id="home" ref={heroRef} className="relative min-h-[calc(100vh-100px)] lg:min-h-[650px] flex items-center lg:items-start pt-8 lg:pt-16 pb-16 bg-transparent">
+    <section id="home" ref={heroRef} className="relative min-h-0 lg:min-h-[calc(100vh-100px)] flex items-start pt-6 sm:pt-12 lg:pt-20 pb-16 bg-transparent">
       {/* Deep Space Background Glow System */}
       <div className="absolute inset-0 pointer-events-none z-0">
         {/* Core robot glow - Testing Layer 1 */}
@@ -90,12 +90,12 @@ const Hero = () => {
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         
         {/* Animated Pill Banner - Floating Badge */}
-        <div className="absolute top-3 lg:top-7 left-0 w-full flex justify-center z-20 pointer-events-none">
+        <div className="relative w-full flex justify-center lg:justify-start z-20 pointer-events-none px-0 sm:px-4 mb-8 sm:mb-10">
             <motion.div
               variants={containerVariants}
               initial="hidden"
               animate="visible"
-              className="relative inline-block max-w-full pointer-events-auto"
+              className="relative inline-block max-w-[calc(100vw-2rem)] pointer-events-auto"
             >
               {/* Floating particles around banner */}
               <div className="absolute inset-[-40px] pointer-events-none z-0">
@@ -120,13 +120,13 @@ const Hero = () => {
 
               <motion.div 
                 variants={wordVariants}
-                className="animated-border-wrapper inline-block group cursor-default"
+                className="animated-border-wrapper inline-block group cursor-default max-w-full"
                 style={{ '--glow-color': '#00c6ff' }}
               >
                 {/* Outer breathing glow */}
                 <div className="animate-breathing-glow opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
                 
-                <div className="animated-border-inner flex items-center gap-3 px-4 py-2 md:px-5 md:py-2.5">
+                <div className="animated-border-inner flex items-center gap-2 sm:gap-3 px-3 py-1.5 md:px-5 md:py-2.5 max-w-full">
                   {/* Moving color sweep */}
                   <div className="absolute inset-0 opacity-20 group-hover:opacity-50 transition-opacity duration-500 pointer-events-none">
                     <div 
@@ -136,40 +136,42 @@ const Hero = () => {
                   </div>
 
                   {/* Left Icon */}
-                  <div className="relative z-10 text-[#00c6ff] transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-110">
-                    <BrainCircuit className="w-4 h-4 md:w-5 md:h-5 shrink-0" style={{ filter: 'drop-shadow(0 0 8px #00c6ff)' }} />
+                  <div className="relative z-10 text-[#00c6ff] transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-110 shrink-0">
+                    <BrainCircuit className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0" style={{ filter: 'drop-shadow(0 0 8px #00c6ff)' }} />
                   </div>
 
                   {/* Center Text */}
                   <div className="relative z-10 flex-1 px-1 sm:px-1.5 overflow-hidden">
-                    <span className="text-[10px] sm:text-xs md:text-sm font-bold tracking-[0.1em] sm:tracking-[0.2em] uppercase text-transparent bg-clip-text bg-gradient-to-r from-[#00c6ff] via-[#25D366] to-[#00c6ff] drop-shadow-[0_0_8px_rgba(0,198,255,0.4)] whitespace-nowrap block truncate">
+                    <span className="text-[9px] sm:text-xs md:text-sm font-bold tracking-[0.08em] sm:tracking-[0.2em] uppercase text-transparent bg-clip-text bg-gradient-to-r from-[#00c6ff] via-[#25D366] to-[#00c6ff] drop-shadow-[0_0_8px_rgba(0,198,255,0.4)] whitespace-nowrap block truncate">
                       Empowering Innovation Through Technology
                     </span>
                   </div>
 
                   {/* Right Icon */}
-                  <div className="relative z-10 text-[#25D366] transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110">
-                    <Orbit className="w-4 h-4 md:w-5 md:h-5 shrink-0" style={{ filter: 'drop-shadow(0 0 8px #25D366)' }} />
+                  <div className="relative z-10 text-[#25D366] transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110 shrink-0">
+                    <Orbit className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0" style={{ filter: 'drop-shadow(0 0 8px #25D366)' }} />
                   </div>
                 </div>
               </motion.div>
             </motion.div>
         </div>
 
-        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-16">
+        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-12 lg:gap-16">
           
           {/* Left Column - Text Content */}
-          <div className="w-full lg:w-[60%] text-left flex flex-col justify-center lg:justify-start z-10 pt-20 lg:pt-28">
+          <div className="w-full lg:w-[60%] text-left flex flex-col justify-center lg:justify-start z-10 pt-0">
             
             {/* Dynamic Hero Heading */}
             <motion.h1 
               variants={containerVariants}
               initial="hidden"
               animate="visible"
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight mb-6 leading-[1.3] lg:leading-[1.1] text-white"
+              className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight mb-6 leading-[1.2] lg:leading-[1.1] text-white max-w-full"
             >
-              <span className="mr-2 sm:mr-3 lg:mr-4">Transforming Businesses Through</span>
-              <span className="inline-block relative min-w-[160px] sm:min-w-[200px] md:min-w-[250px] lg:min-w-[320px] xl:min-w-[400px] h-[1.3em] align-top">
+              <span className="block sm:inline-block mr-0 sm:mr-3 lg:mr-4 mb-1 sm:mb-0">
+                Transforming Businesses Through
+              </span>
+              <span className="block sm:inline-block relative min-w-[130px] sm:min-w-[200px] md:min-w-[250px] lg:min-w-[320px] xl:min-w-[400px] h-[1.3em] align-top">
                 <AnimatePresence mode="popLayout">
                   <motion.div
                     key={currentWord}
@@ -218,7 +220,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.12, ease: "easeOut" }}
-            className="w-full lg:w-1/2 h-[300px] sm:h-[400px] lg:h-[600px] flex justify-center lg:justify-end relative pointer-events-none lg:pointer-events-auto -translate-y-6 lg:-translate-y-10"
+            className="w-full lg:w-1/2 h-[300px] sm:h-[400px] lg:h-[600px] flex justify-center lg:justify-end relative pointer-events-none lg:pointer-events-auto -translate-y-6 lg:-translate-y-10 transform-gpu"
           >
             <Spline 
               scene="https://prod.spline.design/QYsjYTMQQVk8eqIS/scene.splinecode" 
