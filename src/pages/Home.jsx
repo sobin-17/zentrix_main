@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import Hero from '../components/Hero';
 import AboutPreview from '../components/AboutPreview';
 import ServicesOverview from '../components/ServicesOverview';
@@ -9,17 +9,17 @@ import Roadmap from '../components/Roadmap';
 import ContactCTA from '../components/ContactCTA';
 
 const Home = () => {
-  // Generate deterministic particles for floating light effect across both sections
+  // Optimized lightweight cosmic particles for 60fps smooth performance
   const [particles] = React.useState(() => {
     const colors = ['#00c6ff', '#25D366', '#a855f7', '#ec4899'];
-    return Array.from({ length: 175 }).map((_, i) => ({
+    return Array.from({ length: 32 }).map((_, i) => ({
       id: i,
-      size: Math.random() * 3 + 1,
+      size: Math.random() * 3 + 1.5,
       top: `${Math.random() * 100}%`,
       left: `${Math.random() * 100}%`,
-      tx: `${(Math.random() - 0.5) * 200}px`,
-      ty: `${(Math.random() - 0.5) * 200}px`,
-      delay: Math.random() * 5,
+      tx: `${(Math.random() - 0.5) * 120}px`,
+      ty: `${(Math.random() - 0.5) * 120}px`,
+      delay: Math.random() * 4,
       duration: Math.random() * 4 + 4,
       color: colors[Math.floor(Math.random() * colors.length)]
     }));
@@ -27,19 +27,25 @@ const Home = () => {
 
   return (
     <main>
-      {/* Shared Cosmic Background Wrapper for Hero, About, and Services */}
+      {/* Shared Cosmic Background Wrapper */}
       <div className="relative">
-        {/* Ambient Lighting Background */}
-        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* Fast Hardware-Accelerated Ambient Lighting */}
+        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden max-w-full">
           <div 
-            className="ambient-light bg-[var(--color-brand-purple)]/20 w-[600px] h-[600px] top-0 left-1/4"
-          ></div>
+            className="ambient-light w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] top-0 left-1/4"
+            style={{
+              background: 'radial-gradient(circle, rgba(157, 0, 255, 0.15) 0%, transparent 70%)',
+            }}
+          />
           <div 
-            className="ambient-light bg-[#00c6ff]/10 w-[700px] h-[700px] bottom-0 right-1/4"
-            style={{ animationDelay: '2s' }}
-          ></div>
+            className="ambient-light w-[400px] sm:w-[700px] h-[400px] sm:h-[700px] bottom-0 right-1/4"
+            style={{
+              background: 'radial-gradient(circle, rgba(0, 198, 255, 0.1) 0%, transparent 70%)',
+              animationDelay: '2s'
+            }}
+          />
 
-          {/* Floating Particles covering all 3 sections */}
+          {/* Optimized Floating Cosmic Particles */}
           {particles.map((p) => (
             <div
               key={p.id}
@@ -50,7 +56,6 @@ const Home = () => {
                 top: p.top,
                 left: p.left,
                 backgroundColor: p.color,
-                boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
                 '--tx': p.tx,
                 '--ty': p.ty,
                 '--duration': `${p.duration}s`,

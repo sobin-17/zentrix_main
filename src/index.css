@@ -9,9 +9,10 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    overflow-x: hidden;
+    overflow-x: hidden !important;
     overflow-y: auto;
     width: 100%;
+    max-width: 100vw;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -22,14 +23,16 @@
 
   body {
     @apply text-white m-0 p-0 antialiased w-full;
-    overflow: visible !important;
+    overflow-x: hidden !important;
+    max-width: 100vw;
     min-height: 100vh;
     background-color: #000000 !important;
     font-family: var(--font-poppins);
   }
 
   #root, main, #main-scroll-container {
-    overflow: visible !important;
+    max-width: 100vw;
+    overflow-x: hidden !important;
     min-height: 100vh;
   }
 }

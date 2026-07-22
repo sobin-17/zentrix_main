@@ -124,7 +124,7 @@ useEffect(() => {
   return () => mq.removeEventListener("change", handler);
 }, []);
   return (
-    <div className="relative pt-8 pb-16 bg-transparent text-gray-300 overflow-hidden">
+    <div className="relative pt-0 pb-16 bg-transparent text-gray-300 overflow-hidden">
       <CustomCursor />
       {/* Floating particles */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
@@ -156,7 +156,7 @@ useEffect(() => {
 
       <div className="max-w-screen-xl mx-auto px-6 md:px-12">
         <motion.div
-          className="relative w-screen left-1/2 -translate-x-1/2 min-h-[40vh] md:min-h-[75vh] lg:min-h-[85vh] overflow-hidden flex items-center pt-12 md:pt-0"
+          className="relative w-screen left-1/2 -translate-x-1/2 min-h-[35vh] md:min-h-[70vh] lg:min-h-[80vh] overflow-hidden flex items-center py-2 sm:py-6"
           id="about-hero"
           variants={fadeUp}
           initial="hidden"
@@ -168,19 +168,22 @@ useEffect(() => {
           <motion.img
             src="/about_orb.png"
             alt="About Orb Background"
-            className="
+    className="
       absolute
-      inset-0
-      w-full
-      h-full
-      object-cover
-      object-center
+      top-[-10%] sm:top-0
+      right-[-25%] sm:right-0
+      w-[150%] sm:w-full
+      h-[120%] sm:h-full
+      max-w-none
+      object-contain
+      sm:object-cover
+      object-right
       z-0
       pointer-events-none
       mix-blend-screen
     "
             animate={{
-              scale: [1, 1.06, 1],
+              scale: [1, 1.04, 1],
               opacity: [0.85, 1, 0.85],
               filter: [
                 "brightness(1) saturate(1) drop-shadow(0 0 20px rgba(168,85,247,0.4))",
@@ -196,12 +199,12 @@ useEffect(() => {
           />
 
           {/* Text Content */}
-          <div className="relative z-10 flex flex-col items-start text-left w-full max-w-screen-xl mx-auto px-6 md:px-12 -mt-12 lg:-mt-16">
+          <div className="relative z-10 flex flex-col items-start text-left w-full max-w-screen-xl mx-auto px-4 sm:px-8 md:px-12 py-2 sm:py-4">
 
-            <div className="max-w-2xl">
+            <div className="max-w-3xl">
 
               <motion.h1
-                className="font-black tracking-tight flex flex-col gap-0 drop-shadow-2xl mb-4"
+                className="font-black tracking-tight flex flex-col gap-1 drop-shadow-2xl mb-4"
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"
@@ -210,7 +213,7 @@ useEffect(() => {
               >
 
                 <motion.span
-                  className="text-white text-[4.5rem] md:text-[6rem] lg:text-[10rem] leading-[0.85]"
+                  className="text-white text-4xl sm:text-6xl md:text-8xl lg:text-[9rem] xl:text-[10rem] leading-[0.9]"
                   initial={{ opacity: 0, y: -20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -220,7 +223,7 @@ useEffect(() => {
                 </motion.span>
 
                 <motion.span
-                  className="text-[2.8rem] md:text-[4rem] lg:text-[5rem] leading-[0.85] md:whitespace-nowrap"
+                  className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl xl:text-[5rem] leading-[0.95] flex flex-wrap gap-2"
                   initial={{ opacity: 0, y: -20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
@@ -237,18 +240,7 @@ useEffect(() => {
 
               </motion.h1>
 
-              <p
-                className="
-        text-[16px]
-        md:text-[18px]
-        text-gray-300
-        text-center
-        leading-[1.7]
-        max-w-[500px]
-        mx-auto
-        mt-5
-      "
-              >
+              <p className="text-xs sm:text-base md:text-lg text-gray-300 leading-relaxed max-w-xl mt-3">
                 Empowering business and individuals through innovative
                 technology solutions, industry focus training and digital
                 transformation.
@@ -368,75 +360,77 @@ useEffect(() => {
             <span className="text-white font-extralight">Story</span>
           </motion.h2>
 
-          {/* Timeline Container (Desktop only) */}
-          <div className="relative w-[105%] h-[760px] hidden md:block select-none overflow-hidden rounded-[2.5rem] bg-[#05010c]/30 border border-purple-950/20 p-8">
-            {/* The Timeline Graphic from Figma (sized up even more) */}
+          {/* Timeline Container (Large Desktop 1280px+) */}
+          <div className="relative w-full max-w-full h-[720px] hidden xl:block select-none overflow-hidden rounded-[2.5rem] bg-[#05010c]/30 border border-purple-950/20 p-8">
+            {/* The Timeline Graphic */}
             <img
               src="/about_timeline.png"
               alt="Our Story Timeline"
-              className="absolute bottom-0 left-30 w-full h-[690px] object-contain object-bottom mix-blend-screen pointer-events-none"
+              className="absolute bottom-0 left-0 w-full h-[650px] object-contain object-bottom mix-blend-screen pointer-events-none"
             />
 
             {/* Timeline Item 1: 2025 */}
-            <div className="absolute left-[18.5%] -translate-x-1/2 bottom-[240px] w-[380px] text-center flex flex-col items-center z-10">
+            <div className="absolute left-[20%] -translate-x-1/2 bottom-[290px] w-[280px] text-center flex flex-col items-center z-10">
               <span className="text-[#a855f7] font-bold text-sm block mb-1">2025</span>
-              <h4 className="text-white font-bold text-lg mb-2">Idea Born</h4>
-              <p className="text-[10px] md:text-[16px] text-gray-300 leading-[1.6] max-w-[950px]">
+              <h4 className="text-white font-bold text-lg mb-1.5">Idea Born</h4>
+              <p className="text-xs text-gray-300 leading-[1.6]">
                 Build secure, scalable, and innovative software solutions that help businesses streamline operations and accelerate digital growth.
               </p>
             </div>
 
             {/* Timeline Item 2: 2026 */}
-            <div className="absolute left-[47.5%] -translate-x-1/2 bottom-[490px] w-[380px] text-center flex flex-col items-center">
+            <div className="absolute left-[50%] -translate-x-1/2 bottom-[500px] w-[320px] text-center flex flex-col items-center z-10">
               <span className="text-[#a855f7] font-bold text-sm block mb-1">2026</span>
-              <h4 className="text-white font-bold text-lg mb-2">Official Launch</h4>
-              <p className="text-[10px] md:text-[16px] text-gray-300 leading-[1.6] max-w-[950px]">
+              <h4 className="text-white font-bold text-lg mb-1.5">Official Launch</h4>
+              <p className="text-xs text-gray-300 leading-[1.6]">
                 Became an officially established organization offering training, internships, and software development services.
               </p>
             </div>
 
             {/* Timeline Item 3: Future */}
-            <div className="absolute left-[90%] -translate-x-1/2 bottom-[580px] w-[300px] text-center flex flex-col items-center">
+            <div className="absolute left-[80%] -translate-x-1/2 bottom-[550px] w-[260px] text-center flex flex-col items-center z-10">
               <span className="text-[#a855f7] font-bold text-sm block mb-1">Future</span>
-              <h4 className="text-white font-bold text-lg mb-2">Expansion</h4>
-              <p className="text-[10px] md:text-[16px] text-gray-300 leading-[1.6] max-w-[950px]">
+              <h4 className="text-white font-bold text-lg mb-1.5">Expansion</h4>
+              <p className="text-xs text-gray-300 leading-[1.6]">
                 Expanding our impact through technology, talent development, and digital solutions.
               </p>
             </div>
           </div>
 
-          {/* Responsive Mobile Timeline */}
-          <div className="flex flex-col gap-12 md:hidden relative pl-8 border-l-2 border-dashed border-purple-900/50 ml-6 md:ml-12 lg:ml-0">
-            {/* Mobile Item 1 */}
-            <div className="relative">
-              <div className="absolute -left-[45px] top-0 w-10 h-10 rounded-full border border-purple-500 bg-[#0a0516] flex items-center justify-center">
-                <Lightbulb className="w-4 h-4 text-purple-400" />
+          {/* Responsive Mobile & Tablet Timeline (< 1280px) */}
+          <div className="xl:hidden grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto px-4">
+            {/* Mobile/Tablet Item 1 */}
+            <div className="bg-[#0b0518] border border-purple-900/40 rounded-2xl p-6 relative overflow-hidden group hover:border-purple-500/50 transition-all shadow-lg flex flex-col items-start text-left">
+              <div className="w-10 h-10 rounded-full border border-purple-500/50 bg-purple-950/60 flex items-center justify-center mb-4 shrink-0">
+                <Lightbulb className="w-5 h-5 text-purple-400" />
               </div>
-              <span className="text-[#a855f7] font-bold text-xs">2025</span>
-              <h4 className="text-white font-bold text-base mb-1">Idea Born</h4>
-              <p className="text-xs text-gray-400 leading-relaxed">
+              <span className="text-[#a855f7] font-bold text-xs block mb-1 uppercase tracking-wider">2025</span>
+              <h4 className="text-white font-bold text-lg mb-2">Idea Born</h4>
+              <p className="text-xs md:text-sm text-gray-300 leading-relaxed">
                 Build secure, scalable, and innovative software solutions that help businesses streamline operations and accelerate digital growth.
               </p>
             </div>
-            {/* Mobile Item 2 */}
-            <div className="relative">
-              <div className="absolute -left-[49px] top-0 w-10 h-10 rounded-full border border-purple-500 bg-[#0a0516] flex items-center justify-center">
-                <Rocket className="w-4 h-4 text-purple-400" />
+
+            {/* Mobile/Tablet Item 2 */}
+            <div className="bg-[#0b0518] border border-purple-900/40 rounded-2xl p-6 relative overflow-hidden group hover:border-purple-500/50 transition-all shadow-lg flex flex-col items-start text-left">
+              <div className="w-10 h-10 rounded-full border border-purple-500/50 bg-purple-950/60 flex items-center justify-center mb-4 shrink-0">
+                <Rocket className="w-5 h-5 text-purple-400" />
               </div>
-              <span className="text-[#a855f7] font-bold text-xs">2026</span>
-              <h4 className="text-white font-bold text-base mb-1">Official Launch</h4>
-              <p className="text-xs text-gray-400 leading-relaxed">
+              <span className="text-[#a855f7] font-bold text-xs block mb-1 uppercase tracking-wider">2026</span>
+              <h4 className="text-white font-bold text-lg mb-2">Official Launch</h4>
+              <p className="text-xs md:text-sm text-gray-300 leading-relaxed">
                 Became an officially established organization offering training, internships, and software development services.
               </p>
             </div>
-            {/* Mobile Item 3 */}
-            <div className="relative">
-              <div className="absolute -left-[40px] top-0 w-10 h-10 rounded-full border border-purple-500 bg-[#0a0516] flex items-center justify-center">
-                <Target className="w-4 h-4 text-purple-400" />
+
+            {/* Mobile/Tablet Item 3 */}
+            <div className="bg-[#0b0518] border border-purple-900/40 rounded-2xl p-6 relative overflow-hidden group hover:border-purple-500/50 transition-all shadow-lg flex flex-col items-start text-left">
+              <div className="w-10 h-10 rounded-full border border-purple-500/50 bg-purple-950/60 flex items-center justify-center mb-4 shrink-0">
+                <Target className="w-5 h-5 text-purple-400" />
               </div>
-              <span className="text-[#a855f7] font-bold text-xs">Future</span>
-              <h4 className="text-white font-bold text-base mb-1">Expansion</h4>
-              <p className="text-xs text-gray-400 leading-relaxed">
+              <span className="text-[#a855f7] font-bold text-xs block mb-1 uppercase tracking-wider">Future</span>
+              <h4 className="text-white font-bold text-lg mb-2">Expansion</h4>
+              <p className="text-xs md:text-sm text-gray-300 leading-relaxed">
                 Expanding our impact through technology, talent development, and digital solutions.
               </p>
             </div>
@@ -585,66 +579,65 @@ useEffect(() => {
           </div>
         </motion.div>
         {/* 4. Future Goals */}
-        <div className="mb-20 relative w-screen left-1/2 -translate-x-1/2 h-[350px] lg:h-[450px]" id="about-goals">
-        <motion.img
-  src="/about_hands.png"
-  alt="Future Goals Hand Graphic"
-  className="w-full h-full object-cover"
-  initial={{ opacity: 0, scale: 0.90 }}
-  whileInView={{ opacity: 1, scale: 1 }}
-  viewport={{ once: false, amount: 0.3 }}
-  animate={{
-    y: [0, -8, 0],
-  }}
-  transition={{
-    opacity: { duration: 0.8 },
-    scale: { duration: 0.8 },
-    y: {
-      duration: 2,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-  }}
-/>
-          <div className="absolute inset-0 flex items-start pt-10 lg:pt-14 bg-black/5">
+        <div className="mb-20 relative w-screen left-1/2 -translate-x-1/2 overflow-hidden py-10 sm:py-16 lg:py-20" id="about-goals">
+          {/* Cosmic Full Width Background Image (Screen Blended & Smooth Faded) */}
+          <motion.img
+            src="/about_hands.png"
+            alt="Future Goals Hand Graphic"
+            className="absolute inset-0 w-full h-full object-cover object-center mix-blend-screen opacity-85 z-0 pointer-events-none"
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 0.85, scale: 1 }}
+            viewport={{ once: false, amount: 0.3 }}
+            animate={{
+              y: [0, -6, 0],
+            }}
+            transition={{
+              opacity: { duration: 0.8 },
+              scale: { duration: 0.8 },
+              y: {
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              },
+            }}
+          />
 
-            <div className="w-full px-6 md:px-12 lg:px-16 flex flex-col items-start text-left">
+          {/* Smooth Top and Bottom Gradient Fades into Black */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none z-1" />
 
-              <h2 className="text-white text-[2.8rem] md:text-[3.5rem] lg:text-[4rem] font-medium tracking-tight leading-none mb-4 drop-shadow-lg">
-                <span className="text-[#a855f7]">Our</span>{" "}
-                Future Goals
-              </h2>
+          {/* Text Content Layer - Resizes section dynamically */}
+          <div className="relative z-10 w-full max-w-screen-xl mx-auto px-6 md:px-12 flex flex-col items-start text-left">
+            <h2 className="text-white text-2xl sm:text-4xl md:text-5xl lg:text-[3.8rem] font-bold tracking-tight leading-none mb-3 sm:mb-5 drop-shadow-lg">
+              <span className="text-[#a855f7]">Our</span>{" "}
+              Future Goals
+            </h2>
 
-              <p className="text-base md:text-[17px] text-gray-100 leading-relaxed max-w-[850px] font-normal drop-shadow-md">
-                To empower businesses through innovative technology solutions,
-                develop industry-ready talent through practical training, and create
-                impactful digital products that drive growth, innovation, transformation,
-                and long-term success across industries and communities.
-              </p>
-
-            </div>
-
+            <p className="text-xs sm:text-base md:text-lg text-gray-200 leading-relaxed max-w-3xl font-normal drop-shadow-md">
+              To empower businesses through innovative technology solutions,
+              develop industry-ready talent through practical training, and create
+              impactful digital products that drive growth, innovation, transformation,
+              and long-term success across industries and communities.
+            </p>
           </div>
         </div>
 
        {/* 5. Vision & Mission */}
-       {/* 5. Vision & Mission */}
-<motion.div className="mb-20" id="about-vision-mission" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-  <div className="mb-16 flex items-center gap-6">
-    <div className="w-[4px] h-20 bg-purple-600 rounded-full"></div>
-    <h2 className="text-white text-5xl md:text-6xl font-extrabold tracking-tight">
+       <motion.div className="mb-8" id="about-vision-mission" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+  <div className="mb-10 sm:mb-14 flex items-center gap-4 sm:gap-6">
+    <div className="w-[4px] h-12 sm:h-20 bg-purple-600 rounded-full"></div>
+    <h2 className="text-white text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight">
       Vision & Mission
     </h2>
   </div>
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto px-2 sm:px-4">
     {/* Our Vision */}
     <motion.div
-      className="bg-[#0b0518] border border-purple-900/40 p-6 md:p-8 rounded-[2rem] relative overflow-hidden group aspect-square md:aspect-auto md:min-h-[400px] flex flex-col items-start justify-center"
+      className="bg-[#0b0518] border border-purple-900/40 p-6 sm:p-8 rounded-[2rem] relative overflow-hidden group flex flex-col items-start justify-start"
       initial={{ opacity: 0, x: -200, scale: 0.96 }}
       whileInView={{ opacity: 1, x: 0, scale: 1 }}
       viewport={{ once: false, amount: 0.25 }}
       transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1 }}
-      whileHover={{ scale: 1.04, y: -8, boxShadow: "0 0 40px rgba(168,85,247,0.4)" }}
+      whileHover={{ scale: 1.03, y: -6, boxShadow: "0 0 40px rgba(168,85,247,0.4)" }}
     >
       {/* moving shimmer border */}
       <div className="absolute inset-0 rounded-[2rem] pointer-events-none">
@@ -664,20 +657,20 @@ useEffect(() => {
       </div>
 
       <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
-        <img src="/vision_mission_bg.png" alt="" className="absolute top-0 left-0 w-[200%] h-full max-w-none object-cover opacity-45 mix-blend-screen" />
+        <img src="/vision_mission_bg.png" alt="" className="absolute top-0 left-0 w-full h-full object-cover opacity-35 mix-blend-screen" />
       </div>
       <div className="relative z-10 w-full max-w-md text-left">
-        <h3 className="text-white text-3xl font-bold mb-10 text-left">Our Vision</h3>
-        <div className="flex flex-col gap-6 w-full">
+        <h3 className="text-white text-2xl sm:text-3xl font-bold mb-5 text-left">Our Vision</h3>
+        <div className="flex flex-col gap-4 sm:gap-6 w-full">
           <div>
-            <h4 className="text-white font-bold text-lg mb-1">Innovation & Technology</h4>
-            <p className="text-xs md:text-sm text-gray-300 leading-relaxed">
+            <h4 className="text-white font-bold text-base sm:text-lg mb-1">Innovation & Technology</h4>
+            <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
               To build a future-focused technology company that delivers innovative digital solutions and creates opportunities for businesses and individuals through modern technology and practical learning.
             </p>
           </div>
           <div>
-            <h4 className="text-white font-bold text-lg mb-1">Growth & Digital Transformation</h4>
-            <p className="text-xs md:text-sm text-gray-300 leading-relaxed">
+            <h4 className="text-white font-bold text-base sm:text-lg mb-1">Growth & Digital Transformation</h4>
+            <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
               To create a strong digital ecosystem that supports business growth, technology innovation, and industry-oriented skill development for the next generation.
             </p>
           </div>
@@ -687,12 +680,12 @@ useEffect(() => {
 
     {/* Our Mission */}
     <motion.div
-      className="bg-[#0b0518] border border-purple-900/40 p-6 md:p-8 rounded-[2rem] relative overflow-hidden group aspect-square md:aspect-auto md:min-h-[400px] flex flex-col items-start justify-center"
+      className="bg-[#0b0518] border border-purple-900/40 p-6 sm:p-8 rounded-[2rem] relative overflow-hidden group flex flex-col items-start justify-start"
       initial={{ opacity: 0, x: 200, scale: 0.96 }}
       whileInView={{ opacity: 1, x: 0, scale: 1 }}
       viewport={{ once: false, amount: 0.25 }}
       transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1, delay: 0.15 }}
-      whileHover={{ scale: 1.04, y: -8, boxShadow: "0 0 40px rgba(168,85,247,0.4)" }}
+      whileHover={{ scale: 1.03, y: -6, boxShadow: "0 0 40px rgba(168,85,247,0.4)" }}
     >
       {/* moving shimmer border, opposite direction */}
       <div className="absolute inset-0 rounded-[2rem] pointer-events-none">
@@ -712,20 +705,20 @@ useEffect(() => {
       </div>
 
       <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
-        <img src="/vision_mission_bg.png" alt="" className="absolute top-0 right-0 w-[200%] h-full max-w-none object-cover opacity-45 mix-blend-screen" />
+        <img src="/vision_mission_bg.png" alt="" className="absolute top-0 right-0 w-full h-full object-cover opacity-35 mix-blend-screen" />
       </div>
       <div className="relative z-10 w-full max-w-md text-left">
-        <h3 className="text-white text-3xl font-bold mb-10 text-left">Our Mission</h3>
-        <div className="flex flex-col gap-6 w-full">
+        <h3 className="text-white text-2xl sm:text-3xl font-bold mb-5 text-left">Our Mission</h3>
+        <div className="flex flex-col gap-4 sm:gap-6 w-full">
           <div>
-            <h4 className="text-white font-bold text-lg mb-1">Innovation & Quality</h4>
-            <p className="text-xs md:text-sm text-gray-300 leading-relaxed">
+            <h4 className="text-white font-bold text-base sm:text-lg mb-1">Innovation & Quality</h4>
+            <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
               We are committed to delivering innovative digital solutions and professional services that help businesses grow in the modern technology environment. Our focus is on quality, efficiency, and practical implementation.
             </p>
           </div>
           <div>
-            <h4 className="text-white font-bold text-lg mb-1">Learning & Growth</h4>
-            <p className="text-xs md:text-sm text-gray-300 leading-relaxed">
+            <h4 className="text-white font-bold text-base sm:text-lg mb-1">Learning & Growth</h4>
+            <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
               Our mission is to create opportunities for students and professionals through industry-focused training, real-world projects, and continuous skill development for future careers and business success.
             </p>
           </div>
@@ -735,10 +728,8 @@ useEffect(() => {
   </div>
 </motion.div>
 
-
-
         {/* 6. What Makes Us Different */}
-        <motion.section className="relative py-24 px-6 md:px-12 max-w-7xl mx-auto mb-32" id="about-different" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.section className="relative py-8 sm:py-16 px-6 md:px-12 max-w-7xl mx-auto mb-4 sm:mb-16" id="about-different" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
 
           {/* Heading + Orb */}
           <motion.div className="hidden md:flex items-start justify-between mb-20 relative"
@@ -832,9 +823,9 @@ useEffect(() => {
 </div>
           </motion.div>
 
-          {/* Background Glow */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-[900px] h-[650px] bg-purple-700/30 blur-[220px] rounded-full" />
+          {/* Background Glow - Fixed for mobile rendering */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+            <div className="w-[120%] h-[120%] max-w-[900px] max-h-[650px]" style={{ background: 'radial-gradient(circle, rgba(126,34,206,0.2) 0%, transparent 60%)' }} />
           </div>
          <HexFeatureCards/>
 
@@ -842,7 +833,7 @@ useEffect(() => {
 
         {/* ── 7. Founder's Message ────────────────────────────────── */}
         <motion.div
-          className="relative mt-24 mb-24 min-h-[450px] flex items-center"
+          className="relative mt-0 md:mt-16 mb-0 md:mb-24 min-h-0 sm:min-h-[350px] md:min-h-[450px] flex items-center py-8 sm:py-0"
           id="about-founder"
           variants={fadeUp}
           initial="hidden"
@@ -854,7 +845,7 @@ useEffect(() => {
           <img
             src="/quote_mark.png"
             alt="Quote"
-            className="absolute left-[5%] top-1/2 -translate-y-1/2 h-[320px] lg:h-[380px] w-auto opacity-90 z-10"
+            className="absolute left-0 sm:left-[5%] top-1/2 -translate-y-1/2 h-[180px] sm:h-[320px] lg:h-[380px] w-auto opacity-40 sm:opacity-90 z-10 mix-blend-screen object-contain pointer-events-none"
           />
 
           {/* Founder Image */}
@@ -865,7 +856,7 @@ useEffect(() => {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 1 }}
             animate={{ y: [0, -8, 0] }}
-            className="absolute right-[-6%] top-1/2 -translate-y-1/2 h-[320px] lg:h-[380px] w-auto object-contain mix-blend-screen z-10" />
+            className="absolute right-[-6%] top-1/2 -translate-y-1/2 h-[200px] sm:h-[320px] lg:h-[380px] w-auto object-contain mix-blend-screen z-10" />
 
           {/* Content */}
           <motion.div
@@ -873,14 +864,14 @@ useEffect(() => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.3, delay: 0.9 }}
-            className="relative z-20 w-full max-w-6xl mx-auto px-6 pt-20"
+            className="relative z-20 w-full max-w-6xl mx-auto px-4 sm:px-6 pt-0 md:pt-20"
           >
 
-            <h3 className="text-white text-[34px] md:text-[52px] lg:text-[72px] font-bold leading-none mb-4 ml-[120px] lg:ml-[170px]">
+            <h3 className="text-white text-2xl sm:text-4xl md:text-5xl lg:text-[72px] font-bold leading-tight mb-4 ml-0 sm:ml-24 md:ml-36 lg:ml-[170px]">
               Founder&apos;s Message
             </h3>
 
-            <p className="text-white/90 text-base md:text-lg lg:text-xl leading-relaxed max-w-[750px] ml-[120px] lg:ml-[170px]">
+            <p className="text-white/90 text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed max-w-[750px] ml-0 sm:ml-24 md:ml-36 lg:ml-[170px]">
               We believe in the power of technology to transform ideas into opportunities.
               Through innovation, learning, and collaboration, we strive to create meaningful
               impact for businesses and future professionals.
