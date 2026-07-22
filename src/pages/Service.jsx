@@ -75,7 +75,7 @@ function ServiceCard({ title, items, delay = 0 }) {
           ))}
         </ul>
 
-        <Link to="/get-touch">
+        <Link to="/your-next-step">
           <button
             className="
               mt-8

@@ -644,25 +644,25 @@ const Course = () => {
       {/* ══════════ 5-STAGE LEARNING ROADMAP ══════════ */}
       <section className="py-8 md:py-16 px-6 md:px-12 relative overflow-hidden">
 
-        {particles.map((p) => (
-          <div
-            key={p.id}
-            className="service-particle"
-            style={{
-              width: p.size,
-              height: p.size,
-              top: p.top,
-              left: p.left,
-              backgroundColor: p.color,
-              boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-              '--tx': p.tx,
-              '--ty': p.ty,
-              '--duration': `${p.duration}s`,
-              '--delay': `${p.delay}s`,
-            }}
-          />
-        ))}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[var(--color-brand-purple)]/10 blur-[140px] pointer-events-none" />
+  {/* Particles */}
+  {particles.map((p) => (
+    <div
+      key={p.id}
+      className="service-particle absolute"
+      style={{
+        width: p.size,
+        height: p.size,
+        top: p.top,
+        left: p.left,
+        backgroundColor: p.color,
+        boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+        "--tx": p.tx,
+        "--ty": p.ty,
+        "--duration": `${p.duration}s`,
+        "--delay": `${p.delay}s`,
+      }}
+    />
+  ))}
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-8 md:mb-12">
@@ -677,44 +677,72 @@ const Course = () => {
               5-Stage Learning Process
             </motion.h2>
 
-          </div>
+    {/* Marquee */}
+    <div className="relative overflow-hidden">
 
-          {/* Stages */}
-          <div className="overflow-hidden w-full py-6">
+      {/* Left Fade */}
+      <div className="absolute inset-y-0 left-0 z-20 w-8 sm:w-12 md:w-16 bg-gradient-to-r from-black via-black/70 to-transparent pointer-events-none" />
 
-            <motion.div
-              className="flex items-center gap-8 w-max"
-              animate={{
-                x: ["0%", "-50%"],
-              }}
-              transition={{
-                duration: 18,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            >
-              {[...learningStages, ...learningStages].map((stage, i) => (
-                <React.Fragment key={i}>
+      {/* Right Fade */}
+      <div className="absolute inset-y-0 right-0 z-20 w-8 sm:w-12 md:w-16 bg-gradient-to-l from-black via-black/70 to-transparent pointer-events-none" />
 
-                  <StageCard
-                    stage={stage}
-                    index={i}
-                    total={learningStages.length * 2}
-                  />
+      <motion.div
+        className="
+          flex
+          flex-nowrap
+          items-center
+          gap-4
+          sm:gap-6
+          md:gap-8
+          lg:gap-10
+          py-4
+          w-max
+          will-change-transform
+        "
+        animate={{
+          x: ["0%", "-50%"],
+        }}
+        transition={{
+          duration: 24,
+          repeat: Infinity,
+          repeatType: "loop",
+          ease: "linear",
+        }}
+      >
+        {[...learningStages, ...learningStages].map((stage, i) => (
+          <React.Fragment key={i}>
 
-                  {i !== learningStages.length * 2 - 1 && (
-                    <div className="flex items-center">
-                      <ChevronRight className="w-10 h-10 text-purple-400" />
-                    </div>
-                  )}
+            <div className="flex-shrink-0">
+              <StageCard
+                stage={stage}
+                index={i}
+                total={learningStages.length * 2}
+              />
+            </div>
 
-                </React.Fragment>
-              ))}
-            </motion.div>
+            {i !== learningStages.length * 2 - 1 && (
+              <div className="flex items-center justify-center flex-shrink-0 px-1 sm:px-2 md:px-3 lg:px-4">
+                <ChevronRight
+                  className="
+                    text-purple-400
+                    w-4 h-4
+                    sm:w-5 sm:h-5
+                    md:w-7 md:h-7
+                    lg:w-9 lg:h-9
+                  "
+                />
+              </div>
+            )}
 
-          </div>
-        </div>
-      </section>
+          </React.Fragment>
+        ))}
+      </motion.div>
+
+    </div>
+
+  </div>
+
+</section>
 
       {/* ══════════ WHY CHOOSE ZENTRIX ══════════
       <WhyChooseUs /> */}
