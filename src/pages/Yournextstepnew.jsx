@@ -639,7 +639,7 @@ const YourNextStep = () => {
 
       {/* ── HERO ── */}
       <section className="ynx-hero-section">
-        <img src="/staircase_hero.png" alt="" className="ynx-hero-img" />
+        <img src="/staircase_hero.png" alt="" className="ynx-hero-img" loading="eager" decoding="async" style={{ transform: 'translateZ(0)' }} />
 
         <div style={{
           position: "absolute", inset: 0,

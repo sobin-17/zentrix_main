@@ -58,7 +58,7 @@ function AppLayout() {
       )}
 
       {/* Dynamic Page Content */}
-      <main className="relative scroll-smooth" id="main-scroll-container">
+      <main className="relative" id="main-scroll-container">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
