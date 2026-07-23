@@ -341,13 +341,10 @@ if (!course) {
         {/* ── Course header ───────────────────────────────────── */}
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>
 
-          {/* Category & Course ID badges */}
+          {/* Category badge */}
           <div className="flex items-center gap-3 mb-6">
             <span className="inline-block px-4 py-1.5 rounded-full border border-white/20 text-white/80 text-sm font-medium bg-white/5">
               {course.category}
-            </span>
-            <span className="px-3.5 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-mono font-bold border border-purple-500/30">
-              COURSE ID: {course.courseId || course.id}
             </span>
           </div>
 

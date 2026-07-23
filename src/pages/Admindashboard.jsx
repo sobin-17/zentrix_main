@@ -1047,7 +1047,6 @@ function CoursesManager({ courses, query, onAdd, onEdit, onDelete }) {
         <table className="w-full text-sm min-w-[720px]">
           <thead>
             <tr className="text-left text-slate-500 text-xs uppercase tracking-wider border-b border-white/5">
-              <th className="px-6 py-3 font-semibold">Course ID</th>
               <th className="px-6 py-3 font-semibold">Course</th>
               <th className="px-6 py-3 font-semibold">Category</th>
               <th className="px-6 py-3 font-semibold">Students</th>
@@ -1058,11 +1057,6 @@ function CoursesManager({ courses, query, onAdd, onEdit, onDelete }) {
           <tbody>
             {filtered.map((c) => (
               <tr key={c.firestoreId || c.courseId || c.id} className="border-b border-white/5 hover:bg-white/[0.02]">
-                <td className="px-6 py-4 font-mono font-bold text-xs">
-                  <span className="px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30 whitespace-nowrap">
-                    {c.courseId || c.id}
-                  </span>
-                </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-white/5 overflow-hidden flex-shrink-0">
