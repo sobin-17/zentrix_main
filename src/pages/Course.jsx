@@ -243,6 +243,15 @@ function CourseCard({ course, index }) {
             <span className={`px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider border ${accent.badge2} flex items-center gap-1.5`}>
               <span className="opacity-70 text-blue-400">⏱</span> {course.duration}
             </span>
+            <span className={`px-3.5 py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider border flex items-center gap-1.5 ${
+              (course.mode || 'Hybrid') === 'Remote' 
+                ? 'border-sky-500/30 text-sky-300 bg-sky-500/10'
+                : (course.mode || 'Hybrid') === 'Onsite'
+                ? 'border-amber-500/30 text-amber-300 bg-amber-500/10'
+                : 'border-emerald-500/30 text-emerald-300 bg-emerald-500/10'
+            }`}>
+              <span>🌐</span> {course.mode || 'Hybrid'}
+            </span>
           </div>
 
           <h3 className="text-[34px] sm:text-[40px] font-black mb-4 leading-[1.1] tracking-tight uppercase">

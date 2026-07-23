@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft, Clock, BookOpen, ChevronRight,
-  Send, Loader2, CheckCircle2, Award, Star, Briefcase, Users,
+  Send, Loader2, CheckCircle2, Award, Star, Briefcase, Users, Globe,
 } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import { getCourses } from "../services/courseService";
@@ -368,6 +368,7 @@ if (!course) {
           <div className="flex flex-wrap gap-4 mb-16">
             {[
               { icon: <Clock className="w-4 h-4" />, label: course.duration },
+              { icon: <Globe className="w-4 h-4 text-emerald-400" />, label: course.mode || 'Hybrid' },
               { icon: <BookOpen className="w-4 h-4" />, label: course.level },
               { icon: <Award className="w-4 h-4" />, label: course.internship ? 'Internship Included' : 'Certificate Included' },
             ].map(({ icon, label }) => (

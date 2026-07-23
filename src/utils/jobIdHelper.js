@@ -286,14 +286,14 @@ export const computeJobTitle = (baseTitleOrRole, type = 'Internship') => {
 
 // Default initial Job IDs for predefined seed roles
 export const DEFAULT_SEED_CAREERS = [
-  { id: 'python', jobId: 'ZTPYF0001', baseTitle: 'Python Developer', title: 'Python Developer Intern', type: 'Internship', experience: '3 – 6 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.python },
-  { id: 'dataanalytics', jobId: 'ZTDA0001', baseTitle: 'Data Analyst', title: 'Data Analyst Intern', type: 'Internship', experience: '3 – 6 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.dataanalytics },
-  { id: 'mern', jobId: 'ZTMERN0001', baseTitle: 'Mern Stack', title: 'Mern Stack Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.mern },
-  { id: 'uiux', jobId: 'ZTUIUX0001', baseTitle: 'UI / UX', title: 'UI / UX Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.uiux },
-  { id: 'graphic', jobId: 'ZTGD0001', baseTitle: 'Graphic Design', title: 'Graphic Design Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.graphic },
-  { id: 'video', jobId: 'ZTVE0001', baseTitle: 'Video Editor', title: 'Video Editor Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.video },
-  { id: 'digital', jobId: 'ZTDM0001', baseTitle: 'Digital Marketing', title: 'Digital Marketing Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.digital },
-  { id: 'seo', jobId: 'ZTSEO0001', baseTitle: 'SEO Analyst', title: 'SEO Analyst Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.seo },
+  { id: 'python', jobId: 'ZTPYF0001', baseTitle: 'Python Developer', title: 'Python Developer Intern', type: 'Internship', experience: '3 – 6 Months', location: 'Nagercoil, Tamil Nadu', mode: 'Onsite', status: 'Active', ...ROLE_PREDEFINED_DETAILS.python },
+  { id: 'dataanalytics', jobId: 'ZTDA0001', baseTitle: 'Data Analyst', title: 'Data Analyst Intern', type: 'Internship', experience: '3 – 6 Months', location: 'Nagercoil, Tamil Nadu', mode: 'Hybrid', status: 'Active', ...ROLE_PREDEFINED_DETAILS.dataanalytics },
+  { id: 'mern', jobId: 'ZTMERN0001', baseTitle: 'Mern Stack', title: 'Mern Stack Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', mode: 'Hybrid', status: 'Active', ...ROLE_PREDEFINED_DETAILS.mern },
+  { id: 'uiux', jobId: 'ZTUIUX0001', baseTitle: 'UI / UX', title: 'UI / UX Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', mode: 'Remote', status: 'Active', ...ROLE_PREDEFINED_DETAILS.uiux },
+  { id: 'graphic', jobId: 'ZTGD0001', baseTitle: 'Graphic Design', title: 'Graphic Design Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', mode: 'Remote', status: 'Active', ...ROLE_PREDEFINED_DETAILS.graphic },
+  { id: 'video', jobId: 'ZTVE0001', baseTitle: 'Video Editor', title: 'Video Editor Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', mode: 'Remote', status: 'Active', ...ROLE_PREDEFINED_DETAILS.video },
+  { id: 'digital', jobId: 'ZTDM0001', baseTitle: 'Digital Marketing', title: 'Digital Marketing Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', mode: 'Hybrid', status: 'Active', ...ROLE_PREDEFINED_DETAILS.digital },
+  { id: 'seo', jobId: 'ZTSEO0001', baseTitle: 'SEO Analyst', title: 'SEO Analyst Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', mode: 'Remote', status: 'Active', ...ROLE_PREDEFINED_DETAILS.seo },
 ];
 
 // Helper to ensure every career item has a valid Job ID & rich details
@@ -312,6 +312,7 @@ export const ensureCareerJobIds = (careersList = []) => {
 
     const formattedItem = {
       ...item,
+      mode: item.mode || details.mode || 'Onsite',
       category: item.category || details.category,
       overview: item.overview || item.description || details.overview,
       responsibilities: hasSpecificResp ? item.responsibilities : details.responsibilities,

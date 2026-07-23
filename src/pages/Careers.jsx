@@ -741,6 +741,16 @@ const Careers = () => {
                           {job.jobId || job.id}
                         </span>
 
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold flex items-center gap-1 border ${
+                          (job.mode || 'Onsite') === 'Remote'
+                            ? 'bg-sky-500/15 border-sky-500/30 text-sky-300'
+                            : (job.mode || 'Onsite') === 'Onsite'
+                            ? 'bg-amber-500/15 border-amber-500/30 text-amber-300'
+                            : 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300'
+                        }`}>
+                          🌐 {job.mode || 'Onsite'}
+                        </span>
+
                       </div>
 
                       <h4 className="text-lg sm:text-xl font-bold text-white">
@@ -753,9 +763,11 @@ const Careers = () => {
 
                         <span className="hidden sm:block">&bull;</span>
 
-                        <span>
-                          {job.department || "Tech & Engineering"}
-                        </span>
+                        <span>📍 {job.location || 'Nagercoil, Tamil Nadu'}</span>
+
+                        <span className="hidden sm:block">&bull;</span>
+
+                        <span>🏢 {job.mode || 'Onsite'}</span>
 
                       </div>
                     </div>

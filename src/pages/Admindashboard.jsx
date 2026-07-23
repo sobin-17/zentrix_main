@@ -64,6 +64,7 @@ import { onAuthStateChanged } from "firebase/auth";
 const CATEGORIES = ['Development', 'Design', 'Data Science', 'AI'];
 const LEVELS = ['Beginner', 'Beginner – Intermediate', 'Intermediate', 'Advanced'];
 const CAREER_TYPES = ['Internship', 'Full-time', 'Part-time', 'Contract'];
+const WORK_MODES = ['Onsite', 'Remote', 'Hybrid'];
 const ENROLLMENT_STATUSES = ['New', 'Contacted', 'Confirmed', 'Cancelled'];
 
 
@@ -498,6 +499,7 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
           category: initial.category || CATEGORIES[0],
           duration: initial.duration || '',
           level: initial.level || LEVELS[0],
+          mode: initial.mode || 'Hybrid',
           status: initial.status || 'Draft',
         }
       : {
@@ -508,6 +510,7 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
           category: defaultCourse.category,
           duration: defaultCourse.duration,
           level: defaultCourse.level,
+          mode: 'Hybrid',
           status: 'Published'
         }
   );
@@ -547,6 +550,7 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
       category: form.category,
       duration: form.duration,
       level: form.level,
+      mode: form.mode,
       status: form.status,
       // Pre-defined static fields that user no longer manually enters:
       image: initial?.image || predefined.image || '',
@@ -604,9 +608,14 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
           </Field>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Field label="Duration">
             <input value={form.duration} onChange={(e) => set('duration', e.target.value)} className="input" placeholder="6 Months" />
+          </Field>
+          <Field label="Training Mode">
+            <select value={form.mode} onChange={(e) => set('mode', e.target.value)} className="input">
+              {WORK_MODES.map((m) => <option key={m}>{m}</option>)}
+            </select>
           </Field>
           <Field label="Status">
             <select value={form.status} onChange={(e) => set('status', e.target.value)} className="input">
@@ -641,6 +650,7 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
           type: initial.type || CAREER_TYPES[0],
           experience: initial.experience || '',
           location: initial.location || 'Nagercoil, Tamil Nadu',
+          mode: initial.mode || 'Onsite',
           status: initial.status || 'Active',
         }
       : {
@@ -650,6 +660,7 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
           type: defaultCareer.type,
           experience: defaultCareer.experience,
           location: defaultCareer.location,
+          mode: 'Onsite',
           status: 'Active',
         }
   );
@@ -706,6 +717,7 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
         type: form.type,
         experience: form.experience,
         location: form.location,
+        mode: form.mode,
         status: form.status,
         category: roleDetails.category,
         overview: initial?.overview || initial?.description || predefinedSeed.description || roleDetails.overview,
@@ -762,9 +774,16 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
           </Field>
         </div>
 
-        <Field label="Location">
-          <input value={form.location} onChange={(e) => set('location', e.target.value)} className="input" placeholder="Nagercoil, Tamil Nadu" />
-        </Field>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field label="Location">
+            <input value={form.location} onChange={(e) => set('location', e.target.value)} className="input" placeholder="Nagercoil, Tamil Nadu" />
+          </Field>
+          <Field label="Work Mode">
+            <select value={form.mode} onChange={(e) => set('mode', e.target.value)} className="input">
+              {WORK_MODES.map((m) => <option key={m}>{m}</option>)}
+            </select>
+          </Field>
+        </div>
 
         <Field label="Application Status">
           <div className="flex flex-col sm:flex-row gap-3">
