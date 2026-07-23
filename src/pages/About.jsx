@@ -24,11 +24,7 @@ const staggerContainer = {
   visible: { transition: { staggerChildren: 0.2 } },
 };
 
-const particles = Array.from({ length: 120 }).map((_, i) => ({
-
-  
-
-
+const particles = Array.from({ length: 25 }).map((_, i) => ({
   id: i,
   size: Math.random() * 3 + 1,
   top: `${Math.random() * 100}%`,

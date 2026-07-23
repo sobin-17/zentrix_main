@@ -47,12 +47,12 @@ function AppLayout() {
       
       {/* Persistent Floating Controls (Chatbot + Actions) */}
       {!isAdmin && (
-        <div className="fixed right-6 bottom-16 md:right-8 md:bottom-20 z-[9999] flex flex-col gap-3 items-end pointer-events-none">
-          <div className="pointer-events-auto">
-            <ChatIntegration />
-          </div>
+        <div className="fixed right-6 bottom-6 md:right-8 md:bottom-8 z-[9999] flex flex-col gap-3 items-end pointer-events-none">
           <div className="pointer-events-auto origin-bottom-right scale-[0.85] md:scale-100 transition-transform">
             <FloatingCTA />
+          </div>
+          <div className="pointer-events-auto mt-2">
+            <ChatIntegration />
           </div>
         </div>
       )}

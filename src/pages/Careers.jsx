@@ -30,7 +30,7 @@ const Careers = () => {
 
   const [particles] = useState(() => {
     const colors = ['#00c6ff', '#a855f7', '#ec4899', '#ffffff'];
-    return Array.from({ length: 80 }).map((_, i) => ({
+    return Array.from({ length: 20 }).map((_, i) => ({
       id: i,
       size: Math.random() * 2.5 + 1,
       top: `${Math.random() * 100}%`,

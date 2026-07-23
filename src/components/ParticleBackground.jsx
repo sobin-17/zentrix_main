@@ -5,10 +5,12 @@ const ParticleBackground = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
-    let particlesArray;
+    let particlesArray = [];
     let animationFrameId;
+    const isMobile = window.innerWidth < 768 || (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 1);
 
     // Set canvas size
     const setCanvasSize = () => {
@@ -21,8 +23,8 @@ const ParticleBackground = () => {
 
     // Mouse position
     let mouse = {
-      x: null,
-      y: null,
+      x: undefined,
+      y: undefined,
       radius: (canvas.height/80) * (canvas.width/80)
     };
 
@@ -32,12 +34,14 @@ const ParticleBackground = () => {
     };
 
     const handleMouseOut = () => {
-        mouse.x = undefined;
-        mouse.y = undefined;
+      mouse.x = undefined;
+      mouse.y = undefined;
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseout', handleMouseOut);
+    if (!isMobile) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseout', handleMouseOut);
+    }
 
     // Create Particle
     class Particle {
@@ -53,7 +57,7 @@ const ParticleBackground = () => {
       draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-        ctx.fillStyle = '#0ea5e9'; // Tech blue color
+        ctx.fillStyle = '#0ea5e9';
         ctx.fill();
       }
 
@@ -65,21 +69,23 @@ const ParticleBackground = () => {
           this.directionY = -this.directionY;
         }
 
-        let dx = mouse.x - this.x;
-        let dy = mouse.y - this.y;
-        let distance = Math.sqrt(dx*dx + dy*dy);
-        if (distance < mouse.radius + this.size){
-          if (mouse.x < this.x && this.x < canvas.width - this.size * 10) {
-            this.x += 1;
-          }
-          if (mouse.x > this.x && this.x > this.size * 10) {
-            this.x -= 1;
-          }
-          if (mouse.y < this.y && this.y < canvas.height - this.size * 10) {
-            this.y += 1;
-          }
-          if (mouse.y > this.y && this.y > this.size * 10) {
-            this.y -= 1;
+        if (mouse.x !== undefined && mouse.y !== undefined) {
+          let dx = mouse.x - this.x;
+          let dy = mouse.y - this.y;
+          let distanceSq = dx * dx + dy * dy;
+          if (distanceSq < mouse.radius + this.size) {
+            if (mouse.x < this.x && this.x < canvas.width - this.size * 10) {
+              this.x += 1;
+            }
+            if (mouse.x > this.x && this.x > this.size * 10) {
+              this.x -= 1;
+            }
+            if (mouse.y < this.y && this.y < canvas.height - this.size * 10) {
+              this.y += 1;
+            }
+            if (mouse.y > this.y && this.y > this.size * 10) {
+              this.y -= 1;
+            }
           }
         }
 
@@ -89,32 +95,34 @@ const ParticleBackground = () => {
       }
     }
 
-    // Init
+    // Init with strict max particle caps
     const init = () => {
       particlesArray = [];
-      let numberOfParticles = (canvas.height * canvas.width) / 10000;
-      for (let i = 0; i < numberOfParticles; i++) {
+      const maxCount = isMobile ? 18 : 45;
+      for (let i = 0; i < maxCount; i++) {
         let size = (Math.random() * 2) + 1;
-        let x = (Math.random() * ((window.innerWidth - size * 2) - (size * 2)) + size * 2);
-        let y = (Math.random() * ((window.innerHeight - size * 2) - (size * 2)) + size * 2);
-        let directionX = (Math.random() * 1) - 0.5;
-        let directionY = (Math.random() * 1) - 0.5;
+        let x = Math.random() * (canvas.width - size * 4) + size * 2;
+        let y = Math.random() * (canvas.height - size * 4) + size * 2;
+        let directionX = (Math.random() * 0.8) - 0.4;
+        let directionY = (Math.random() * 0.8) - 0.4;
         let color = '#0ea5e9';
 
         particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
       }
     };
 
-    // Animation Loop
+    // Connect line loop optimized
     const connect = () => {
-      let opacityValue = 1;
+      if (isMobile) return; // Skip line calculation on mobile for max GPU efficiency
+      const maxDistanceSq = 12000;
       for (let a = 0; a < particlesArray.length; a++) {
-        for (let b = a; b < particlesArray.length; b++) {
-          let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
-          + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
-          if (distance < (canvas.width/7) * (canvas.height/7)) {
-            opacityValue = 1 - (distance/15000);
-            ctx.strokeStyle = `rgba(14, 165, 233, ${opacityValue})`;
+        for (let b = a + 1; b < particlesArray.length; b++) {
+          let dx = particlesArray[a].x - particlesArray[b].x;
+          let dy = particlesArray[a].y - particlesArray[b].y;
+          let distanceSq = dx * dx + dy * dy;
+          if (distanceSq < maxDistanceSq) {
+            let opacityValue = 1 - (distanceSq / maxDistanceSq);
+            ctx.strokeStyle = `rgba(14, 165, 233, ${opacityValue * 0.5})`;
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
@@ -126,12 +134,16 @@ const ParticleBackground = () => {
     };
 
     const animate = () => {
-      animationFrameId = requestAnimationFrame(animate);
-      ctx.clearRect(0,0,innerWidth, innerHeight);
+      if (document.hidden) {
+        animationFrameId = requestAnimationFrame(animate);
+        return;
+      }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (let i = 0; i < particlesArray.length; i++) {
         particlesArray[i].update();
       }
       connect();
+      animationFrameId = requestAnimationFrame(animate);
     };
 
     init();
@@ -156,6 +168,7 @@ const ParticleBackground = () => {
         height: '100vh',
         zIndex: -1,
         background: 'linear-gradient(to bottom, #000000, #0a0a0a)',
+        pointerEvents: 'none',
       }} 
     />
   );

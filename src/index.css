@@ -433,9 +433,24 @@ a[href*="spline.design"] {
   border-radius: 50%;
   background: var(--color-brand-purple);
   opacity: 0.6;
-  will-change: transform, opacity;
+  will-change: transform;
   animation: float-particle var(--duration) ease-in-out var(--delay) infinite;
   transform: translate(var(--tx), var(--ty));
+}
+
+@media (max-width: 768px) {
+  /* On mobile phones, suppress box-shadow blurs and heavy particles to prevent overheating and lag */
+  .service-particle {
+    box-shadow: none !important;
+    animation-duration: 8s !important;
+  }
+  .service-particle:nth-child(n+16) {
+    display: none !important;
+  }
+  .ambient-light {
+    filter: blur(20px) !important;
+    animation: none !important;
+  }
 }
 
 /* Ambient light blobs */
