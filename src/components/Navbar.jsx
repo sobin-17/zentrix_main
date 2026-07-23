@@ -44,7 +44,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`sticky top-0 z-[100] w-full px-4 sm:px-8 lg:px-12 flex items-center justify-between transition-all duration-300 ${
+      className={`sticky top-0 z-[100] w-full px-4 sm:px-8 lg:px-12 flex items-center justify-between transition-all duration-300 transform-gpu ${
         scrolled ? 'bg-[#0a0514]/90 backdrop-blur-md py-3 shadow-[0_4px_30px_rgba(0,0,0,0.5)]' : 'bg-transparent py-4 md:py-5'
       }`}
     >

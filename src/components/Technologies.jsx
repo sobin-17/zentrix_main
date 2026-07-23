@@ -5,13 +5,21 @@ import { Layers, X } from 'lucide-react';
 function useOrbitRadius() {
   const [radius, setRadius] = useState(320);
   useEffect(() => {
+    let timer;
     const calc = () => {
       const w = window.innerWidth;
       setRadius(Math.min(320, Math.max(140, w * 0.26)));
     };
     calc();
-    window.addEventListener('resize', calc);
-    return () => window.removeEventListener('resize', calc);
+    const handleResize = () => {
+      clearTimeout(timer);
+      timer = setTimeout(calc, 100);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
   return radius;
 }
@@ -97,8 +105,9 @@ const Planet = ({ planet, radius, index, canEmerge, onArrived, isSelected, isDim
   // position (and the others') stays put while STACK shows the details.
   useAnimationFrame((_, delta) => {
     if (!settled || isDimmed || isSelected) return;
+    const safeDelta = Math.min(delta, 64);
     const speed = (planet.direction * 2 * Math.PI) / (planet.duration * 1000);
-    const next = angle.get() + speed * delta;
+    const next = angle.get() + speed * safeDelta;
     angle.set(next);
     x.set(Math.cos(next) * radius);
     y.set(Math.sin(next) * radius * ELLIPSE_RATIO);
@@ -106,7 +115,7 @@ const Planet = ({ planet, radius, index, canEmerge, onArrived, isSelected, isDim
 
   return (
     <motion.div
-      className="absolute top-1/2 left-1/2 z-20"
+      className="absolute top-1/2 left-1/2 z-20 transform-gpu"
       style={{ x, y, opacity, scale, translateX: '-50%', translateY: '-50%', willChange: 'transform' }}
     >
       <motion.div
@@ -122,7 +131,7 @@ const Planet = ({ planet, radius, index, canEmerge, onArrived, isSelected, isDim
         whileHover={{ y: -14, scale: 1.12 }}
         whileTap={{ scale: 0.96 }}
         onClick={onSelect}
-        className={`group flex flex-col items-center justify-center p-5 bg-[#0f0f19]/90 backdrop-blur-md border rounded-3xl w-[100px] h-[100px] md:w-[120px] md:h-[120px] shadow-[0_8px_30px_rgba(0,0,0,0.4)] cursor-pointer transition-colors duration-300 ${
+        className={`group flex flex-col items-center justify-center p-5 bg-[#0d0c1d]/95 border rounded-3xl w-[100px] h-[100px] md:w-[120px] md:h-[120px] shadow-[0_8px_30px_rgba(0,0,0,0.4)] cursor-pointer transition-colors duration-300 transform-gpu ${
           isSelected
             ? 'border-[var(--color-brand-purple)] shadow-[0_0_45px_rgba(157,0,255,0.5)]'
             : 'border-[var(--color-brand-purple)]/20 hover:border-[var(--color-brand-purple)]/60 hover:shadow-[0_0_40px_rgba(157,0,255,0.3)]'
@@ -189,7 +198,7 @@ const Technologies = () => {
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-8">Technologies We Work With</h2>
 
         <motion.div
-          className="relative w-full h-[380px] sm:h-[450px] md:h-[550px] lg:h-[650px] max-w-6xl mx-auto mt-4 sm:mt-12"
+          className="relative w-full h-[380px] sm:h-[450px] md:h-[550px] lg:h-[650px] max-w-6xl mx-auto mt-4 sm:mt-12 transform-gpu"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-100px' }}
@@ -199,9 +208,15 @@ const Technologies = () => {
             if (e.target === e.currentTarget) setSelected(null);
           }}
         >
-          {/* Glow */}
+          {/* Fast Radial Glow (No heavy blur calculation) */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-            <div className="w-[420px] h-[420px] bg-[var(--color-brand-purple)]/20 rounded-full blur-[130px]" />
+            <div
+              className="w-[420px] h-[420px] rounded-full pointer-events-none transform-gpu"
+              style={{
+                background:
+                  'radial-gradient(circle, rgba(157, 0, 255, 0.22) 0%, rgba(157, 0, 255, 0.05) 50%, transparent 75%)',
+              }}
+            />
           </div>
 
           {/* Orbit Ring */}
@@ -215,7 +230,7 @@ const Technologies = () => {
           {/* Central STACK with Zigzag Break */}
           <div className="absolute inset-0 flex items-center justify-center z-40 pointer-events-none">
             <motion.div
-              className={`relative transition-[width,height] duration-500 ease-out ${
+              className={`relative transition-[width,height] duration-500 ease-out transform-gpu ${
                 selectedPlanet
                   ? 'w-[220px] h-[220px] md:w-[240px] md:h-[240px]'
                   : 'w-[135px] h-[135px] md:w-[160px] md:h-[160px]'
@@ -274,7 +289,7 @@ const Technologies = () => {
 
               {/* Left Zigzag Shell */}
               <motion.div
-                className="absolute inset-0 rounded-3xl bg-[#0f0f19] border border-[var(--color-brand-purple)]/40 shadow-[0_0_50px_rgba(157,0,255,0.35)] z-10 overflow-hidden"
+                className="absolute inset-0 rounded-3xl bg-[#0f0f19] border border-[var(--color-brand-purple)]/40 shadow-[0_0_50px_rgba(157,0,255,0.35)] z-10 overflow-hidden transform-gpu"
                 style={{ clipPath: 'polygon(0% 0%, 50% 0%, 42% 14%, 58% 28%, 42% 50%, 58% 72%, 42% 86%, 50% 100%, 0% 100%)' }}
                 variants={shardVariants}
                 animate={shardOpen ? 'left' : 'closed'}
@@ -286,7 +301,7 @@ const Technologies = () => {
 
               {/* Right Zigzag Shell */}
               <motion.div
-                className="absolute inset-0 rounded-3xl bg-[#0f0f19] border border-[var(--color-brand-purple)]/40 shadow-[0_0_50px_rgba(157,0,255,0.35)] z-10 overflow-hidden"
+                className="absolute inset-0 rounded-3xl bg-[#0f0f19] border border-[var(--color-brand-purple)]/40 shadow-[0_0_50px_rgba(157,0,255,0.35)] z-10 overflow-hidden transform-gpu"
                 style={{ clipPath: 'polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%, 42% 86%, 58% 72%, 42% 50%, 58% 28%, 42% 14%)' }}
                 variants={shardVariants}
                 animate={shardOpen ? 'right' : 'closed'}

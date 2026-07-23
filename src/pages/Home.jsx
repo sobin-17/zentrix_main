@@ -30,15 +30,15 @@ const Home = () => {
       {/* Shared Cosmic Background Wrapper */}
       <div className="relative">
         {/* Fast Hardware-Accelerated Ambient Lighting */}
-        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden max-w-full">
+        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden max-w-full transform-gpu">
           <div 
-            className="ambient-light w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] top-0 left-1/4"
+            className="ambient-light w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] top-0 left-1/4 transform-gpu"
             style={{
               background: 'radial-gradient(circle, rgba(157, 0, 255, 0.15) 0%, transparent 70%)',
             }}
           />
           <div 
-            className="ambient-light w-[400px] sm:w-[700px] h-[400px] sm:h-[700px] bottom-0 right-1/4"
+            className="ambient-light w-[400px] sm:w-[700px] h-[400px] sm:h-[700px] bottom-0 right-1/4 transform-gpu"
             style={{
               background: 'radial-gradient(circle, rgba(0, 198, 255, 0.1) 0%, transparent 70%)',
               animationDelay: '2s'

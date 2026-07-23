@@ -121,13 +121,13 @@ const AboutPreview = () => {
               <div className="relative group p-[1px] rounded-2xl overflow-hidden bg-white/[0.02] hover:-translate-y-1 transition-all duration-500 hover:shadow-[0_8px_30px_-10px_rgba(168,85,247,0.25)] h-full">
                 
                 {/* Rotating Border Glow */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] opacity-30 group-hover:opacity-70 transition-opacity duration-700 pointer-events-none"
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] opacity-30 group-hover:opacity-70 transition-opacity duration-700 pointer-events-none transform-gpu"
                      style={{
                        background: 'conic-gradient(from 0deg, transparent 0 340deg, #a855f7 360deg)',
                        animation: 'spin 5s linear infinite'
                      }}
                 />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] opacity-30 group-hover:opacity-70 transition-opacity duration-700 pointer-events-none"
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] opacity-30 group-hover:opacity-70 transition-opacity duration-700 pointer-events-none transform-gpu"
                      style={{
                        background: 'conic-gradient(from 180deg, transparent 0 340deg, #00c6ff 360deg)',
                        animation: 'spin 5s linear infinite'
@@ -135,7 +135,7 @@ const AboutPreview = () => {
                 />
 
                 {/* Inner Card */}
-                <div className="flex flex-col items-center justify-center h-full p-6 bg-black/90 backdrop-blur-xl rounded-2xl relative z-10 overflow-hidden">
+                <div className="flex flex-col items-center justify-center h-full p-6 bg-[#0a0518]/90 backdrop-blur-md rounded-2xl relative z-10 overflow-hidden transform-gpu">
                   
                   {/* Ambient Light Effect (Shimmer Sweep) */}
                   <div className="absolute inset-0 opacity-5 group-hover:opacity-15 transition-opacity duration-700 pointer-events-none">
