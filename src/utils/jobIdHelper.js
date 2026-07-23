@@ -253,7 +253,7 @@ export const getPredefinedDetailsForRole = (roleIdOrTitle) => {
   const text = (roleIdOrTitle || '').toLowerCase().trim();
   if (text.includes('python') || text.includes('pyfullstack') || text.includes('py')) return ROLE_PREDEFINED_DETAILS.python;
   if (text.includes('data science') || text.includes('datascience') || text.includes('ml')) return ROLE_PREDEFINED_DETAILS.datascience;
-  if (text.includes('data analytics') || text.includes('analytics')) return ROLE_PREDEFINED_DETAILS.dataanalytics;
+  if (text.includes('data analyst') || text.includes('analyst') || text.includes('data analytics') || text.includes('analytics') || text.includes('bi')) return ROLE_PREDEFINED_DETAILS.dataanalytics;
   if (text.includes('mern') || text.includes('full stack')) return ROLE_PREDEFINED_DETAILS.mern;
   if (text.includes('ui') || text.includes('ux') || text.includes('design system')) return ROLE_PREDEFINED_DETAILS.uiux;
   if (text.includes('graphic') || text.includes('branding')) return ROLE_PREDEFINED_DETAILS.graphic;
@@ -265,15 +265,35 @@ export const getPredefinedDetailsForRole = (roleIdOrTitle) => {
   return ROLE_PREDEFINED_DETAILS.python;
 };
 
+export const computeJobTitle = (baseTitleOrRole, type = 'Internship') => {
+  if (!baseTitleOrRole) return '';
+  const cleanBase = baseTitleOrRole
+    .replace(/\s+Intern$/i, '')
+    .replace(/\s*\([^)]*\)$/g, '')
+    .trim();
+
+  if (type === 'Internship') {
+    return `${cleanBase} Intern`;
+  }
+  if (type === 'Part-time') {
+    return `${cleanBase} (Part-time)`;
+  }
+  if (type === 'Contract') {
+    return `${cleanBase} (Contract)`;
+  }
+  return cleanBase;
+};
+
 // Default initial Job IDs for predefined seed roles
 export const DEFAULT_SEED_CAREERS = [
-  { id: 'python', jobId: 'ZTPYF0001', title: 'Python Developer Intern', type: 'Internship', experience: '3 – 6 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.python },
-  { id: 'mern', jobId: 'ZTMERN0001', title: 'Mern Stack Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.mern },
-  { id: 'uiux', jobId: 'ZTUIUX0001', title: 'UI / UX Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.uiux },
-  { id: 'graphic', jobId: 'ZTGD0001', title: 'Graphic Design Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.graphic },
-  { id: 'video', jobId: 'ZTVE0001', title: 'Video Editor Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.video },
-  { id: 'digital', jobId: 'ZTDM0001', title: 'Digital Marketing Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.digital },
-  { id: 'seo', jobId: 'ZTSEO0001', title: 'SEO Analyst Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.seo },
+  { id: 'python', jobId: 'ZTPYF0001', baseTitle: 'Python Developer', title: 'Python Developer Intern', type: 'Internship', experience: '3 – 6 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.python },
+  { id: 'dataanalytics', jobId: 'ZTDA0001', baseTitle: 'Data Analyst', title: 'Data Analyst Intern', type: 'Internship', experience: '3 – 6 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.dataanalytics },
+  { id: 'mern', jobId: 'ZTMERN0001', baseTitle: 'Mern Stack', title: 'Mern Stack Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.mern },
+  { id: 'uiux', jobId: 'ZTUIUX0001', baseTitle: 'UI / UX', title: 'UI / UX Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.uiux },
+  { id: 'graphic', jobId: 'ZTGD0001', baseTitle: 'Graphic Design', title: 'Graphic Design Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.graphic },
+  { id: 'video', jobId: 'ZTVE0001', baseTitle: 'Video Editor', title: 'Video Editor Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.video },
+  { id: 'digital', jobId: 'ZTDM0001', baseTitle: 'Digital Marketing', title: 'Digital Marketing Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.digital },
+  { id: 'seo', jobId: 'ZTSEO0001', baseTitle: 'SEO Analyst', title: 'SEO Analyst Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', status: 'Active', ...ROLE_PREDEFINED_DETAILS.seo },
 ];
 
 // Helper to ensure every career item has a valid Job ID & rich details

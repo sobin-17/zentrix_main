@@ -24,6 +24,7 @@ import {
   ensureCareerJobIds,
   DEFAULT_SEED_CAREERS,
   getPredefinedDetailsForRole,
+  computeJobTitle,
 } from "../utils/jobIdHelper";
 import {
   generateNextCourseId,
@@ -93,6 +94,47 @@ const ENROLLMENT_STATUS_STYLE = {
 
 const slugify = (str) =>
   str.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || `item-${Date.now()}`;
+
+const isCourseMatch = (course, enrollment) => {
+  if (!course || !enrollment) return false;
+  const courseKeys = [
+    course.id,
+    course.firestoreId,
+    course.courseId,
+    course.title ? slugify(course.title) : null,
+  ].filter(Boolean);
+
+  const enrollmentKeys = [
+    enrollment.courseId,
+    enrollment.id,
+    enrollment.courseTitle ? slugify(enrollment.courseTitle) : null,
+  ].filter(Boolean);
+
+  return courseKeys.some((ck) =>
+    enrollmentKeys.some((ek) => ck === ek || slugify(String(ck)) === slugify(String(ek)))
+  );
+};
+
+const isCareerMatch = (career, application) => {
+  if (!career || !application) return false;
+  const careerKeys = [
+    career.id,
+    career.firestoreId,
+    career.jobId,
+    career.title ? slugify(career.title) : null,
+  ].filter(Boolean);
+
+  const applicationKeys = [
+    application.careerId,
+    application.jobId,
+    application.id,
+    application.careerTitle ? slugify(application.careerTitle) : null,
+  ].filter(Boolean);
+
+  return careerKeys.some((ck) =>
+    applicationKeys.some((ak) => ck === ak || slugify(String(ck)) === slugify(String(ak)))
+  );
+};
 
 function useLocalStorageState(key, initial) {
   const [state, setState] = useState(() => {
@@ -621,13 +663,31 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
   const handleCareerChange = (e) => {
     const selectedId = e.target.value;
     const predefined = seedCareers.find(c => c.id === selectedId) || seedCareers[0];
+    const baseTitle = predefined.baseTitle || predefined.title.replace(/\s+Intern$/i, '');
+    const currentType = form.type || predefined.type || 'Internship';
+    const computedTitle = computeJobTitle(baseTitle, currentType);
+
     setForm(prev => ({
       ...prev,
       id: predefined.id,
-      title: predefined.title,
-      type: predefined.type,
+      baseTitle,
+      title: computedTitle,
+      type: currentType,
       experience: predefined.experience,
       location: predefined.location
+    }));
+  };
+
+  const handleTypeChange = (e) => {
+    const newType = e.target.value;
+    const predefined = seedCareers.find(c => c.id === form.id) || seedCareers[0];
+    const baseTitle = form.baseTitle || predefined.baseTitle || form.title.replace(/\s+Intern$/i, '').replace(/\s*\([^)]*\)$/g, '');
+    const computedTitle = computeJobTitle(baseTitle, newType);
+
+    setForm(prev => ({
+      ...prev,
+      type: newType,
+      title: computedTitle
     }));
   };
 
@@ -635,12 +695,14 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
     e.preventDefault();
     const predefinedSeed = seedCareers.find(c => c.id === form.id) || seedCareers[0];
     const roleDetails = getPredefinedDetailsForRole(form.id || form.title);
+    const finalBaseTitle = form.baseTitle || predefinedSeed.baseTitle || form.title;
+    const finalTitle = computeJobTitle(finalBaseTitle, form.type);
 
     onSave(
       {
         ...(isEdit ? { firestoreId: initial.firestoreId, jobId: initial.jobId } : { jobId: currentJobId }),
         id: form.id,
-        title: form.title,
+        title: finalTitle,
         type: form.type,
         experience: form.experience,
         location: form.location,
@@ -669,7 +731,7 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
           </span>
         </div>
 
-        <Field label="Job Title *">
+        <Field label="Job Role *">
           <select
             value={form.id}
             onChange={handleCareerChange}
@@ -677,19 +739,21 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
             disabled={isEdit}
           >
             {seedCareers.map(c => (
-               <option key={c.id} value={c.id}>{c.title}</option>
+               <option key={c.id} value={c.id}>{c.baseTitle || c.title.replace(/\s+Intern$/i, '')}</option>
             ))}
           </select>
         </Field>
 
         <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-2">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Predefined Role Description</p>
-          <p className="text-sm text-slate-300 leading-relaxed">{activePredefined.description}</p>
+          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Generated Title Preview</p>
+          <p className="text-base font-bold text-purple-300 mb-2">{computeJobTitle(form.baseTitle || activePredefined.baseTitle || form.title, form.type)}</p>
+          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Role Description</p>
+          <p className="text-sm text-slate-300 leading-relaxed">{activePredefined.description || activePredefined.overview}</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Type">
-            <select value={form.type} onChange={(e) => set('type', e.target.value)} className="input">
+            <select value={form.type} onChange={handleTypeChange} className="input">
               {CAREER_TYPES.map((t) => <option key={t}>{t}</option>)}
             </select>
           </Field>
@@ -789,17 +853,21 @@ function DashboardHome({
   goTo,
 }) {
 
-  const getCourseEnrollments = (courseId) =>
-    enrollments.filter(e => e.courseId === courseId).length;
+  const getCourseEnrollments = (course) =>
+    enrollments.filter(e => isCourseMatch(course, e)).length;
 
   const getCareerApplicants = (career) =>
-    careerApplications.filter(
-      app => app.careerId === (career.firestoreId || career.id)
-    ).length;
+    careerApplications.filter(app => isCareerMatch(career, app)).length;
 
-  const totalStudents = enrollments.length;
+  const totalStudents = courses.reduce(
+    (sum, c) => sum + getCourseEnrollments(c),
+    0
+  );
 
-  const totalApplicants = careerApplications.length;
+  const totalApplicants = careers.reduce(
+    (sum, c) => sum + getCareerApplicants(c),
+    0
+  );
 
   const published = courses.filter(
     c => c.status === "Published"
@@ -811,8 +879,8 @@ function DashboardHome({
 
   const coursesByEnrollment = [...courses].sort(
     (a, b) =>
-      getCourseEnrollments(b.id) -
-      getCourseEnrollments(a.id)
+      getCourseEnrollments(b) -
+      getCourseEnrollments(a)
   );
 
   const careersByApplicants = [...careers].sort(
@@ -849,11 +917,11 @@ function DashboardHome({
           </div>
           <div className="space-y-3">
             {coursesByEnrollment.map((c) => (
-              <div key={c.id} className="flex items-center justify-between text-sm gap-2">
+              <div key={c.id || c.firestoreId || c.title} className="flex items-center justify-between text-sm gap-2">
                 <span className="text-slate-300 truncate pr-4">{c.title}</span>
                 <span className="flex items-center gap-1.5 text-white font-semibold flex-shrink-0">
                   <Users className="w-3.5 h-3.5 text-slate-500" />
-                  {getCourseEnrollments(c.id)}
+                  {getCourseEnrollments(c)}
                 </span>
               </div>
             ))}
@@ -873,7 +941,7 @@ function DashboardHome({
           </div>
           <div className="space-y-3">
             {careersByApplicants.map((j) => (
-              <div key={j.id} className="flex items-center justify-between text-sm gap-2">
+              <div key={j.id || j.firestoreId || j.jobId || j.title} className="flex items-center justify-between text-sm gap-2">
                 <span className="text-slate-300 truncate pr-4">{j.title}</span>
                 <span className="flex items-center gap-1.5 text-white font-semibold flex-shrink-0">
                   <FileText className="w-3.5 h-3.5 text-slate-500" />
@@ -1097,11 +1165,16 @@ function EnrollmentsManager({ courses, enrollments, onUpdateStatus, onDeleteEnro
   const [query, setQuery] = useState('');
   const [expanded, setExpanded] = useState(null);
 
-  const countFor = (courseId) => enrollments.filter((e) => e.courseId === courseId).length;
+  const countFor = (courseOrId) => {
+    const targetCourse = typeof courseOrId === 'object'
+      ? courseOrId
+      : courses.find(c => c.id === courseOrId || c.firestoreId === courseOrId) || { id: courseOrId };
+    return enrollments.filter((e) => isCourseMatch(targetCourse, e)).length;
+  };
 
   if (!selectedCourseId) {
     const filteredCourses = courses.filter((c) => c.title.toLowerCase().includes(query.toLowerCase()));
-    const totalEnrollments = enrollments.length;
+    const totalEnrollments = courses.reduce((sum, c) => sum + countFor(c), 0);
 
     return (
       <div className="space-y-6">
@@ -1136,7 +1209,7 @@ function EnrollmentsManager({ courses, enrollments, onUpdateStatus, onDeleteEnro
               <tbody>
                 {filteredCourses.map((c) => (
                   <tr
-                    key={c.id}
+                    key={c.id || c.firestoreId || c.title}
                     className="border-b border-white/5 hover:bg-white/[0.03] cursor-pointer transition-colors"
                     onClick={() => setSelectedCourseId(c.id)}
                   >
@@ -1155,7 +1228,7 @@ function EnrollmentsManager({ courses, enrollments, onUpdateStatus, onDeleteEnro
                     <td className="px-6 py-4 text-slate-300">{c.level}</td>
                     <td className="px-6 py-4">
                       <span className="inline-flex items-center gap-1.5 text-white font-semibold">
-                        <Users className="w-3.5 h-3.5 text-slate-500" /> {countFor(c.id)}
+                        <Users className="w-3.5 h-3.5 text-slate-500" /> {countFor(c)}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
@@ -1179,12 +1252,12 @@ function EnrollmentsManager({ courses, enrollments, onUpdateStatus, onDeleteEnro
     );
   }
 
-  const course = courses.find((c) => c.id === selectedCourseId);
+  const course = courses.find((c) => c.id === selectedCourseId || c.firestoreId === selectedCourseId) || { id: selectedCourseId };
   const students = enrollments
-    .filter((e) => e.courseId === selectedCourseId)
+    .filter((e) => isCourseMatch(course, e))
     .filter((e) => {
       const q = query.toLowerCase();
-      return !q || e.name.toLowerCase().includes(q) || e.email.toLowerCase().includes(q);
+      return !q || e.name?.toLowerCase().includes(q) || e.email?.toLowerCase().includes(q);
     });
 
   return (
@@ -1372,9 +1445,7 @@ function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp 
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {careers.map((career) => {
-            const total = applications.filter(
-              a => a.careerId === (career.firestoreId || career.id)
-            ).length;
+            const total = applications.filter(a => isCareerMatch(career, a)).length;
 
             return (
               <div
@@ -1407,9 +1478,7 @@ function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp 
     );
   }
 
-  const applicants = applications.filter(
-    a => a.careerId === (selectedJob.firestoreId || selectedJob.id)
-  );
+  const applicants = applications.filter(a => isCareerMatch(selectedJob, a));
 
   return (
     <div className="space-y-6">
