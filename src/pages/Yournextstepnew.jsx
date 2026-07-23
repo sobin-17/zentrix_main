@@ -170,16 +170,9 @@ const GetTouch = () => {
         />
       ))}
 
-      <motion.div
-        animate={{ opacity: [0.5, 0.8, 0.5], scale: [1, 1.08, 1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -top-40 -right-40 w-[500px] h-[500px] md:w-[700px] md:h-[700px] rounded-full bg-purple-600/20 blur-[140px] pointer-events-none"
-      />
-      <motion.div
-        animate={{ opacity: [0.4, 0.7, 0.4], scale: [1, 1.1, 1] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-        className="absolute top-1/3 -left-40 w-[400px] h-[400px] rounded-full bg-indigo-600/10 blur-[120px] pointer-events-none"
-      />
+      {/* Ambient background glows - static lightweight blur for 60fps smooth scrolling */}
+      <div className="absolute -top-40 -right-40 w-[350px] h-[350px] md:w-[600px] md:h-[600px] rounded-full bg-purple-600/15 blur-[60px] md:blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/3 -left-40 w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full bg-indigo-600/10 blur-[50px] md:blur-[80px] pointer-events-none" />
 
       <div className="relative z-10 max-w-6xl mx-auto">
         {/* ===================== TOP: Heading + Form ===================== */}

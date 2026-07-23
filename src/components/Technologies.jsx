@@ -274,7 +274,7 @@ const Technologies = () => {
 
               {/* Left Zigzag Shell */}
               <motion.div
-                className="absolute inset-0 rounded-3xl bg-[#0f0f19]/90 backdrop-blur-md border border-[var(--color-brand-purple)]/40 shadow-[0_0_70px_rgba(157,0,255,0.45)] z-10 overflow-hidden"
+                className="absolute inset-0 rounded-3xl bg-[#0f0f19] border border-[var(--color-brand-purple)]/40 shadow-[0_0_50px_rgba(157,0,255,0.35)] z-10 overflow-hidden"
                 style={{ clipPath: 'polygon(0% 0%, 50% 0%, 42% 14%, 58% 28%, 42% 50%, 58% 72%, 42% 86%, 50% 100%, 0% 100%)' }}
                 variants={shardVariants}
                 animate={shardOpen ? 'left' : 'closed'}
@@ -286,7 +286,7 @@ const Technologies = () => {
 
               {/* Right Zigzag Shell */}
               <motion.div
-                className="absolute inset-0 rounded-3xl bg-[#0f0f19]/90 backdrop-blur-md border border-[var(--color-brand-purple)]/40 shadow-[0_0_70px_rgba(157,0,255,0.45)] z-10 overflow-hidden"
+                className="absolute inset-0 rounded-3xl bg-[#0f0f19] border border-[var(--color-brand-purple)]/40 shadow-[0_0_50px_rgba(157,0,255,0.35)] z-10 overflow-hidden"
                 style={{ clipPath: 'polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%, 42% 86%, 58% 72%, 42% 50%, 58% 28%, 42% 14%)' }}
                 variants={shardVariants}
                 animate={shardOpen ? 'right' : 'closed'}

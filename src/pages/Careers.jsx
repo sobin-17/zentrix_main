@@ -148,21 +148,17 @@ const Careers = () => {
 
         rounded-full
         bg-[#8B2EFF]/30
-        blur-[140px]
-        md:blur-[180px]
-        lg:blur-[220px]
+        blur-[60px]
+        md:blur-[140px]
       "
     />
   </div>
 
-  {/* Hand Image — Positioned at z-30 so it is 100% fully visible without clipping */}
-  <motion.img
-    src="/career_hand.png"
-    alt="Career opportunities at Zentrix Technologies"
+  {/* Hand Image — Positioned behind text at z-1 */}
+  <motion.div
     className="
       absolute
-      z-30
-      top-auto
+      z-1
       bottom-0
 
       right-[-5%]
@@ -179,30 +175,40 @@ const Careers = () => {
       xl:w-[82%]
       2xl:w-[88%]
 
-      object-contain
       pointer-events-none
-      opacity-90
-      lg:opacity-100
-      mix-blend-screen
     "
-    initial={{ opacity: 0, scale: 0.9, y: -20 }}
-    whileInView={{ opacity: 1, scale: 1, y: 0 }}
-    viewport={{ once: true, amount: 0.3 }}
-    animate={{
-      y: [0, -12, 0],
-      rotate: [0, 1.5, 0, -1.5, 0],
-      scale: [1, 1.015, 1],
-    }}
-    transition={{
-      opacity: { duration: 1.2 },
-      scale: { duration: 6, repeat: Infinity, ease: "easeInOut" },
-      rotate: { duration: 8, repeat: Infinity, ease: "easeInOut" },
-      y: { duration: 4.5, repeat: Infinity, ease: "easeInOut" },
-    }}
-  />
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 1.2, ease: "easeOut" }}
+  >
+    <motion.img
+      src="/career_hand.png"
+      alt="Career opportunities at Zentrix Technologies"
+      className="
+        w-full
+        h-auto
+        object-contain
+        pointer-events-none
+        opacity-85
+        md:opacity-100
+        mix-blend-screen
+      "
+      animate={{
+        y: [0, -12, 0],
+        rotate: [0, 1.2, 0, -1.2, 0],
+        scale: [1, 1.012, 1],
+      }}
+      transition={{
+        scale: { duration: 6, repeat: Infinity, ease: "easeInOut" },
+        rotate: { duration: 8, repeat: Infinity, ease: "easeInOut" },
+        y: { duration: 4.5, repeat: Infinity, ease: "easeInOut" },
+      }}
+    />
+  </motion.div>
 
-  {/* Hero Content */}
-  <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-8 sm:pt-12 lg:pt-16 pb-[80px] sm:pb-[100px] md:pb-[120px] lg:pb-[180px] xl:pb-[200px] 2xl:pb-[220px]">
+  {/* Hero Content — Positioned at z-20 above hand */}
+  <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-8 sm:pt-12 lg:pt-16 pb-[80px] sm:pb-[100px] md:pb-[120px] lg:pb-[180px] xl:pb-[200px] 2xl:pb-[220px]">
 
     <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6 lg:gap-12">
 
