@@ -47,7 +47,7 @@ import {
   Award, Briefcase, FileText, Users, UserCog, Shield, Settings, Globe,
   Search, Bell, ChevronDown, Plus, Pencil, Trash2, Eye, X, Check,
   ChevronRight, TrendingUp, LogOut, ArrowLeft, GraduationCap, Mail, Phone,
-  MessageSquare, Calendar,
+  MessageSquare, Calendar, Menu,
 } from 'lucide-react';
 
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -144,13 +144,25 @@ const NAV_SECTIONS = [
   },
 ];
 
-function Sidebar({ active, setActive }) {
-  return (
-    <aside className="hidden lg:flex flex-col w-[260px] flex-shrink-0 h-screen sticky top-0 bg-[#0a0a0a] border-r border-white/10 overflow-y-auto">
-      <div className="px-6 py-6 border-b border-white/5">
+function Sidebar({ active, setActive, mobileOpen, setMobileOpen }) {
+  const handleSelect = (key) => {
+    setActive(key);
+    setMobileOpen(false);
+  };
+
+  const navBody = (
+    <>
+      <div className="px-6 py-6 border-b border-white/5 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <img src="/logo5_transparent.png" alt="Zentrix" className="h-10 w-auto object-contain" />
         </Link>
+        <button
+          onClick={() => setMobileOpen(false)}
+          className="lg:hidden w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
+          aria-label="Close menu"
+        >
+          <X className="w-4 h-4" />
+        </button>
       </div>
 
       <nav className="flex-1 px-4 py-5 space-y-6">
@@ -167,7 +179,7 @@ function Sidebar({ active, setActive }) {
                 return (
                   <button
                     key={key}
-                    onClick={() => setActive(key)}
+                    onClick={() => handleSelect(key)}
                     className={`w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                       isActive
                         ? 'bg-[var(--color-brand-purple)] text-white shadow-[0_0_20px_rgba(157,0,255,0.35)]'
@@ -190,7 +202,40 @@ function Sidebar({ active, setActive }) {
           </div>
         ))}
       </nav>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="hidden lg:flex flex-col w-[260px] flex-shrink-0 h-screen sticky top-0 bg-[#0a0a0a] border-r border-white/10 overflow-y-auto">
+        {navBody}
+      </aside>
+
+      {/* Mobile drawer */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileOpen(false)}
+              className="lg:hidden fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
+            />
+            <motion.aside
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'tween', duration: 0.25 }}
+              className="lg:hidden fixed inset-y-0 left-0 z-50 flex flex-col w-[80vw] max-w-[300px] h-screen bg-[#0a0a0a] border-r border-white/10 overflow-y-auto"
+            >
+              {navBody}
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
@@ -205,9 +250,20 @@ function Topbar({
   setShowNotifications,
   markAllNotificationsAsRead,
   onSelectNotification,
+  onOpenMobileNav,
 }) {
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
+
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between gap-4 px-6 py-4 bg-black/70 backdrop-blur-md border-b border-white/10">
+    <header className="sticky top-0 z-30 flex items-center justify-between gap-2 sm:gap-4 px-3 sm:px-6 py-3 sm:py-4 bg-black/70 backdrop-blur-md border-b border-white/10">
+      <button
+        onClick={onOpenMobileNav}
+        className="lg:hidden flex-shrink-0 w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white"
+        aria-label="Open menu"
+      >
+        <Menu className="w-4 h-4" />
+      </button>
+
       <div className="relative w-full max-w-md hidden md:block">
         <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
         <input
@@ -217,7 +273,32 @@ function Topbar({
           className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-purple-500 transition-colors"
         />
       </div>
-      <div className="flex items-center gap-4 ml-auto">
+
+      {/* Mobile search toggle + input */}
+      <div className="flex-1 min-w-0 md:hidden">
+        {showMobileSearch ? (
+          <div className="relative w-full">
+            <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              autoFocus
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onBlur={() => !query && setShowMobileSearch(false)}
+              placeholder="Search…"
+              className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-2 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-purple-500 transition-colors"
+            />
+          </div>
+        ) : null}
+      </div>
+
+      <div className="flex items-center gap-2 sm:gap-4 ml-auto">
+        <button
+          onClick={() => setShowMobileSearch((s) => !s)}
+          className="md:hidden flex-shrink-0 w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white"
+          aria-label="Search"
+        >
+          <Search className="w-4 h-4" />
+        </button>
       <div className="relative">
   <button
     onClick={() => setShowNotifications(!showNotifications)}
@@ -233,7 +314,7 @@ function Topbar({
   </button>
 
   {showNotifications && (
-  <div className="absolute right-0 mt-3 w-96 rounded-xl bg-[#111] border border-white/10 shadow-xl z-50 overflow-hidden">
+  <div className="absolute right-0 mt-3 w-[90vw] max-w-96 rounded-xl bg-[#111] border border-white/10 shadow-xl z-50 overflow-hidden">
 
     {/* Header */}
     <div className="flex items-center justify-between p-4 border-b border-white/10 bg-white/[0.02]">
@@ -293,9 +374,9 @@ function Topbar({
   </div>
 )}
 </div>
-        <div className="flex items-center gap-2 pl-3 border-l border-white/10">
-          <div className="w-9 h-9 rounded-full bg-purple-600 flex items-center justify-center text-sm font-bold text-white">HR</div>
-          <div className="hidden sm:block leading-tight">
+        <div className="hidden sm:flex items-center gap-2 pl-3 border-l border-white/10">
+          <div className="w-9 h-9 rounded-full bg-purple-600 flex items-center justify-center text-sm font-bold text-white flex-shrink-0">HR</div>
+          <div className="hidden md:block leading-tight">
   <p className="text-sm font-semibold text-white">
     {admin?.email?.split("@")[0]}
   </p>
@@ -307,10 +388,10 @@ function Topbar({
         </div>
         <button
   onClick={handleLogout}
-  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm"
+  className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm flex-shrink-0"
 >
   <LogOut className="w-4 h-4" />
-  Logout
+  <span className="hidden sm:inline">Logout</span>
 </button>
       </div>
     </header>
@@ -319,13 +400,13 @@ function Topbar({
 
 function StatCard({ label, value, icon: Icon, accent }) {
   return (
-    <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 flex items-center gap-4">
-      <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: `${accent}22`, color: accent }}>
+    <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 sm:p-5 flex items-center gap-3 sm:gap-4">
+      <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: `${accent}22`, color: accent }}>
         <Icon className="w-5 h-5" />
       </div>
-      <div>
-        <p className="text-slate-500 text-xs mb-1">{label}</p>
-        <p className="text-2xl font-bold text-white">{value}</p>
+      <div className="min-w-0">
+        <p className="text-slate-500 text-xs mb-1 truncate">{label}</p>
+        <p className="text-xl sm:text-2xl font-bold text-white">{value}</p>
       </div>
     </div>
   );
@@ -335,7 +416,7 @@ function StatusPill({ status }) {
   const positive = status === 'Published' || status === 'Active';
   return (
     <span
-      className={`px-2.5 py-1 rounded-full text-[11px] font-semibold ${
+      className={`px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap ${
         positive ? 'bg-emerald-500/15 text-emerald-400' : 'bg-amber-500/15 text-amber-400'
       }`}
     >
@@ -349,9 +430,9 @@ function Toast({ message }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
-      className="fixed bottom-6 right-6 z-[100] bg-[#111] border border-emerald-500/40 text-white px-5 py-3 rounded-xl shadow-lg flex items-center gap-2 text-sm"
+      className="fixed bottom-4 right-4 left-4 sm:left-auto sm:bottom-6 sm:right-6 z-[100] bg-[#111] border border-emerald-500/40 text-white px-5 py-3 rounded-xl shadow-lg flex items-center gap-2 text-sm"
     >
-      <Check className="w-4 h-4 text-emerald-400" /> {message}
+      <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" /> {message}
     </motion.div>
   );
 }
@@ -468,7 +549,7 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
           <input value={form.subtitle} onChange={(e) => set('subtitle', e.target.value)} className="input" placeholder="e.g. Full Stack Development" />
         </Field>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Category">
             <select value={form.category} onChange={(e) => set('category', e.target.value)} className="input">
               {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
@@ -481,7 +562,7 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
           </Field>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Duration">
             <input value={form.duration} onChange={(e) => set('duration', e.target.value)} className="input" placeholder="6 Months" />
           </Field>
@@ -581,9 +662,9 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
     <ModalShell title={isEdit ? 'Edit Career' : 'Add New Career'} onClose={onClose}>
       <form onSubmit={handleSubmit} className="space-y-4">
         
-        <div className="flex items-center justify-between bg-purple-500/10 border border-purple-500/30 rounded-xl p-3.5 mb-2">
+        <div className="flex items-center justify-between bg-purple-500/10 border border-purple-500/30 rounded-xl p-3.5 mb-2 gap-2">
           <span className="text-xs font-semibold text-purple-300 uppercase tracking-wider">Assigned Job ID:</span>
-          <span className="px-3 py-1 rounded-lg bg-purple-600 text-white font-mono font-bold text-sm tracking-widest shadow-[0_0_10px_rgba(157,0,255,0.3)]">
+          <span className="px-3 py-1 rounded-lg bg-purple-600 text-white font-mono font-bold text-sm tracking-widest shadow-[0_0_10px_rgba(157,0,255,0.3)] whitespace-nowrap">
             {currentJobId}
           </span>
         </div>
@@ -606,7 +687,7 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
           <p className="text-sm text-slate-300 leading-relaxed">{activePredefined.description}</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Type">
             <select value={form.type} onChange={(e) => set('type', e.target.value)} className="input">
               {CAREER_TYPES.map((t) => <option key={t}>{t}</option>)}
@@ -622,7 +703,7 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
         </Field>
 
         <Field label="Application Status">
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             {['Active', 'Closed'].map((opt) => (
               <button
                 key={opt}
@@ -655,11 +736,11 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
 
 function ModalShell({ title, onClose, children }) {
   return (
-    <motion.div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
+    <motion.div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#0d0d0d] border border-white/10 rounded-2xl p-7"
+        className="w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#0d0d0d] border border-white/10 rounded-2xl p-4 sm:p-7"
       >
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-bold text-white">{title}</h3>
@@ -700,27 +781,53 @@ function ModalActions({ onClose, label }) {
    DASHBOARD HOME
 ──────────────────────────────────────────────────────────────────────── */
 
-function DashboardHome({ courses, careers, enrollments = [], goTo }) {
-  const getCourseEnrollments = (courseId) => {
-    return enrollments.filter(e => e.courseId === courseId).length;
-  };
+function DashboardHome({
+  courses,
+  careers,
+  enrollments = [],
+  careerApplications = [],
+  goTo,
+}) {
+
+  const getCourseEnrollments = (courseId) =>
+    enrollments.filter(e => e.courseId === courseId).length;
+
+  const getCareerApplicants = (career) =>
+    careerApplications.filter(
+      app => app.careerId === (career.firestoreId || career.id)
+    ).length;
 
   const totalStudents = enrollments.length;
-  const totalApplicants = careers.reduce((sum, j) => sum + (j.applicants || 0), 0);
-  const published = courses.filter((c) => c.status === 'Published').length;
-  const openRoles = careers.filter((j) => j.status === 'Active').length;
 
-  const coursesByEnrollment = [...courses].sort((a, b) => getCourseEnrollments(b.id) - getCourseEnrollments(a.id));
-  const careersByApplicants = [...careers].sort((a, b) => (b.applicants || 0) - (a.applicants || 0));
+  const totalApplicants = careerApplications.length;
 
+  const published = courses.filter(
+    c => c.status === "Published"
+  ).length;
+
+  const openRoles = careers.filter(
+    c => c.status === "Active"
+  ).length;
+
+  const coursesByEnrollment = [...courses].sort(
+    (a, b) =>
+      getCourseEnrollments(b.id) -
+      getCourseEnrollments(a.id)
+  );
+
+  const careersByApplicants = [...careers].sort(
+    (a, b) =>
+      getCareerApplicants(b) -
+      getCareerApplicants(a)
+  );
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-white mb-1">Welcome back, HR 👋</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-white mb-1">Welcome back, HR 👋</h1>
         <p className="text-slate-500 text-sm">Here's what's happening with your academy today.</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
         <StatCard label="Total Courses" value={courses.length} icon={BookOpen} accent="#a855f7" />
         <StatCard label="Published Courses" value={published} icon={TrendingUp} accent="#22c55e" />
         <StatCard label="Total Careers" value={careers.length} icon={Briefcase} accent="#f59e0b" />
@@ -729,20 +836,20 @@ function DashboardHome({ courses, careers, enrollments = [], goTo }) {
         <StatCard label="Total Applicants" value={totalApplicants} icon={FileText} accent="#facc15" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 sm:p-6">
+          <div className="flex items-center justify-between mb-4 gap-2">
+            <div className="min-w-0">
               <h2 className="font-bold text-white">Enrollments by Course</h2>
               <p className="text-slate-500 text-xs mt-0.5">{totalStudents} total students enrolled</p>
             </div>
-            <button onClick={() => goTo('courses')} className="text-purple-400 text-xs font-semibold flex items-center gap-1 hover:text-purple-300">
+            <button onClick={() => goTo('courses')} className="text-purple-400 text-xs font-semibold flex items-center gap-1 hover:text-purple-300 flex-shrink-0">
               Manage <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
           <div className="space-y-3">
             {coursesByEnrollment.map((c) => (
-              <div key={c.id} className="flex items-center justify-between text-sm">
+              <div key={c.id} className="flex items-center justify-between text-sm gap-2">
                 <span className="text-slate-300 truncate pr-4">{c.title}</span>
                 <span className="flex items-center gap-1.5 text-white font-semibold flex-shrink-0">
                   <Users className="w-3.5 h-3.5 text-slate-500" />
@@ -754,23 +861,23 @@ function DashboardHome({ courses, careers, enrollments = [], goTo }) {
           </div>
         </div>
 
-        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
+        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 sm:p-6">
+          <div className="flex items-center justify-between mb-4 gap-2">
+            <div className="min-w-0">
               <h2 className="font-bold text-white">Applications by Career</h2>
               <p className="text-slate-500 text-xs mt-0.5">{totalApplicants} total applications received</p>
             </div>
-            <button onClick={() => goTo('careers')} className="text-purple-400 text-xs font-semibold flex items-center gap-1 hover:text-purple-300">
+            <button onClick={() => goTo('careers')} className="text-purple-400 text-xs font-semibold flex items-center gap-1 hover:text-purple-300 flex-shrink-0">
               Manage <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
           <div className="space-y-3">
             {careersByApplicants.map((j) => (
-              <div key={j.id} className="flex items-center justify-between text-sm">
+              <div key={j.id} className="flex items-center justify-between text-sm gap-2">
                 <span className="text-slate-300 truncate pr-4">{j.title}</span>
                 <span className="flex items-center gap-1.5 text-white font-semibold flex-shrink-0">
                   <FileText className="w-3.5 h-3.5 text-slate-500" />
-                  {j.applicants || 0}
+                  {getCareerApplicants(j)}
                 </span>
               </div>
             ))}
@@ -779,35 +886,35 @@ function DashboardHome({ courses, careers, enrollments = [], goTo }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-6">
-          <div className="flex items-center justify-between mb-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 sm:p-6">
+          <div className="flex items-center justify-between mb-4 gap-2">
             <h2 className="font-bold text-white">Courses Overview</h2>
-            <button onClick={() => goTo('courses')} className="text-purple-400 text-xs font-semibold flex items-center gap-1 hover:text-purple-300">
+            <button onClick={() => goTo('courses')} className="text-purple-400 text-xs font-semibold flex items-center gap-1 hover:text-purple-300 flex-shrink-0">
               Manage <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
           <div className="space-y-3">
             {courses.slice(0, 5).map((c) => (
-              <div key={c.id} className="flex items-center justify-between text-sm">
-                <span className="text-slate-300">{c.title}</span>
+              <div key={c.id} className="flex items-center justify-between text-sm gap-2">
+                <span className="text-slate-300 truncate">{c.title}</span>
                 <StatusPill status={c.status} />
               </div>
             ))}
           </div>
         </div>
 
-        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-6">
-          <div className="flex items-center justify-between mb-4">
+        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 sm:p-6">
+          <div className="flex items-center justify-between mb-4 gap-2">
             <h2 className="font-bold text-white">Careers Overview</h2>
-            <button onClick={() => goTo('careers')} className="text-purple-400 text-xs font-semibold flex items-center gap-1 hover:text-purple-300">
+            <button onClick={() => goTo('careers')} className="text-purple-400 text-xs font-semibold flex items-center gap-1 hover:text-purple-300 flex-shrink-0">
               Manage <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
           <div className="space-y-3">
             {careers.slice(0, 5).map((j) => (
-              <div key={j.id} className="flex items-center justify-between text-sm">
-                <span className="text-slate-300">{j.title}</span>
+              <div key={j.id} className="flex items-center justify-between text-sm gap-2">
+                <span className="text-slate-300 truncate">{j.title}</span>
                 <StatusPill status={j.status} />
               </div>
             ))}
@@ -815,11 +922,11 @@ function DashboardHome({ courses, careers, enrollments = [], goTo }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <button onClick={() => goTo('courses', 'add')} className="flex items-center gap-2 justify-center py-3.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-semibold text-white transition-colors">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+        <button onClick={() => goTo('courses', 'add')} className="flex items-center gap-2 justify-center py-3 sm:py-3.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-semibold text-white transition-colors">
           <Plus className="w-4 h-4" /> Add Course
         </button>
-        <button onClick={() => goTo('careers', 'add')} className="flex items-center gap-2 justify-center py-3.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-semibold text-white transition-colors">
+        <button onClick={() => goTo('careers', 'add')} className="flex items-center gap-2 justify-center py-3 sm:py-3.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-semibold text-white transition-colors">
           <Plus className="w-4 h-4" /> Add Career
         </button>
       </div>
@@ -839,18 +946,18 @@ function CoursesManager({ courses, query, onAdd, onEdit, onDelete }) {
 
   return (
     <div className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden">
-      <div className="flex items-center justify-between p-6 border-b border-white/10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sm:p-6 border-b border-white/10">
         <div>
           <h2 className="text-lg font-bold text-white">Courses</h2>
           <p className="text-slate-500 text-xs mt-0.5">{filtered.length} of {courses.length} courses</p>
         </div>
-        <button onClick={onAdd} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--color-brand-purple)] text-white text-sm font-semibold hover:opacity-90 transition-opacity">
+        <button onClick={onAdd} className="flex items-center gap-2 justify-center px-4 py-2.5 rounded-xl bg-[var(--color-brand-purple)] text-white text-sm font-semibold hover:opacity-90 transition-opacity">
           <Plus className="w-4 h-4" /> Add New Course
         </button>
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm min-w-[720px]">
           <thead>
             <tr className="text-left text-slate-500 text-xs uppercase tracking-wider border-b border-white/5">
               <th className="px-6 py-3 font-semibold">Course ID</th>
@@ -865,7 +972,7 @@ function CoursesManager({ courses, query, onAdd, onEdit, onDelete }) {
             {filtered.map((c) => (
               <tr key={c.firestoreId || c.courseId || c.id} className="border-b border-white/5 hover:bg-white/[0.02]">
                 <td className="px-6 py-4 font-mono font-bold text-xs">
-                  <span className="px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  <span className="px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30 whitespace-nowrap">
                     {c.courseId || c.id}
                   </span>
                 </td>
@@ -920,18 +1027,18 @@ function CareersManager({ careers, query, onAdd, onEdit, onDelete }) {
 
   return (
     <div className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden">
-      <div className="flex items-center justify-between p-6 border-b border-white/10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sm:p-6 border-b border-white/10">
         <div>
           <h2 className="text-lg font-bold text-white">Careers</h2>
           <p className="text-slate-500 text-xs mt-0.5">{filtered.length} of {careers.length} openings</p>
         </div>
-        <button onClick={onAdd} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--color-brand-purple)] text-white text-sm font-semibold hover:opacity-90 transition-opacity">
+        <button onClick={onAdd} className="flex items-center gap-2 justify-center px-4 py-2.5 rounded-xl bg-[var(--color-brand-purple)] text-white text-sm font-semibold hover:opacity-90 transition-opacity">
           <Plus className="w-4 h-4" /> Add New Career
         </button>
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm min-w-[820px]">
           <thead>
             <tr className="text-left text-slate-500 text-xs uppercase tracking-wider border-b border-white/5">
               <th className="px-6 py-3 font-semibold">Job ID</th>
@@ -947,7 +1054,7 @@ function CareersManager({ careers, query, onAdd, onEdit, onDelete }) {
             {filtered.map((j) => (
               <tr key={j.firestoreId || j.jobId || j.id} className="border-b border-white/5 hover:bg-white/[0.02]">
                 <td className="px-6 py-4 font-mono font-bold text-xs">
-                  <span className="px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  <span className="px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30 whitespace-nowrap">
                     {j.jobId || j.id}
                   </span>
                 </td>
@@ -998,12 +1105,12 @@ function EnrollmentsManager({ courses, enrollments, onUpdateStatus, onDeleteEnro
 
     return (
       <div className="space-y-6">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-lg font-bold text-white">Enrollments</h2>
             <p className="text-slate-500 text-xs mt-0.5">{totalEnrollments} students enrolled across {courses.length} courses</p>
           </div>
-          <div className="relative w-full max-w-xs hidden sm:block">
+          <div className="relative w-full max-w-xs">
             <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               value={query}
@@ -1016,7 +1123,7 @@ function EnrollmentsManager({ courses, enrollments, onUpdateStatus, onDeleteEnro
 
         <div className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm min-w-[720px]">
               <thead>
                 <tr className="text-left text-slate-500 text-xs uppercase tracking-wider border-b border-white/5">
                   <th className="px-6 py-3 font-semibold">Course</th>
@@ -1112,7 +1219,7 @@ function EnrollmentsManager({ courses, enrollments, onUpdateStatus, onDeleteEnro
 
       <div className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm min-w-[820px]">
             <thead>
               <tr className="text-left text-slate-500 text-xs uppercase tracking-wider border-b border-white/5">
                 <th className="px-6 py-3 font-semibold">Student</th>
@@ -1165,7 +1272,7 @@ function EnrollmentsManager({ courses, enrollments, onUpdateStatus, onDeleteEnro
                             <MessageSquare className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
                             <p className="leading-relaxed">{s.message}</p>
                           </div>
-                          <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 mt-3">
+                          <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-slate-500 mt-3">
   <span className="flex items-center gap-1.5">
     <Calendar className="w-3.5 h-3.5" />
     Enrolled on {s.enrolledDate ? new Date(s.enrolledDate).toLocaleDateString() : 'N/A'}
@@ -1192,7 +1299,7 @@ function EnrollmentsManager({ courses, enrollments, onUpdateStatus, onDeleteEnro
   )}
   <button
     onClick={(e) => { e.stopPropagation(); onDeleteEnrollment(s); }}
-    className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-red-600/10 text-red-500 hover:bg-red-600/20 transition ml-auto"
+    className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-red-600/10 text-red-500 hover:bg-red-600/20 transition sm:ml-auto"
   >
     <Trash2 className="w-4 h-4" />
     Delete Student
@@ -1325,7 +1432,7 @@ function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp 
 
       <div className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
+          <table className="w-full text-sm text-left min-w-[900px]">
             <thead>
               <tr className="text-slate-400 text-xs uppercase tracking-wider border-b border-white/10 bg-white/5">
                 <th className="px-6 py-4 font-semibold">Applicant</th>
@@ -1426,8 +1533,8 @@ function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp 
 
       {/* Applicant Detail Modal */}
       {activeApplicant && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#111] border border-white/10 rounded-2xl max-w-lg w-full p-6 space-y-6 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-[#111] border border-white/10 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6 space-y-6 shadow-2xl relative">
             <button
               onClick={() => setActiveApplicant(null)}
               className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-full bg-white/5 transition-colors cursor-pointer"
@@ -1442,21 +1549,21 @@ function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp 
             </div>
 
             <div className="space-y-3 bg-white/5 p-4 rounded-xl text-xs">
-              <div className="flex items-center justify-between border-b border-white/5 pb-2">
+              <div className="flex items-center justify-between gap-2 border-b border-white/5 pb-2">
                 <span className="text-slate-400">Email:</span>
-                <span className="text-white font-medium">{activeApplicant.email}</span>
+                <span className="text-white font-medium break-all text-right">{activeApplicant.email}</span>
               </div>
-              <div className="flex items-center justify-between border-b border-white/5 pb-2">
+              <div className="flex items-center justify-between gap-2 border-b border-white/5 pb-2">
                 <span className="text-slate-400">Phone:</span>
                 <span className="text-white font-medium">{activeApplicant.phone}</span>
               </div>
-              <div className="flex items-center justify-between border-b border-white/5 pb-2">
+              <div className="flex items-center justify-between gap-2 border-b border-white/5 pb-2">
                 <span className="text-slate-400">Applied Date:</span>
                 <span className="text-white font-medium">
                   {activeApplicant.appliedDate ? new Date(activeApplicant.appliedDate).toLocaleString() : 'N/A'}
                 </span>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 <span className="text-slate-400">Status:</span>
                 <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-semibold">
                   {activeApplicant.status || 'New'}
@@ -1471,7 +1578,7 @@ function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp 
               </p>
             </div>
 
-            <div className="flex items-center justify-between gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
               {activeApplicant.resumeUrl && (activeApplicant.resumeUrl.startsWith('http') || activeApplicant.resumeUrl.startsWith('data:')) ? (
                 <button
                   onClick={() => openPdfInNewTab(activeApplicant.resumeUrl, `${activeApplicant.name}_Resume.pdf`)}
@@ -1509,7 +1616,7 @@ function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp 
 
 function ComingSoon({ label }) {
   return (
-    <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-16 text-center">
+    <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-8 sm:p-16 text-center">
       <p className="text-white font-bold text-lg mb-2">{label}</p>
       <p className="text-slate-500 text-sm">This section isn't wired up yet — ping Claude when you're ready to build it out.</p>
     </div>
@@ -1533,6 +1640,7 @@ const handleLogout = async () => {
 };
   const [active, setActive] = useState('dashboard');
   const [query, setQuery] = useState('');
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [particles] = useState(() => {
     const colors = ['#00c6ff', '#a855f7', '#ec4899', '#ffffff'];
     return Array.from({ length: 80 }).map((_, i) => ({
@@ -1551,7 +1659,7 @@ const handleLogout = async () => {
   const [careers, setCareers] = useState([]);
   const [enrollments, setEnrollments] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
-  
+  const [applications, setApplications] = useState([]);
 
   const [contactMessages, setContactMessages] = useState([]);
 
@@ -1699,6 +1807,7 @@ const loadEnrollments = async () => {
 
   const goTo = (view, action) => {
     setActive(view);
+    setMobileNavOpen(false);
     if (action === 'add' && view === 'courses') setCourseModal('add');
     if (action === 'add' && view === 'careers') setCareerModal('add');
   };
@@ -1928,7 +2037,7 @@ const saveCourse = async (payload, isEdit) => {
           />
         ))}
       </div>
-      <Sidebar active={active} setActive={setActive} />
+      <Sidebar active={active} setActive={setActive} mobileOpen={mobileNavOpen} setMobileOpen={setMobileNavOpen} />
 
       <div className="flex-1 min-w-0">
       <Topbar
@@ -1942,10 +2051,11 @@ const saveCourse = async (payload, isEdit) => {
   setShowNotifications={setShowNotifications}
   markAllNotificationsAsRead={markAllNotificationsAsRead}
   onSelectNotification={handleNotificationClick}
+  onOpenMobileNav={() => setMobileNavOpen(true)}
 />
 
-        <main className="p-6 md:p-8 max-w-7xl mx-auto">
-          {active === 'dashboard' && <DashboardHome courses={courses} careers={careers} enrollments={enrollments} goTo={goTo} />}
+        <main className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto">
+          {active === 'dashboard' && <DashboardHome courses={courses} careers={careers} enrollments={enrollments} careerApplications={careerApplications} goTo={goTo} />}
 
           {active === 'courses' && (
             <CoursesManager
