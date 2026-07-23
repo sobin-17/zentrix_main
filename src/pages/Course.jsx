@@ -497,7 +497,7 @@ const Course = () => {
       </section>
 
       {/* ══════════ COURSE CARDS ══════════ */}
-      <section className="relative max-w-7xl mx-auto px-6 pb-10 lg:pb-24 overflow-visible">
+      <section className="relative max-w-7xl mx-auto px-6 pb-4 lg:pb-8 overflow-visible">
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
   {courses.map((course, index) => (
@@ -515,7 +515,7 @@ const Course = () => {
       </section>
       {/* ================= CURRICULUM CORE FEATURES ================= */}
 
-      <section className="relative min-h-[40vh] md:min-h-[70vh] flex flex-col justify-center items-center text-center px-6 overflow-hidden">
+      <section className="relative pt-4 pb-8 md:pt-6 md:pb-12 flex flex-col items-center text-center px-6 overflow-hidden">
 
         {/* Same Background Glow as 5-Stage Learning */}
         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[var(--color-brand-purple)]/10 blur-[140px] pointer-events-none" />
@@ -568,7 +568,7 @@ const Course = () => {
 
       </section>
       {/* ══════════ INTERNSHIP BENEFITS ══════════ */}
-      < section className="py-10 md:py-24 px-6 md:px-12 relative overflow-hidden" >
+      < section className="pt-8 pb-10 md:pt-12 md:pb-24 px-6 md:px-12 relative overflow-hidden" >
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[200px] bg-[var(--color-brand-purple)]/15 blur-[100px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto relative z-10">

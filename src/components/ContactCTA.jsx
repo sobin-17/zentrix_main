@@ -11,7 +11,7 @@ const ContactCTA = () => {
       <div className="container mx-auto px-6 relative z-10 text-center">
         <div className="badge border-white/20 bg-white/5 text-white mb-8">
         <Link
-          to="/your-next-step"
+          to="/your-next-step#get-in-touch"
           className="block w-full"
         >
           Contact Us

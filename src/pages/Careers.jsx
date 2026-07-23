@@ -55,10 +55,10 @@ const Careers = () => {
     <main className="min-h-screen bg-black text-white pb-16 font-poppins relative overflow-hidden">
 
       {/* ================= HERO SECTION — Full-width banner ================= */}
-      <section className="relative w-full min-h-[50vh] sm:min-h-[55vh] lg:min-h-[72vh] overflow-hidden">
+      <section className="relative w-full overflow-hidden">
 
   {/* Background */}
-  <div className="absolute inset-0 z-0 overflow-hidden">
+  <div className="absolute inset-0 z-0 overflow-hidden bg-black">
 
     {/* Particles */}
     {particles.map((p) => (
@@ -86,25 +86,19 @@ const Careers = () => {
       alt="Career opportunities at Zentrix Technologies"
       className="
   absolute
+  z-30
+  top-auto
+  bottom-0
 
-  top-[34%]
-  sm:top-[28%]
-  md:top-[22%]
-  lg:top-auto
+  right-[-5%]
+  sm:right-[-2%]
+  md:right-[0%]
+  lg:right-[5%]
+  xl:right-[8%]
+  2xl:right-[10%]
 
-  lg:bottom-[-18%]
-  xl:bottom-[-20%]
-  2xl:bottom-[-22%]
-
-  right-[4%]
-  sm:right-[6%]
-  md:right-[8%]
-  lg:right-[10%]
-  xl:right-[12%]
-  2xl:right-[14%]
-
-  w-[88%]
-  sm:w-[80%]
+  w-[100%]
+  sm:w-[85%]
   md:w-[68%]
   lg:w-[74%]
   xl:w-[82%]
@@ -115,7 +109,6 @@ const Careers = () => {
   opacity-90
   lg:opacity-100
   mix-blend-screen
-  lg:mix-blend-normal
 "
       initial={{ opacity: 0, scale: 0.9, y: -20 }}
       whileInView={{ opacity: 1, scale: 1, y: 0 }}
@@ -163,7 +156,7 @@ const Careers = () => {
   </div>
 
   {/* Hero Content */}
-  <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-8 sm:pt-12 lg:pt-16">
+  <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-8 sm:pt-12 lg:pt-16 pb-[80px] sm:pb-[100px] md:pb-[120px] lg:pb-[180px] xl:pb-[200px] 2xl:pb-[220px]">
 
     <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6 lg:gap-12">
 
@@ -236,7 +229,7 @@ const Careers = () => {
 
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         {/* ================= WHY WORK WITH US ================= */}
-        <section className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden pt-0 pb-6 lg:py-12">
+        <section className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden pt-0 pb-6 lg:pb-12">
           {/* Stage backdrop — pure black so it blends with page */}
           <div className="absolute inset-0 bg-black" />
 
@@ -293,7 +286,7 @@ const Careers = () => {
 
 
             {/* Heading */}
-            <div className="pt-0 md:pt-4 lg:pt-14 text-center">
+            <div className="pt-0 md:pt-4 lg:pt-4 text-center">
 
               <h2 className="text-white font-black text-[60px] sm:text-[82px] md:text-[105px] lg:text-[120px] leading-none">
                 Why Work
@@ -324,8 +317,7 @@ const Careers = () => {
 
         </section>
         {/* ================= WORK CULTURE ================= */}
-        {/* ================= WORK CULTURE ================= */}
-        <section className="relative bg-[#02010A] overflow-hidden py-8 font-poppins">
+        <section className="relative w-screen left-1/2 -translate-x-1/2 bg-[#02010A] overflow-hidden pt-8 pb-0 font-poppins">
 
           {/* ── Top-left abstract dot grid ── */}
           <div className="absolute top-10 left-10 opacity-30 pointer-events-none">
@@ -382,7 +374,7 @@ const Careers = () => {
           </motion.div>
 
           {/* ── Main visual area (Background & Hexagons) ── */}
-          <div className="relative w-[100vw] left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] overflow-hidden flex items-center justify-center p-0 h-[450px] md:h-[min(75vh,750px)] md:min-h-[500px]">
+          <div className="relative w-full overflow-hidden flex items-center justify-center p-0 h-[450px] md:h-[min(75vh,750px)] md:min-h-[500px]">
 
             {/* Main Background Image with Animation */}
             <motion.div
@@ -575,45 +567,10 @@ const Careers = () => {
             <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#02010A] to-transparent pointer-events-none z-10" />
           </div>
 
-          {/* ── 6 Feature Cards ── */}
-          <div className="relative z-20 w-full px-4 md:px-8 mt-12 pb-14">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-7xl mx-auto">
-              {[
-                { icon: Handshake, title: 'Collaborative', desc: 'We believe in the power of teamwork and open communication.' },
-                { icon: Lightbulb, title: 'Innovative', desc: 'We encourage creativity and new ideas to solve real-world challenges.' },
-                { icon: LineChart, title: 'Growth-Oriented', desc: 'We support continuous learning and personal & professional growth.' },
-                { icon: Users, title: 'Empowering', desc: 'We empower individuals to take ownership and make an impact.' },
-                { icon: BookOpen, title: 'Continuous Learning', desc: 'We promote knowledge sharing and skill development.' },
-                { icon: Trophy, title: 'Success Driven', desc: 'We celebrate achievements and strive for excellence together.' },
-              ].map((item, i) => (
-                <motion.div
-                  key={item.title}
-                  className="relative flex flex-col items-center text-center px-4 py-8 rounded-[20px] overflow-hidden group bg-[#060414] border border-white/5"
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.1 }}
-                  transition={{ duration: 0.6, delay: i * 0.1, ease: 'easeOut' }}
-                  whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                >
-                  {/* Neon border glow overlay mapped to the top */}
-                  <div className="absolute inset-x-0 top-0 h-[30%] opacity-40 group-hover:opacity-70 transition-opacity duration-300"
-                    style={{ background: 'linear-gradient(to bottom, rgba(139,92,246,0.5), transparent)' }} />
-                  <div className="absolute top-0 left-[20%] right-[20%] h-[1px] bg-gradient-to-r from-transparent via-purple-400 to-transparent shadow-[0_0_15px_#a855f7]" />
 
-                  {/* Icon with circular thin outline */}
-                  <div className="relative w-14 h-14 rounded-full border-[1.5px] border-white/20 flex items-center justify-center mb-6 group-hover:border-purple-400/50 transition-colors duration-300 shadow-[inset_0_0_15px_rgba(255,255,255,0.02)]">
-                    <item.icon className="w-6 h-6 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.7)] group-hover:text-purple-300 group-hover:drop-shadow-[0_0_10px_#a855f7] transition-all duration-300" strokeWidth={1.5} />
-                  </div>
-
-                  <h3 className="text-white font-[700] text-[13px] mb-3 tracking-wide">{item.title}</h3>
-                  <p className="text-gray-400 text-[11.5px] leading-relaxed font-light">{item.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
 
           {/* ── Marquee tagline ── */}
-          <div className="relative z-20 flex justify-center items-center pb-8 border-b-2 border-indigo-900/30">
+          <div className="relative z-20 flex justify-center items-center pb-4 border-b-2 border-indigo-900/30">
             <div className="flex flex-wrap justify-center items-center gap-y-3 gap-x-3 md:gap-x-4 text-[11px] md:text-[14px] text-gray-300 font-light tracking-wider px-4">
               <span className="whitespace-nowrap">Together We Create</span>
               <span className="w-1.5 h-1.5 rounded-full bg-pink-500 shadow-[0_0_8px_#ec4899]" />
@@ -627,7 +584,7 @@ const Careers = () => {
         {/* ================= CURRENT OPENINGS ================= */}
         <section
   id="openings"
-  className="relative overflow-hidden pt-8 sm:pt-10 md:pt-16 lg:pt-20 pb-12 md:pb-20"
+  className="relative overflow-hidden pt-0 pb-12 md:pb-20"
 >
   <div className="relative flex items-center justify-center">
 

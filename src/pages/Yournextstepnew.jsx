@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Send, User, Mail, Phone, MapPin, Clock, Zap, Users, ShieldCheck } from "lucide-react";
 import { addContactMessage } from "../services/contactService";
@@ -149,7 +149,7 @@ const GetTouch = () => {
   ];
 
   return (
-    <section className="relative bg-[#07020f] min-h-screen overflow-hidden py-16 md:py-24 px-4 sm:px-6 md:px-10">
+    <section id="get-in-touch" className="relative bg-[#07020f] min-h-screen overflow-hidden py-16 md:py-24 px-4 sm:px-6 md:px-10">
       {/* Space dots / particles */}
       {particles.map((p) => (
         <div
@@ -487,6 +487,18 @@ const GetTouch = () => {
 /* ─── Component ──────────────────────────────────────────────── */
 const YourNextStep = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === '#get-in-touch') {
+      setTimeout(() => {
+        const element = document.getElementById('get-in-touch');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  }, [location]);
 
   return (
     <div style={{ background: "#0a0a12", color: "#fff", fontFamily: "'Inter', sans-serif" }}>
@@ -561,7 +573,7 @@ const YourNextStep = () => {
           .ynx-hero-container { padding-left: 0; }
           .ynx-hero-img {
             width: 100%;
-            opacity: 0.45;
+            opacity: 0.85;
           }
           .ynx-hero-text { max-width: 100%; }
         }
@@ -631,7 +643,7 @@ const YourNextStep = () => {
 
         <div style={{
           position: "absolute", inset: 0,
-          background: "linear-gradient(90deg, #0a0a12 35%, rgba(10,10,18,0.75) 60%, rgba(10,10,18,0.05) 100%)",
+          background: "linear-gradient(90deg, #0a0a12 15%, rgba(10,10,18,0.7) 40%, rgba(10,10,18,0.05) 100%)",
           zIndex: 1,
         }} />
 
