@@ -96,11 +96,20 @@
 .service-particle {
   position: absolute;
   border-radius: 50%;
-  will-change: transform, opacity;
+  will-change: transform;
   animation: float-particle var(--duration) ease-in-out infinite;
   animation-delay: var(--delay);
   pointer-events: none;
   z-index: 0;
+}
+
+@media (max-width: 768px) {
+  .service-particle {
+    box-shadow: none !important;
+  }
+  .service-particle:nth-child(n+16) {
+    display: none !important;
+  }
 }
 
 /* 5. Background Lighting - GPU Composited */
@@ -112,7 +121,7 @@
 .ambient-light {
   position: absolute;
   border-radius: 50%;
-  will-change: transform, opacity;
+  will-change: transform;
   animation: ambient-light 10s ease-in-out infinite;
   pointer-events: none;
   z-index: 0;
