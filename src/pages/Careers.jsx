@@ -155,6 +155,52 @@ const Careers = () => {
     />
   </div>
 
+  {/* Hand Image — Positioned at z-30 so it is 100% fully visible without clipping */}
+  <motion.img
+    src="/career_hand.png"
+    alt="Career opportunities at Zentrix Technologies"
+    className="
+      absolute
+      z-30
+      top-auto
+      bottom-0
+
+      right-[-5%]
+      sm:right-[-2%]
+      md:right-[0%]
+      lg:right-[5%]
+      xl:right-[8%]
+      2xl:right-[10%]
+
+      w-[100%]
+      sm:w-[85%]
+      md:w-[68%]
+      lg:w-[74%]
+      xl:w-[82%]
+      2xl:w-[88%]
+
+      object-contain
+      pointer-events-none
+      opacity-90
+      lg:opacity-100
+      mix-blend-screen
+    "
+    initial={{ opacity: 0, scale: 0.9, y: -20 }}
+    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+    viewport={{ once: true, amount: 0.3 }}
+    animate={{
+      y: [0, -12, 0],
+      rotate: [0, 1.5, 0, -1.5, 0],
+      scale: [1, 1.015, 1],
+    }}
+    transition={{
+      opacity: { duration: 1.2 },
+      scale: { duration: 6, repeat: Infinity, ease: "easeInOut" },
+      rotate: { duration: 8, repeat: Infinity, ease: "easeInOut" },
+      y: { duration: 4.5, repeat: Infinity, ease: "easeInOut" },
+    }}
+  />
+
   {/* Hero Content */}
   <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-8 sm:pt-12 lg:pt-16 pb-[80px] sm:pb-[100px] md:pb-[120px] lg:pb-[180px] xl:pb-[200px] 2xl:pb-[220px]">
 
@@ -222,16 +268,16 @@ const Careers = () => {
 
   </div>
 
-  {/* Bottom Fade */}
-  <div className="absolute bottom-0 left-0 right-0 h-24 md:h-32 bg-gradient-to-t from-black via-black/90 to-transparent z-20" />
-
 </section>
 
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         {/* ================= WHY WORK WITH US ================= */}
-        <section className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden pt-0 pb-6 lg:pb-12">
+        <section className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden pt-4 pb-6 lg:pb-12 bg-black">
           {/* Stage backdrop — pure black so it blends with page */}
           <div className="absolute inset-0 bg-black" />
+
+          {/* Smooth Top Gradient Fade so Why Work blends seamlessly with Hero */}
+          <div className="absolute top-0 left-0 right-0 h-36 bg-gradient-to-b from-black via-black/80 to-transparent z-10 pointer-events-none" />
 
           {/* Main elliptical spotlight glow behind the heading */}
           <div
@@ -240,7 +286,7 @@ const Careers = () => {
               width: "1400px",
               height: "650px",
               background:
-                "radial-gradient(ellipse at center, rgba(190,130,255,0.55) 0%, rgba(139,46,255,0.35) 25%, rgba(80,20,160,0.18) 50%, transparent 75%)",
+                "radial-gradient(ellipse at center, rgba(190,130,255,0.45) 0%, rgba(139,46,255,0.25) 30%, rgba(80,20,160,0.1) 55%, transparent 80%)",
               filter: "blur(60px)",
             }}
           />
@@ -252,7 +298,7 @@ const Careers = () => {
               width: "700px",
               height: "220px",
               background:
-                "radial-gradient(ellipse at center, rgba(255,240,255,0.35) 0%, rgba(220,180,255,0.15) 40%, transparent 70%)",
+                "radial-gradient(ellipse at center, rgba(255,240,255,0.25) 0%, rgba(220,180,255,0.1) 40%, transparent 70%)",
               filter: "blur(40px)",
             }}
           />
@@ -399,29 +445,29 @@ const Careers = () => {
                 }}
               />
 
-              {/* ── Attractive Moving Animated Neon Waves ── */}
-              <div className="absolute inset-x-0 bottom-0 top-0 overflow-hidden pointer-events-none mix-blend-screen">
+              {/* ── Animated Neon Waves ── */}
+              <div className="absolute inset-x-0 bottom-0 top-0 overflow-hidden pointer-events-none md:mix-blend-screen">
                 {/* Deep Purple Wave */}
                 <motion.div
-                  className="absolute left-[-20%] top-[45%] w-[140%] h-[350px] border-t-2 border-purple-500/50 rounded-[100%] shadow-[0_-15px_40px_rgba(168,85,247,0.5)]"
-                  style={{ filter: "blur(5px)" }}
-                  animate={{ y: [0, -40, 0], rotate: [-3, 3, -3] }}
+                  className="absolute left-[-20%] top-[45%] w-[140%] h-[350px] border-t-2 border-purple-500/50 rounded-[100%] shadow-[0_-10px_25px_rgba(168,85,247,0.4)]"
+                  style={{ transform: 'translateZ(0)' }}
+                  animate={{ y: [0, -30, 0], rotate: [-2, 2, -2] }}
                   transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
                 />
 
                 {/* Electric Blue Wave */}
                 <motion.div
-                  className="absolute left-[-30%] top-[55%] w-[160%] h-[400px] border-t-[3px] border-blue-400/50 rounded-[100%] shadow-[0_-20px_50px_rgba(59,130,246,0.6)]"
-                  style={{ filter: "blur(8px)" }}
-                  animate={{ y: [0, 50, 0], rotate: [4, -4, 4], scale: [1, 1.05, 1] }}
+                  className="absolute left-[-30%] top-[55%] w-[160%] h-[400px] border-t-[3px] border-blue-400/50 rounded-[100%] shadow-[0_-15px_30px_rgba(59,130,246,0.5)]"
+                  style={{ transform: 'translateZ(0)' }}
+                  animate={{ y: [0, 40, 0], rotate: [3, -3, 3] }}
                   transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
                 />
 
                 {/* Hot Pink Subtle Wave */}
                 <motion.div
-                  className="absolute left-[-10%] top-[30%] w-[120%] h-[200px] border-t-[1.5px] border-pink-500/60 rounded-[100%] shadow-[0_-10px_25px_rgba(236,72,153,0.5)]"
-                  style={{ filter: "blur(4px)" }}
-                  animate={{ y: [-20, 20, -20], rotate: [-6, 6, -6] }}
+                  className="absolute left-[-10%] top-[30%] w-[120%] h-[200px] border-t-[1.5px] border-pink-500/60 rounded-[100%] shadow-[0_-8px_20px_rgba(236,72,153,0.4)]"
+                  style={{ transform: 'translateZ(0)' }}
+                  animate={{ y: [-15, 15, -15], rotate: [-4, 4, -4] }}
                   transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
                 />
               </div>

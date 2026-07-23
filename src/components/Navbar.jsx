@@ -8,21 +8,22 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
+    let lastScrolled = false;
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      const isScrolled = window.scrollY > 20;
+      if (isScrolled !== lastScrolled) {
+        lastScrolled = isScrolled;
+        setScrolled(isScrolled);
+      }
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-
+    window.scrollTo(0, 0);
     setIsOpen(false);
   }, [pathname]);
 

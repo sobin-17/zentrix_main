@@ -75,7 +75,7 @@ function ServiceCard({ title, items, delay = 0 }) {
           ))}
         </ul>
 
-        <Link to="/your-next-step">
+        <Link to="/your-next-step#get-in-touch">
           <button
             className="
               mt-8
@@ -258,7 +258,7 @@ export default function Services() {
       {/*  HERO                                                        */}
       {/* ════════════════════════════════════════════════════════════ */}
 
-      <section className="relative pt-16 pb-5 z-10">
+      <section className="relative pt-3 sm:pt-4 md:pt-6 pb-4 sm:pb-6 z-10">
         <motion.h1
           variants={fadeUp}
           initial="hidden"
@@ -266,12 +266,13 @@ export default function Services() {
           className="
     text-center
     font-semibold
-    text-[72px]
+    text-[56px]
+    sm:text-[80px]
     md:text-[110px]
     lg:text-[150px]
     xl:text-[180px]
-    leading-[0.88]
-    tracking-[-0.05em]
+    leading-[0.95]
+    tracking-[-0.04em]
   "
         >
           Tech Space
@@ -282,7 +283,7 @@ export default function Services() {
       {/*  SERVICE CARDS (floating above wave background)              */}
       {/* ════════════════════════════════════════════════════════════ */}
 
-      <section className="relative max-w-[1130px] mx-auto px-8 -mt-5 z-20 ">
+      <section className="relative max-w-[1130px] mx-auto px-6 sm:px-8 mt-2 md:-mt-4 z-20">
         <motion.div
           variants={staggerContainer}
           initial="hidden"
@@ -300,7 +301,7 @@ export default function Services() {
       {/*  WHAT WE DO                                                  */}
       {/* ════════════════════════════════════════════════════════════ */}
 
-      <section className="relative py-24 z-20 overflow-hidden">
+      <section className="relative pt-8 pb-4 md:pt-16 md:pb-8 z-20 overflow-hidden">
         {/* Secondary wave background removed to allow the full-page smooth waves background to flow perfectly in all sections */}
 
 <div className="relative z-10 max-w-[1120px] mx-auto px-6">
@@ -371,7 +372,7 @@ export default function Services() {
       {/*  WHY CHOOSE US                                               */}
       {/* ════════════════════════════════════════════════════════════ */}
 
-      <section className="relative py-12">
+      <section className="relative pt-4 pb-12 md:pt-8 md:pb-16">
 
       {particles.map((p) => (
       <div

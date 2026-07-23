@@ -6,10 +6,17 @@ import '../styles/services.css';
 
 const Hero = () => {
   const [splineApp, setSplineApp] = useState(null);
+  const [loadSpline, setLoadSpline] = useState(false);
   const heroRef = useRef(null);
-  
+
   const words = ['Innovation', 'Technology', 'AI', 'Analytics', 'Automation'];
   const [currentWord, setCurrentWord] = useState(0);
+
+  useEffect(() => {
+    // Defer 3D canvas initialization so page opens instantly without delay
+    const timer = setTimeout(() => setLoadSpline(true), 150);
+    return () => clearTimeout(timer);
+  }, []);
 
 
   useEffect(() => {
@@ -54,8 +61,8 @@ const Hero = () => {
 
   const wordVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: {
         duration: 0.7,
@@ -80,7 +87,7 @@ const Hero = () => {
   });
 
   return (
-    <section id="home" ref={heroRef} className="relative min-h-0 lg:min-h-[calc(100vh-100px)] flex items-start pt-6 sm:pt-12 lg:pt-20 pb-16 bg-transparent">
+    <section id="home" ref={heroRef} className="relative min-h-0 flex items-start pt-4 sm:pt-8 md:pt-12 pb-8 bg-transparent">
       {/* Deep Space Background Glow System */}
       <div className="absolute inset-0 pointer-events-none z-0">
         {/* Core robot glow - Testing Layer 1 */}
@@ -88,81 +95,81 @@ const Hero = () => {
       </div>
 
       <div className="container mx-auto px-6 md:px-12 relative z-10">
-        
+
         {/* Animated Pill Banner - Floating Badge */}
         <div className="relative w-full flex justify-center lg:justify-start z-20 pointer-events-none px-0 sm:px-4 mb-8 sm:mb-10">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="relative inline-block max-w-[calc(100vw-2rem)] pointer-events-auto"
+          >
+            {/* Floating particles around banner */}
+            <div className="absolute inset-[-40px] pointer-events-none z-0">
+              {bannerParticles.map(p => (
+                <div
+                  key={p.id}
+                  className="service-particle bg-[#00c6ff]"
+                  style={{
+                    width: p.size,
+                    height: p.size,
+                    top: p.top,
+                    left: p.left,
+                    boxShadow: `0 0 ${p.size * 2}px #00c6ff`,
+                    '--tx': p.tx,
+                    '--ty': p.ty,
+                    '--duration': `${p.duration}s`,
+                    '--delay': `${p.delay}s`,
+                  }}
+                />
+              ))}
+            </div>
+
             <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="relative inline-block max-w-[calc(100vw-2rem)] pointer-events-auto"
+              variants={wordVariants}
+              className="animated-border-wrapper inline-block group cursor-default max-w-full"
+              style={{ '--glow-color': '#00c6ff' }}
             >
-              {/* Floating particles around banner */}
-              <div className="absolute inset-[-40px] pointer-events-none z-0">
-                {bannerParticles.map(p => (
+              {/* Outer breathing glow */}
+              <div className="animate-breathing-glow opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+              <div className="animated-border-inner flex items-center gap-2 sm:gap-3 px-3 py-1.5 md:px-5 md:py-2.5 max-w-full">
+                {/* Moving color sweep */}
+                <div className="absolute inset-0 opacity-20 group-hover:opacity-50 transition-opacity duration-500 pointer-events-none">
                   <div
-                    key={p.id}
-                    className="service-particle bg-[#00c6ff]"
-                    style={{
-                      width: p.size,
-                      height: p.size,
-                      top: p.top,
-                      left: p.left,
-                      boxShadow: `0 0 ${p.size * 2}px #00c6ff`,
-                      '--tx': p.tx,
-                      '--ty': p.ty,
-                      '--duration': `${p.duration}s`,
-                      '--delay': `${p.delay}s`,
-                    }}
-                  />
-                ))}
-              </div>
-
-              <motion.div 
-                variants={wordVariants}
-                className="animated-border-wrapper inline-block group cursor-default max-w-full"
-                style={{ '--glow-color': '#00c6ff' }}
-              >
-                {/* Outer breathing glow */}
-                <div className="animate-breathing-glow opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
-                
-                <div className="animated-border-inner flex items-center gap-2 sm:gap-3 px-3 py-1.5 md:px-5 md:py-2.5 max-w-full">
-                  {/* Moving color sweep */}
-                  <div className="absolute inset-0 opacity-20 group-hover:opacity-50 transition-opacity duration-500 pointer-events-none">
-                    <div 
-                      className="animate-service-sweep"
-                      style={{ background: 'linear-gradient(90deg, transparent, #00c6ff, transparent)' }}
-                    ></div>
-                  </div>
-
-                  {/* Left Icon */}
-                  <div className="relative z-10 text-[#00c6ff] transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-110 shrink-0">
-                    <BrainCircuit className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0" style={{ filter: 'drop-shadow(0 0 8px #00c6ff)' }} />
-                  </div>
-
-                  {/* Center Text */}
-                  <div className="relative z-10 flex-1 px-1 sm:px-1.5 overflow-hidden">
-                    <span className="text-[9px] sm:text-xs md:text-sm font-bold tracking-[0.08em] sm:tracking-[0.2em] uppercase text-transparent bg-clip-text bg-gradient-to-r from-[#00c6ff] via-[#25D366] to-[#00c6ff] drop-shadow-[0_0_8px_rgba(0,198,255,0.4)] whitespace-nowrap block truncate">
-                      Empowering Innovation Through Technology
-                    </span>
-                  </div>
-
-                  {/* Right Icon */}
-                  <div className="relative z-10 text-[#25D366] transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110 shrink-0">
-                    <Orbit className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0" style={{ filter: 'drop-shadow(0 0 8px #25D366)' }} />
-                  </div>
+                    className="animate-service-sweep"
+                    style={{ background: 'linear-gradient(90deg, transparent, #00c6ff, transparent)' }}
+                  ></div>
                 </div>
-              </motion.div>
+
+                {/* Left Icon */}
+                <div className="relative z-10 text-[#00c6ff] transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-110 shrink-0">
+                  <BrainCircuit className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0" style={{ filter: 'drop-shadow(0 0 8px #00c6ff)' }} />
+                </div>
+
+                {/* Center Text */}
+                <div className="relative z-10 flex-1 px-1 sm:px-1.5 overflow-hidden">
+                  <span className="text-[9px] sm:text-xs md:text-sm font-bold tracking-[0.08em] sm:tracking-[0.2em] uppercase text-transparent bg-clip-text bg-gradient-to-r from-[#00c6ff] via-[#25D366] to-[#00c6ff] drop-shadow-[0_0_8px_rgba(0,198,255,0.4)] whitespace-nowrap block truncate">
+                    Empowering Innovation Through Technology
+                  </span>
+                </div>
+
+                {/* Right Icon */}
+                <div className="relative z-10 text-[#25D366] transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110 shrink-0">
+                  <Orbit className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0" style={{ filter: 'drop-shadow(0 0 8px #25D366)' }} />
+                </div>
+              </div>
             </motion.div>
+          </motion.div>
         </div>
 
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-12 lg:gap-16">
-          
+
           {/* Left Column - Text Content */}
           <div className="w-full lg:w-[60%] text-left flex flex-col justify-center lg:justify-start z-10 pt-0">
-            
+
             {/* Dynamic Hero Heading */}
-            <motion.h1 
+            <motion.h1
               variants={containerVariants}
               initial="hidden"
               animate="visible"
@@ -187,13 +194,13 @@ const Hero = () => {
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00c6ff] via-[#a855f7] to-[#00c6ff] bg-[length:200%_auto] animate-gradient-x drop-shadow-[0_0_15px_rgba(0,198,255,0.4)]">
                           {char === ' ' ? '\u00A0' : char}
                         </span>
-                        
+
                         {/* Premium Glow Wave overlay layer */}
                         <motion.span
                           className="absolute inset-0 text-transparent bg-clip-text bg-gradient-to-r from-[#00c6ff] to-[#a855f7] drop-shadow-[0_0_20px_rgba(0,198,255,1)]"
                           initial={{ opacity: 0, filter: "brightness(1)" }}
-                          animate={{ 
-                            opacity: [0, 1, 0, 0], 
+                          animate={{
+                            opacity: [0, 1, 0, 0],
                             filter: ["brightness(1)", "brightness(2)", "brightness(1)", "brightness(1)"]
                           }}
                           transition={{
@@ -216,31 +223,33 @@ const Hero = () => {
 
           </div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.12, ease: "easeOut" }}
             className="w-full lg:w-1/2 h-[300px] sm:h-[400px] lg:h-[600px] flex justify-center lg:justify-end relative pointer-events-none lg:pointer-events-auto -translate-y-6 lg:-translate-y-10 transform-gpu"
           >
-            <Spline 
-              scene="https://prod.spline.design/QYsjYTMQQVk8eqIS/scene.splinecode" 
-              className="w-full h-full relative z-10"
-              style={{ background: 'transparent' }}
-              onLoad={(spline) => {
-                // Remove WebGL watermark by disabling the logo overlay pass
-                if (spline && spline._runtime && spline._runtime.pipeline && spline._runtime.pipeline.logoOverlayPass) {
-                  spline._runtime.pipeline.logoOverlayPass.enabled = false;
-                } else {
-                  // Fallback for different runtime versions
-                  try {
-                    const runtime = Object.values(spline).find(v => v && v.pipeline && v.pipeline.logoOverlayPass);
-                    if (runtime) {
-                      runtime.pipeline.logoOverlayPass.enabled = false;
-                    }
-                  } catch (e) {}
-                }
-              }}
-            />
+            {loadSpline && (
+              <Spline
+                scene="https://prod.spline.design/QYsjYTMQQVk8eqIS/scene.splinecode"
+                className="w-full h-full relative z-10"
+                style={{ background: 'transparent' }}
+                onLoad={(spline) => {
+                  // Remove WebGL watermark by disabling the logo overlay pass
+                  if (spline && spline._runtime && spline._runtime.pipeline && spline._runtime.pipeline.logoOverlayPass) {
+                    spline._runtime.pipeline.logoOverlayPass.enabled = false;
+                  } else {
+                    // Fallback for different runtime versions
+                    try {
+                      const runtime = Object.values(spline).find(v => v && v.pipeline && v.pipeline.logoOverlayPass);
+                      if (runtime) {
+                        runtime.pipeline.logoOverlayPass.enabled = false;
+                      }
+                    } catch (e) { }
+                  }
+                }}
+              />
+            )}
           </motion.div>
 
         </div>

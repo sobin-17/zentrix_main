@@ -63,7 +63,7 @@ const AboutPreview = () => {
   };
 
   return (
-    <section id="about" className="py-10 md:py-24 relative bg-transparent z-10">
+    <section id="about" className="-mt-8 sm:-mt-12 md:-mt-16 lg:mt-0 pt-0 pb-10 md:pb-16 relative bg-transparent z-10">
 
 
       <div className="container mx-auto px-6 md:px-12 relative z-10">

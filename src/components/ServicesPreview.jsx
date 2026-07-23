@@ -56,7 +56,7 @@ const ServicesPreview = () => {
                 ))}
               </ul>
 
-              <Link to="/get-touch" className="w-full flex justify-center">
+              <Link to="/your-next-step#get-in-touch" className="w-full flex justify-center">
                 <button className="btn-outline w-3/4">
                   Enquire now
                 </button>
