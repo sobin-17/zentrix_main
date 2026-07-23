@@ -156,7 +156,7 @@ const WhyChooseUs = () => {
                     boxShadow: "0 15px 35px -10px rgba(0,198,255,0.4)",
                     transition: { duration: 0.3 }
                   }}
-                  className="feature-card p-6 relative bg-black/40 backdrop-blur-sm border border-white/5 cursor-default"
+                  className="feature-card p-6 relative bg-black/40 backdrop-blur-sm border border-white/5 cursor-default transform-gpu"
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <CheckCircle2 className="w-6 h-6 text-green-400" />

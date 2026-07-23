@@ -441,8 +441,10 @@ a[href*="spline.design"] {
   background: var(--color-brand-purple);
   opacity: 0.6;
   will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   animation: float-particle var(--duration) ease-in-out var(--delay) infinite;
-  transform: translate(var(--tx), var(--ty));
+  transform: translate3d(var(--tx), var(--ty), 0);
 }
 
 @media (max-width: 768px) {
