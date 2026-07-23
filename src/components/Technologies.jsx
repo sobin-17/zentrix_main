@@ -46,7 +46,9 @@ const Planet = ({ planet, radius, index, canEmerge, onArrived, isSelected, isDim
   const finalX = Math.cos(finalAngle) * radius;
   const finalY = Math.sin(finalAngle) * radius * ELLIPSE_RATIO;
 
-  const angle = useMotionValue(finalAngle);
+  const domRef = useRef(null);
+  const angleRef = useRef(finalAngle);
+
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const opacity = useMotionValue(0);
@@ -72,13 +74,13 @@ const Planet = ({ planet, radius, index, canEmerge, onArrived, isSelected, isDim
     }
 
     // All planets start near the zigzag crack
-    const startX = 22 + (index % 3) * 8 - 12; // Slight variation around crack
+    const startX = 22 + (index % 3) * 8 - 12;
     const startY = -20 + Math.sin(index) * 12;
 
-    const delay = index * 0.05; // Gentle stagger
-    const duration = 1.2 + index * 0.05;
+    const delay = index * 0.04;
+    const duration = 1.0 + index * 0.04;
 
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       animate(x, finalX, { duration, ease: 'easeOut' });
       animate(y, finalY, {
         duration,
@@ -91,59 +93,55 @@ const Planet = ({ planet, radius, index, canEmerge, onArrived, isSelected, isDim
           }
         },
       });
-      animate(opacity, 1, { duration: 0.5, ease: 'easeOut' });
-      animate(scale, [0.3, 1.2, 1], { duration: 1.2, times: [0, 0.6, 1] });
+      animate(opacity, 1, { duration: 0.4, ease: 'easeOut' });
+      animate(scale, [0.3, 1.15, 1], { duration: 1.0, times: [0, 0.6, 1] });
     }, delay * 1000);
 
-    // Set initial position near crack
     x.set(startX);
     y.set(startY);
+
+    return () => clearTimeout(timer);
   }, [canEmerge, finalX, finalY, index]);
 
-  // Orbit runs once settled, but pauses for EVERY planet the instant any one
-  // of them is selected -- clicking one icon freezes the whole system so its
-  // position (and the others') stays put while STACK shows the details.
+  // Ultra-fast Hardware-Accelerated Orbit Loop via Direct DOM matrix manipulation
   useAnimationFrame((_, delta) => {
     if (!settled || isDimmed || isSelected) return;
-    const safeDelta = Math.min(delta, 64);
+    const safeDelta = Math.min(delta, 32); // Cap frame step for smooth 60-120fps motion
     const speed = (planet.direction * 2 * Math.PI) / (planet.duration * 1000);
-    const next = angle.get() + speed * safeDelta;
-    angle.set(next);
-    x.set(Math.cos(next) * radius);
-    y.set(Math.sin(next) * radius * ELLIPSE_RATIO);
+    angleRef.current += speed * safeDelta;
+
+    const curX = Math.cos(angleRef.current) * radius;
+    const curY = Math.sin(angleRef.current) * radius * ELLIPSE_RATIO;
+
+    // Directly mutate GPU transform matrix on DOM node - avoids React re-renders & MotionValue overhead
+    if (domRef.current) {
+      domRef.current.style.transform = `translate3d(${curX}px, ${curY}px, 0px) translate(-50%, -50%)`;
+    }
   });
 
   return (
     <motion.div
+      ref={domRef}
       className="absolute top-1/2 left-1/2 z-20 transform-gpu"
       style={{ x, y, opacity, scale, translateX: '-50%', translateY: '-50%', willChange: 'transform' }}
     >
-      <motion.div
-        animate={
-          settled && !isSelected && !isDimmed
-            ? { y: [0, -10, 0], opacity: 1 }
-            : { y: 0, opacity: isDimmed ? 0.35 : 1 }
-        }
-        transition={{
-          y: { duration: 5.5 + (index % 4), repeat: Infinity, repeatType: 'loop', ease: 'easeInOut', delay: index * 0.2 },
-          opacity: { duration: 0.3 },
-        }}
-        whileHover={{ y: -14, scale: 1.12 }}
-        whileTap={{ scale: 0.96 }}
+      <div
         onClick={onSelect}
-        className={`group flex flex-col items-center justify-center p-5 bg-[#0d0c1d]/95 border rounded-3xl w-[100px] h-[100px] md:w-[120px] md:h-[120px] shadow-[0_8px_30px_rgba(0,0,0,0.4)] cursor-pointer transition-colors duration-300 transform-gpu ${
+        className={`group flex flex-col items-center justify-center p-4 sm:p-5 bg-[#0d0c1d]/95 border rounded-3xl w-[90px] h-[90px] sm:w-[105px] sm:h-[105px] md:w-[120px] md:h-[120px] shadow-lg cursor-pointer transition-all duration-300 transform-gpu select-none ${
+          isDimmed ? 'opacity-35 scale-90' : 'opacity-100'
+        } ${
           isSelected
-            ? 'border-[var(--color-brand-purple)] shadow-[0_0_45px_rgba(157,0,255,0.5)]'
-            : 'border-[var(--color-brand-purple)]/20 hover:border-[var(--color-brand-purple)]/60 hover:shadow-[0_0_40px_rgba(157,0,255,0.3)]'
+            ? 'border-[var(--color-brand-purple)] shadow-[0_0_30px_rgba(157,0,255,0.6)] scale-105'
+            : 'border-[var(--color-brand-purple)]/20 hover:border-[var(--color-brand-purple)]/60 hover:shadow-[0_0_25px_rgba(157,0,255,0.35)]'
         }`}
       >
-        <div className="mb-2 transition-transform duration-500 group-hover:scale-110">
+        <div className="mb-1.5 transition-transform duration-300 group-hover:scale-110">
           {planet.icon}
         </div>
-        <span className="text-[10px] md:text-xs font-semibold text-slate-200 tracking-wide">
+        <span className="text-[10px] md:text-xs font-semibold text-slate-200 tracking-wide text-center">
           {planet.name}
         </span>
-      </motion.div>
+      </div>
     </motion.div>
   );
 };
