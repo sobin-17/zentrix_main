@@ -126,15 +126,14 @@ const Careers = () => {
       }}
     />
 
-    {/* Purple Glow */}
+    {/* Purple Glow centered in Hero */}
     <div
       className="
         absolute
         left-1/2
+        top-1/2
         -translate-x-1/2
-        bottom-[-120px]
-        sm:bottom-[-160px]
-        lg:bottom-[-200px]
+        -translate-y-1/2
 
         w-[500px]
         sm:w-[700px]
@@ -147,7 +146,7 @@ const Careers = () => {
         lg:h-[600px]
 
         rounded-full
-        bg-[#8B2EFF]/30
+        bg-[#8B2EFF]/25
         blur-[60px]
         md:blur-[140px]
       "
@@ -194,6 +193,11 @@ const Careers = () => {
         md:opacity-100
         mix-blend-screen
       "
+      style={{
+        WebkitMaskImage: "radial-gradient(ellipse 75% 65% at 50% 50%, black 25%, transparent 80%)",
+        maskImage: "radial-gradient(ellipse 75% 65% at 50% 50%, black 25%, transparent 80%)",
+        filter: "contrast(1.15) brightness(1.05)",
+      }}
       animate={{
         y: [0, -12, 0],
         rotate: [0, 1.2, 0, -1.2, 0],
@@ -279,38 +283,14 @@ const Careers = () => {
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         {/* ================= WHY WORK WITH US ================= */}
         <section className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden pt-4 pb-6 lg:pb-12 bg-black">
-          {/* Stage backdrop — pure black so it blends with page */}
-          <div className="absolute inset-0 bg-black" />
-
-          {/* Smooth Top Gradient Fade so Why Work blends seamlessly with Hero */}
-          <div className="absolute top-0 left-0 right-0 h-36 bg-gradient-to-b from-black via-black/80 to-transparent z-10 pointer-events-none" />
-
-          {/* Main elliptical spotlight glow behind the heading */}
+          {/* Stage backdrop — native gradient background fading smoothly to pure black on all edges */}
           <div
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+            className="absolute inset-0 pointer-events-none"
             style={{
-              width: "1400px",
-              height: "650px",
               background:
-                "radial-gradient(ellipse at center, rgba(190,130,255,0.45) 0%, rgba(139,46,255,0.25) 30%, rgba(80,20,160,0.1) 55%, transparent 80%)",
-              filter: "blur(60px)",
+                "radial-gradient(ellipse 80% 90% at 50% 50%, rgba(168,85,247,0.3) 0%, rgba(124,58,237,0.15) 45%, #000000 85%)",
             }}
           />
-
-          {/* Soft warm-white core highlight (lamp hot-spot) */}
-          <div
-            className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-            style={{
-              width: "700px",
-              height: "220px",
-              background:
-                "radial-gradient(ellipse at center, rgba(255,240,255,0.25) 0%, rgba(220,180,255,0.1) 40%, transparent 70%)",
-              filter: "blur(40px)",
-            }}
-          />
-
-          {/* Subtle bottom fade so the stage dissolves into the page */}
-          <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black to-transparent" />
 
 
           {/* ================= CONTENT ================= */}
