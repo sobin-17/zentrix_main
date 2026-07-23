@@ -12,14 +12,14 @@ const Home = () => {
   // Optimized lightweight cosmic particles for 60fps smooth performance
   const [particles] = React.useState(() => {
     const colors = ['#00c6ff', '#25D366', '#a855f7', '#ec4899'];
-    return Array.from({ length: 32 }).map((_, i) => ({
+    return Array.from({ length: 16 }).map((_, i) => ({
       id: i,
       size: Math.random() * 3 + 1.5,
       top: `${Math.random() * 100}%`,
       left: `${Math.random() * 100}%`,
-      tx: `${(Math.random() - 0.5) * 120}px`,
-      ty: `${(Math.random() - 0.5) * 120}px`,
-      delay: Math.random() * 4,
+      tx: `${(Math.random() - 0.5) * 100}px`,
+      ty: `${(Math.random() - 0.5) * 100}px`,
+      delay: Math.random() * 3,
       duration: Math.random() * 4 + 4,
       color: colors[Math.floor(Math.random() * colors.length)]
     }));
