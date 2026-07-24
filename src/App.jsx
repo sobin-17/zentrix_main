@@ -27,7 +27,6 @@ const OurPortfolio = lazy(() => import('./pages/OurPortfolio'));
 const YourNextStep = lazy(() => import('./pages/Yournextstepnew'));
 const Admindashboard = lazy(() => import('./pages/Admindashboard'));
 const AdminLogin = lazy(() => import('./pages/AdminLogin'));
-const AdminSignup = lazy(() => import('./pages/AdminSignup'));
 const ResumeViewer = lazy(() => import('./pages/ResumeViewer'));
 
 const GlobalAtmosphere = () => (
@@ -82,8 +81,7 @@ function AppLayout() {
             <Route path="/your-next-step" element={<YourNextStep />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-and-conditions" element={<TermsConditions />} />
-            {/* <Route path="/admin-dashboard" element={<Admindashboard/>}/> */}
-            <Route path="/admin-signup" element={<AdminSignup />} />
+            <Route path="/admin-dashboard" element={<Admindashboard/>}/>
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route
               path="/admin-dashboard"
