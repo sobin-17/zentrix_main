@@ -62,7 +62,7 @@ const TermsConditions = () => {
     };
 
     return (
-        <div className="bg-black min-h-screen text-white py-24 px-6">
+        <div className="bg-black min-h-screen text-white pt-32 pb-24 px-6">
 
             <div className="max-w-5xl mx-auto">
 

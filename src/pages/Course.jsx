@@ -385,7 +385,7 @@ const Course = () => {
       <ParticleBackground />
 
       {/* ═════════════════ HERO SECTION ═════════════════ */}
-      <section className="relative pt-28 pb-10 lg:pb-24 overflow-hidden">
+      <section className="relative pt-32 sm:pt-36 md:pt-40 pb-10 lg:pb-24 overflow-hidden">
 
         {particles.map((p) => (
           <div
@@ -414,27 +414,31 @@ const Course = () => {
           className="
     relative z-20
     text-center
-    text-[68px]
-    sm:text-[100px]
-    md:text-[150px]
-    lg:text-[190px]
+    text-[46px]
+    sm:text-[90px]
+    md:text-[140px]
+    lg:text-[180px]
     font-semibold
     text-white
     leading-none
-    -mt-20
+    mt-2 sm:mt-0
   "
         >
           Courses
         </motion.h1>
-        {/* Arc Background */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full pointer-events-none z-0 overflow-hidden">
+        {/* Arc Background - Scaled and Masked to crop Gemini Watermark */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-h-[85%] sm:max-h-[90%] pointer-events-none z-0 overflow-hidden">
           <motion.img
             src="/course_arc.png"
             alt="Arc"
-            className="w-full object-cover"
+            className="w-full object-cover scale-[1.06] origin-top"
+            style={{
+              maskImage: "radial-gradient(ellipse 95% 82% at 50% 40%, black 70%, transparent 100%)",
+              WebkitMaskImage: "radial-gradient(ellipse 95% 82% at 50% 40%, black 70%, transparent 100%)",
+            }}
             animate={{
               y: [0, -12, 0],
-              scale: [1, 1.015, 1],
+              scale: [1.06, 1.075, 1.06],
             }}
             transition={{
               duration: 5,

@@ -152,7 +152,7 @@ useEffect(() => {
 
       <div className="max-w-screen-xl mx-auto px-6 md:px-12">
         <motion.div
-          className="relative w-screen left-1/2 -translate-x-1/2 min-h-[35vh] md:min-h-[70vh] lg:min-h-[80vh] overflow-hidden flex items-center py-2 sm:py-6"
+          className="relative w-screen left-1/2 -translate-x-1/2 min-h-[35vh] md:min-h-[70vh] lg:min-h-[80vh] overflow-hidden flex items-center py-2 sm:py-6 pt-28 sm:pt-32 md:pt-36"
           id="about-hero"
           variants={fadeUp}
           initial="hidden"
@@ -628,17 +628,17 @@ useEffect(() => {
   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto px-2 sm:px-4">
     {/* Our Vision */}
     <motion.div
-      className="bg-[#0b0518] border border-purple-900/40 p-6 sm:p-8 rounded-[2rem] relative overflow-hidden group flex flex-col items-start justify-start"
-      initial={{ opacity: 0, x: -200, scale: 0.96 }}
+      className="bg-[#0b0518] border border-purple-900/40 p-6 sm:p-8 rounded-[2rem] relative overflow-hidden group flex flex-col items-start justify-start transform-gpu will-change-transform"
+      initial={{ opacity: 0, x: isDesktop ? -150 : -40, scale: 0.96 }}
       whileInView={{ opacity: 1, x: 0, scale: 1 }}
-      viewport={{ once: false, amount: 0.25 }}
+      viewport={{ once: true, amount: 0.15 }}
       transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1 }}
       whileHover={{ scale: 1.03, y: -6, boxShadow: "0 0 40px rgba(168,85,247,0.4)" }}
     >
       {/* moving shimmer border */}
-      <div className="absolute inset-0 rounded-[2rem] pointer-events-none">
+      <div className="absolute inset-0 rounded-[2rem] pointer-events-none transform-gpu">
         <motion.div
-          className="absolute inset-0 rounded-[2rem]"
+          className="absolute inset-0 rounded-[2rem] transform-gpu will-change-transform"
           style={{
             padding: '1.5px',
             background: 'linear-gradient(90deg, transparent, transparent, #a855f7, #e9d5ff, #a855f7, transparent, transparent)',
@@ -676,17 +676,17 @@ useEffect(() => {
 
     {/* Our Mission */}
     <motion.div
-      className="bg-[#0b0518] border border-purple-900/40 p-6 sm:p-8 rounded-[2rem] relative overflow-hidden group flex flex-col items-start justify-start"
-      initial={{ opacity: 0, x: 200, scale: 0.96 }}
+      className="bg-[#0b0518] border border-purple-900/40 p-6 sm:p-8 rounded-[2rem] relative overflow-hidden group flex flex-col items-start justify-start transform-gpu will-change-transform"
+      initial={{ opacity: 0, x: isDesktop ? 150 : 40, scale: 0.96 }}
       whileInView={{ opacity: 1, x: 0, scale: 1 }}
-      viewport={{ once: false, amount: 0.25 }}
+      viewport={{ once: true, amount: 0.15 }}
       transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1, delay: 0.15 }}
       whileHover={{ scale: 1.03, y: -6, boxShadow: "0 0 40px rgba(168,85,247,0.4)" }}
     >
       {/* moving shimmer border, opposite direction */}
-      <div className="absolute inset-0 rounded-[2rem] pointer-events-none">
+      <div className="absolute inset-0 rounded-[2rem] pointer-events-none transform-gpu">
         <motion.div
-          className="absolute inset-0 rounded-[2rem]"
+          className="absolute inset-0 rounded-[2rem] transform-gpu will-change-transform"
           style={{
             padding: '1.5px',
             background: 'linear-gradient(90deg, transparent, transparent, #a855f7, #e9d5ff, #a855f7, transparent, transparent)',

@@ -323,7 +323,7 @@ if (!course) {
         }}
       />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pt-10 pb-24">
+      <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pt-20 sm:pt-24 md:pt-28 pb-24">
 
         {/* ── Back link ───────────────────────────────────────── */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>

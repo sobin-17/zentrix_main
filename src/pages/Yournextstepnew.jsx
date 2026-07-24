@@ -149,7 +149,7 @@ const GetTouch = () => {
   ];
 
   return (
-    <section id="get-in-touch" className="relative bg-[#07020f] min-h-screen overflow-hidden py-16 md:py-24 px-4 sm:px-6 md:px-10">
+    <section id="get-in-touch" className="relative bg-[#07020f] min-h-screen overflow-hidden pt-20 sm:pt-24 md:pt-28 pb-16 md:pb-24 px-4 sm:px-6 md:px-10">
       {/* Space dots / particles */}
       {particles.map((p) => (
         <div

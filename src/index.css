@@ -408,7 +408,6 @@ section:nth-of-type(even)::before {
 
 /* Bruteforce Hide Spline Watermark using Clip-Path and Enforce Transparency */
 .spline-wrapper {
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 60px), calc(100% - 180px) calc(100% - 60px), calc(100% - 180px) 100%, 0 100%);
   background: transparent !important;
   background-color: transparent !important;
 }
@@ -418,19 +417,31 @@ section:nth-of-type(even)::before {
   background-color: transparent !important;
 }
 
-.spline-wrapper>div {
+.spline-wrapper > div {
   background: transparent !important;
   background-color: transparent !important;
 }
 
-.spline-wrapper canvas+div,
+/* Hide all Spline watermark badges & links */
+.spline-wrapper canvas + div,
+.spline-wrapper a[href*="spline"],
 .spline-wrapper a[href*="spline.design"],
 #logo,
-a[href*="spline.design"] {
+#spline-logo,
+.spline-watermark,
+[class*="watermark"],
+a[href*="spline.design"],
+a[href*="spline"] {
   display: none !important;
   opacity: 0 !important;
   pointer-events: none !important;
   visibility: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
   z-index: -9999 !important;
 }
 
@@ -448,17 +459,18 @@ a[href*="spline.design"] {
 }
 
 @media (max-width: 768px) {
-  /* On mobile phones, suppress box-shadow blurs and heavy particles to prevent overheating and lag */
+  /* Hardware-accelerated GPU layer promotion for mobile performance */
   .service-particle {
-    box-shadow: none !important;
-    animation-duration: 8s !important;
-  }
-  .service-particle:nth-child(n+16) {
-    display: none !important;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
   }
   .ambient-light {
-    filter: blur(20px) !important;
-    animation: none !important;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
   }
 }
 

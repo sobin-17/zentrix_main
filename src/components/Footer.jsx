@@ -121,7 +121,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="mailto:info.zentrixtechnology@gmail.com"
-                    className="hover:text-white transition break-all"
+                    className="hover:text-white transition whitespace-nowrap text-[11px] sm:text-xs lg:text-[13px] block"
                   >
                     info.zentrixtechnology@gmail.com
                   </a>

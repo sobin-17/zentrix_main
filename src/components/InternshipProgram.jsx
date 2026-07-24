@@ -103,31 +103,18 @@ const InternshipProgram = () => {
                     variants={exp.cardVariants}
                     className="relative h-full z-10"
                   >
-                    <div className="relative group p-[1px] rounded-2xl overflow-hidden bg-white/[0.02] hover:-translate-y-2 transition-all duration-500 hover:shadow-[0_12px_40px_-10px_rgba(0,198,255,0.4)] h-full">
+                    <div className="relative group p-[1px] rounded-2xl overflow-hidden bg-white/[0.04] border border-white/10 hover:border-purple-500/50 hover:-translate-y-1.5 transition-all duration-300 hover:shadow-[0_12px_40px_-10px_rgba(0,198,255,0.3)] h-full transform-gpu">
                       
-                      {/* Full Surface Neon Energy Sweep */}
-                      <motion.div
-                        className={`absolute top-0 left-0 ${exp.gradient} pointer-events-none z-0`}
-                        variants={{
-                          hidden: exp.initial,
-                          visible: {
-                            ...exp.animate,
-                            transition: { 
-                              duration: 6 + (index * 2), 
-                              ease: "linear", 
-                              repeat: Infinity,
-                              repeatType: "loop"
-                            }
-                          }
-                        }}
-                      />
+                      {/* Full Surface Neon Energy Sweep - Pure GPU CSS */}
+                      <div className="absolute inset-0 opacity-40 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0 overflow-hidden transform-gpu">
+                        <div className="animate-service-sweep w-full h-full opacity-30" style={{ background: 'linear-gradient(90deg, transparent, #00c6ff, #a855f7, transparent)' }} />
+                      </div>
 
                       {/* Inner Card */}
-                      <div className="flex flex-col items-center justify-center h-full p-8 bg-black/70 backdrop-blur-xl rounded-2xl relative z-10 overflow-hidden">
-
+                      <div className="flex flex-col items-center justify-center h-full p-8 bg-black/70 backdrop-blur-md rounded-2xl relative z-10 overflow-hidden">
 
                         {/* Icon */}
-                        <div className="text-[var(--color-brand-cyan)] mb-4 drop-shadow-[0_0_10px_rgba(0,198,255,0.4)] group-hover:scale-110 transition-transform duration-500">
+                        <div className="text-[var(--color-brand-cyan)] mb-4 drop-shadow-[0_0_10px_rgba(0,198,255,0.4)] group-hover:scale-110 transition-transform duration-300">
                           {exp.icon}
                         </div>
                         

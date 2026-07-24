@@ -27,6 +27,45 @@ const Hero = () => {
   }, [words.length]);
 
   useEffect(() => {
+    if (!loadSpline) return;
+
+    const purgeSplineWatermark = () => {
+      // 1. Regular DOM search
+      document.querySelectorAll('a[href*="spline"], #logo, #spline-logo, .spline-watermark, [class*="watermark"]').forEach(el => {
+        try {
+          el.style.setProperty('display', 'none', 'important');
+          el.style.setProperty('opacity', '0', 'important');
+          el.style.setProperty('visibility', 'hidden', 'important');
+          el.remove();
+        } catch (e) {}
+      });
+
+      // 2. Shadow DOM search for custom elements
+      document.querySelectorAll('*').forEach(node => {
+        if (node.shadowRoot) {
+          node.shadowRoot.querySelectorAll('a, #logo, #spline-logo, [class*="watermark"], [class*="logo"]').forEach(el => {
+            try {
+              el.style.setProperty('display', 'none', 'important');
+              el.style.setProperty('opacity', '0', 'important');
+              el.style.setProperty('visibility', 'hidden', 'important');
+              el.remove();
+            } catch (e) {}
+          });
+        }
+      });
+    };
+
+    purgeSplineWatermark();
+    const interval = setInterval(purgeSplineWatermark, 100);
+    const timeout = setTimeout(() => clearInterval(interval), 5000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [loadSpline]);
+
+  useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (splineApp) {
@@ -87,11 +126,13 @@ const Hero = () => {
   });
 
   return (
-    <section id="home" ref={heroRef} className="relative min-h-0 flex items-start pt-4 sm:pt-8 md:pt-12 pb-8 bg-transparent">
-      {/* Deep Space Background Glow System */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        {/* Core robot glow - Testing Layer 1 */}
-        <div className="absolute top-1/2 right-0 w-[800px] h-[800px] -translate-y-1/2 translate-x-1/4 rounded-full bg-[var(--color-brand-purple)]/10 blur-[120px]"></div>
+    <section id="home" ref={heroRef} className="relative min-h-0 flex items-start pt-20 sm:pt-24 md:pt-28 pb-8 bg-transparent">
+      {/* Deep Space Background Glow System - Fast Radial Gradient */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+        <div 
+          className="absolute top-1/2 right-0 w-[500px] sm:w-[800px] h-[500px] sm:h-[800px] -translate-y-1/2 translate-x-1/4 rounded-full pointer-events-none transform-gpu"
+          style={{ background: 'radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%)' }}
+        />
       </div>
 
       <div className="container mx-auto px-6 md:px-12 relative z-10">
@@ -179,43 +220,17 @@ const Hero = () => {
                 Transforming Businesses Through
               </span>
               <span className="block sm:inline-block relative min-w-[130px] sm:min-w-[200px] md:min-w-[250px] lg:min-w-[320px] xl:min-w-[400px] h-[1.3em] align-top">
-                <AnimatePresence mode="popLayout">
-                  <motion.div
+                <AnimatePresence initial={false}>
+                  <motion.span
                     key={currentWord}
-                    initial={{ y: 80, opacity: 0 }}
+                    initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -80, opacity: 0 }}
-                    transition={{ duration: 0.6, ease: [0.2, 0.6, 0.2, 1] }}
-                    className="absolute left-0 top-0 pb-2 whitespace-nowrap z-10 flex"
+                    exit={{ y: -20, opacity: 0 }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="absolute left-0 top-0 text-transparent bg-clip-text bg-gradient-to-r from-[#00c6ff] via-[#a855f7] to-[#00c6ff] bg-[length:200%_auto] animate-gradient-x drop-shadow-[0_0_20px_rgba(0,198,255,0.6)] whitespace-nowrap transform-gpu will-change-transform pb-2 block"
                   >
-                    {words[currentWord].split('').map((char, index) => (
-                      <span key={index} className="relative inline-block">
-                        {/* Base text layer */}
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00c6ff] via-[#a855f7] to-[#00c6ff] bg-[length:200%_auto] animate-gradient-x drop-shadow-[0_0_15px_rgba(0,198,255,0.4)]">
-                          {char === ' ' ? '\u00A0' : char}
-                        </span>
-
-                        {/* Premium Glow Wave overlay layer */}
-                        <motion.span
-                          className="absolute inset-0 text-transparent bg-clip-text bg-gradient-to-r from-[#00c6ff] to-[#a855f7] drop-shadow-[0_0_20px_rgba(0,198,255,1)]"
-                          initial={{ opacity: 0, filter: "brightness(1)" }}
-                          animate={{
-                            opacity: [0, 1, 0, 0],
-                            filter: ["brightness(1)", "brightness(2)", "brightness(1)", "brightness(1)"]
-                          }}
-                          transition={{
-                            duration: 3,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                            delay: index * 0.05,
-                            times: [0, 0.15, 0.5, 1]
-                          }}
-                        >
-                          {char === ' ' ? '\u00A0' : char}
-                        </motion.span>
-                      </span>
-                    ))}
-                  </motion.div>
+                    {words[currentWord]}
+                  </motion.span>
                 </AnimatePresence>
               </span>
             </motion.h1>
@@ -227,28 +242,33 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.12, ease: "easeOut" }}
-            className="w-full lg:w-1/2 h-[300px] sm:h-[400px] lg:h-[600px] flex justify-center lg:justify-end relative pointer-events-none lg:pointer-events-auto -translate-y-6 lg:-translate-y-10 transform-gpu"
+            className="spline-wrapper w-full lg:w-1/2 h-[300px] sm:h-[400px] lg:h-[600px] flex justify-center lg:justify-end relative pointer-events-none lg:pointer-events-auto -translate-y-6 lg:-translate-y-10 transform-gpu will-change-transform overflow-hidden"
           >
             {loadSpline && (
-              <Spline
-                scene="https://prod.spline.design/QYsjYTMQQVk8eqIS/scene.splinecode"
-                className="w-full h-full relative z-10"
-                style={{ background: 'transparent' }}
-                onLoad={(spline) => {
-                  // Remove WebGL watermark by disabling the logo overlay pass
-                  if (spline && spline._runtime && spline._runtime.pipeline && spline._runtime.pipeline.logoOverlayPass) {
-                    spline._runtime.pipeline.logoOverlayPass.enabled = false;
-                  } else {
-                    // Fallback for different runtime versions
+              <div className="w-full h-[calc(100%+60px)] -mb-[60px] relative z-10 overflow-hidden">
+                <Spline
+                  scene="https://prod.spline.design/QYsjYTMQQVk8eqIS/scene.splinecode"
+                  className="w-full h-full relative z-10"
+                  style={{ background: 'transparent' }}
+                  onLoad={(spline) => {
+                    setSplineApp(spline);
                     try {
-                      const runtime = Object.values(spline).find(v => v && v.pipeline && v.pipeline.logoOverlayPass);
-                      if (runtime) {
-                        runtime.pipeline.logoOverlayPass.enabled = false;
+                      if (spline && spline._runtime) {
+                        if (spline._runtime.pipeline && spline._runtime.pipeline.logoOverlayPass) {
+                          spline._runtime.pipeline.logoOverlayPass.enabled = false;
+                        }
+                        if (spline._runtime.renderer) {
+                          const isMobile = typeof window !== 'undefined' && (window.innerWidth < 768 || navigator.maxTouchPoints > 0);
+                          const targetDPR = isMobile ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.25);
+                          spline._runtime.renderer.setPixelRatio(targetDPR);
+                        }
                       }
-                    } catch (e) { }
-                  }
-                }}
-              />
+                    } catch (e) {
+                      console.error("Spline load optimization error", e);
+                    }
+                  }}
+                />
+              </div>
             )}
           </motion.div>
 
