@@ -112,13 +112,13 @@ function CustomCursor() {
 export default function AboutView() {
   const [isDesktop, setIsDesktop] = useState(false);
 
-useEffect(() => {
-  const mq = window.matchMedia("(min-width: 1024px)");
-  setIsDesktop(mq.matches);
-  const handler = (e) => setIsDesktop(e.matches);
-  mq.addEventListener("change", handler);
-  return () => mq.removeEventListener("change", handler);
-}, []);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    setIsDesktop(mq.matches);
+    const handler = (e) => setIsDesktop(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
   return (
     <div className="relative pt-0 pb-16 bg-transparent text-gray-300 overflow-hidden">
       <CustomCursor />
@@ -164,7 +164,7 @@ useEffect(() => {
           <motion.img
             src="/about_orb.png"
             alt="About Orb Background"
-    className="
+            className="
       absolute
       top-[-10%] sm:top-0
       right-[-25%] sm:right-0
@@ -291,55 +291,55 @@ useEffect(() => {
 
           {/* Right Image */}
           <div className="absolute top-[48%] right-[-100px] sm:right-[-160px] lg:right-[-220px] -translate-y-1/2 z-0 pointer-events-none overflow-visible">
-          <motion.img
-  src="/about_intro_logo.png"
-  alt="Zentrix Logo"
-  className="w-[280px] sm:w-[420px] md:w-[560px] lg:w-[800px] h-auto object-contain mix-blend-screen opacity-75"
-  initial={{
-    opacity: 0,
-    scale: 0.85,
-    rotate: -8,
-  }}
-  whileInView={{
-    opacity: 0.75,
-    scale: 1,
-    rotate: 0,
-  }}
-  viewport={{ once: false, amount: 0.3 }}
-  animate={{
-    y: [0, -12, 0],
-    rotate: [0, 2, 0, -2, 0],
-    scale: [1, 1.02, 1],
-  }}
-  transition={{
-    opacity: {
-      duration: 1,
-    },
-    scale: {
-      duration: 1,
-    },
-    rotate: {
-      duration: 8,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-    y: {
-      duration: 5,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-  }}
-  whileHover={{
-    scale: 1.08,
-    rotate: 5,
-    opacity: 1,
-    filter:
-      "brightness(1.3) drop-shadow(0 0 70px rgba(168,85,247,0.9))",
-    transition: {
-      duration: 0.35,
-    },
-  }}
-/>
+            <motion.img
+              src="/about_intro_logo.png"
+              alt="Zentrix Logo"
+              className="w-[280px] sm:w-[420px] md:w-[560px] lg:w-[800px] h-auto object-contain mix-blend-screen opacity-75"
+              initial={{
+                opacity: 0,
+                scale: 0.85,
+                rotate: -8,
+              }}
+              whileInView={{
+                opacity: 0.75,
+                scale: 1,
+                rotate: 0,
+              }}
+              viewport={{ once: false, amount: 0.3 }}
+              animate={{
+                y: [0, -12, 0],
+                rotate: [0, 2, 0, -2, 0],
+                scale: [1, 1.02, 1],
+              }}
+              transition={{
+                opacity: {
+                  duration: 1,
+                },
+                scale: {
+                  duration: 1,
+                },
+                rotate: {
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                },
+                y: {
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                },
+              }}
+              whileHover={{
+                scale: 1.08,
+                rotate: 5,
+                opacity: 1,
+                filter:
+                  "brightness(1.3) drop-shadow(0 0 70px rgba(168,85,247,0.9))",
+                transition: {
+                  duration: 0.35,
+                },
+              }}
+            />
           </div>
 
         </motion.div>
@@ -366,7 +366,7 @@ useEffect(() => {
             />
 
             {/* Timeline Item 1: 2025 */}
-            <div className="absolute left-[20%] -translate-x-1/2 bottom-[290px] w-[280px] text-center flex flex-col items-center z-10">
+            <div className="absolute left-[25.5%] -translate-x-1/2 bottom-[415px] w-[280px] text-center flex flex-col items-center z-10">
               <span className="text-[#a855f7] font-bold text-sm block mb-1">2025</span>
               <h4 className="text-white font-bold text-lg mb-1.5">Idea Born</h4>
               <p className="text-xs text-gray-300 leading-[1.6]">
@@ -375,7 +375,7 @@ useEffect(() => {
             </div>
 
             {/* Timeline Item 2: 2026 */}
-            <div className="absolute left-[50%] -translate-x-1/2 bottom-[500px] w-[320px] text-center flex flex-col items-center z-10">
+            <div className="absolute left-[48%] -translate-x-1/2 bottom-[500px] w-[320px] text-center flex flex-col items-center z-10">
               <span className="text-[#a855f7] font-bold text-sm block mb-1">2026</span>
               <h4 className="text-white font-bold text-lg mb-1.5">Official Launch</h4>
               <p className="text-xs text-gray-300 leading-[1.6]">
@@ -384,7 +384,7 @@ useEffect(() => {
             </div>
 
             {/* Timeline Item 3: Future */}
-            <div className="absolute left-[80%] -translate-x-1/2 bottom-[550px] w-[260px] text-center flex flex-col items-center z-10">
+            <div className="absolute left-[70.5%] -translate-x-1/2 bottom-[575px] w-[260px] text-center flex flex-col items-center z-10">
               <span className="text-[#a855f7] font-bold text-sm block mb-1">Future</span>
               <h4 className="text-white font-bold text-lg mb-1.5">Expansion</h4>
               <p className="text-xs text-gray-300 leading-[1.6]">
@@ -447,29 +447,29 @@ useEffect(() => {
               }}
             >
               <motion.img
-  src="/icon_software.png"
-  alt="Software Development"
-  className="w-[240px] md:w-[280px] lg:w-[320px] h-auto object-contain mb-0"
-  initial={{ opacity: 0, y: 40, scale: 0.9 }}
-  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-  viewport={{ once: false, amount: 0.3 }}
-  animate={{
-    y: [0, -12, 0],
-  }}
-  transition={{
-    opacity: { duration: 0.8 },
-    scale: { duration: 0.8 },
-    y: {
-      duration: 4,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-  }}
-  whileHover={{
-    scale: 1.08,
-    filter: "drop-shadow(0 0 35px rgba(168,85,247,0.7))",
-  }}
-/>
+                src="/icon_software.png"
+                alt="Software Development"
+                className="w-[240px] md:w-[280px] lg:w-[320px] h-auto object-contain mb-0"
+                initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: false, amount: 0.3 }}
+                animate={{
+                  y: [0, -12, 0],
+                }}
+                transition={{
+                  opacity: { duration: 0.8 },
+                  scale: { duration: 0.8 },
+                  y: {
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  },
+                }}
+                whileHover={{
+                  scale: 1.08,
+                  filter: "drop-shadow(0 0 35px rgba(168,85,247,0.7))",
+                }}
+              />
 
               <h3 className="text-white text-xl md:text-2xl font-bold mb-2">
                 Software Development
@@ -492,29 +492,29 @@ useEffect(() => {
               }}
             >
               <motion.img
-  src="/icon_training.png"
-  alt="Professional Training"
-  className="w-[240px] md:w-[280px] lg:w-[320px] h-auto object-contain mb-0"
-  initial={{ opacity: 0, y: 40, scale: 0.9 }}
-  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-  viewport={{ once: false, amount: 0.3 }}
-  animate={{
-    y: [0, -12, 0],
-  }}
-  transition={{
-    opacity: { duration: 0.8 },
-    scale: { duration: 0.8 },
-    y: {
-      duration: 4,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-  }}
-  whileHover={{
-    scale: 1.08,
-    filter: "drop-shadow(0 0 35px rgba(168,85,247,0.7))",
-  }}
-/>
+                src="/icon_training.png"
+                alt="Professional Training"
+                className="w-[240px] md:w-[280px] lg:w-[320px] h-auto object-contain mb-0"
+                initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: false, amount: 0.3 }}
+                animate={{
+                  y: [0, -12, 0],
+                }}
+                transition={{
+                  opacity: { duration: 0.8 },
+                  scale: { duration: 0.8 },
+                  y: {
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  },
+                }}
+                whileHover={{
+                  scale: 1.08,
+                  filter: "drop-shadow(0 0 35px rgba(168,85,247,0.7))",
+                }}
+              />
 
               <h3 className="text-white text-xl md:text-2xl font-bold mb-2">
                 Professional Training
@@ -537,29 +537,29 @@ useEffect(() => {
               }}
             >
               <motion.img
-  src="/icon_marketing.png"
-  alt="Digital Marketing"
-  className="w-[240px] md:w-[280px] lg:w-[320px] h-auto object-contain mb-0"
-  initial={{ opacity: 0, y: 40, scale: 0.9 }}
-  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-  viewport={{ once: false, amount: 0.3 }}
-  animate={{
-    y: [0, -12, 0],
-  }}
-  transition={{
-    opacity: { duration: 0.8 },
-    scale: { duration: 0.8 },
-    y: {
-      duration: 4,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-  }}
-  whileHover={{
-    scale: 1.08,
-    filter: "drop-shadow(0 0 35px rgba(168,85,247,0.7))",
-  }}
-/>
+                src="/icon_marketing.png"
+                alt="Digital Marketing"
+                className="w-[240px] md:w-[280px] lg:w-[320px] h-auto object-contain mb-0"
+                initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: false, amount: 0.3 }}
+                animate={{
+                  y: [0, -12, 0],
+                }}
+                transition={{
+                  opacity: { duration: 0.8 },
+                  scale: { duration: 0.8 },
+                  y: {
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  },
+                }}
+                whileHover={{
+                  scale: 1.08,
+                  filter: "drop-shadow(0 0 35px rgba(168,85,247,0.7))",
+                }}
+              />
 
               <h3 className="text-white text-xl md:text-2xl font-bold mb-2">
                 Digital Marketing
@@ -617,112 +617,112 @@ useEffect(() => {
           </div>
         </div>
 
-       {/* 5. Vision & Mission */}
-       <motion.div className="mb-8" id="about-vision-mission" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-  <div className="mb-10 sm:mb-14 flex items-center gap-4 sm:gap-6">
-    <div className="w-[4px] h-12 sm:h-20 bg-purple-600 rounded-full"></div>
-    <h2 className="text-white text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight">
-      Vision & Mission
-    </h2>
-  </div>
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto px-2 sm:px-4">
-    {/* Our Vision */}
-    <motion.div
-      className="bg-[#0b0518] border border-purple-900/40 p-6 sm:p-8 rounded-[2rem] relative overflow-hidden group flex flex-col items-start justify-start transform-gpu will-change-transform"
-      initial={{ opacity: 0, x: isDesktop ? -150 : -40, scale: 0.96 }}
-      whileInView={{ opacity: 1, x: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1 }}
-      whileHover={{ scale: 1.03, y: -6, boxShadow: "0 0 40px rgba(168,85,247,0.4)" }}
-    >
-      {/* moving shimmer border */}
-      <div className="absolute inset-0 rounded-[2rem] pointer-events-none transform-gpu">
-        <motion.div
-          className="absolute inset-0 rounded-[2rem] transform-gpu will-change-transform"
-          style={{
-            padding: '1.5px',
-            background: 'linear-gradient(90deg, transparent, transparent, #a855f7, #e9d5ff, #a855f7, transparent, transparent)',
-            backgroundSize: '300% 100%',
-            WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-            WebkitMaskComposite: 'xor',
-            maskComposite: 'exclude',
-          }}
-          animate={{ backgroundPosition: ['200% 0%', '-100% 0%'] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-        />
-      </div>
+        {/* 5. Vision & Mission */}
+        <motion.div className="mb-8" id="about-vision-mission" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <div className="mb-10 sm:mb-14 flex items-center gap-4 sm:gap-6">
+            <div className="w-[4px] h-12 sm:h-20 bg-purple-600 rounded-full"></div>
+            <h2 className="text-white text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight">
+              Vision & Mission
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto px-2 sm:px-4">
+            {/* Our Vision */}
+            <motion.div
+              className="bg-[#0b0518] border border-purple-900/40 p-6 sm:p-8 rounded-[2rem] relative overflow-hidden group flex flex-col items-start justify-start transform-gpu will-change-transform"
+              initial={{ opacity: 0, x: isDesktop ? -150 : -40, scale: 0.96 }}
+              whileInView={{ opacity: 1, x: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1 }}
+              whileHover={{ scale: 1.03, y: -6, boxShadow: "0 0 40px rgba(168,85,247,0.4)" }}
+            >
+              {/* moving shimmer border */}
+              <div className="absolute inset-0 rounded-[2rem] pointer-events-none transform-gpu">
+                <motion.div
+                  className="absolute inset-0 rounded-[2rem] transform-gpu will-change-transform"
+                  style={{
+                    padding: '1.5px',
+                    background: 'linear-gradient(90deg, transparent, transparent, #a855f7, #e9d5ff, #a855f7, transparent, transparent)',
+                    backgroundSize: '300% 100%',
+                    WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                    WebkitMaskComposite: 'xor',
+                    maskComposite: 'exclude',
+                  }}
+                  animate={{ backgroundPosition: ['200% 0%', '-100% 0%'] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+                />
+              </div>
 
-      <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
-        <img src="/vision_mission_bg.png" alt="" className="absolute top-0 left-0 w-full h-full object-cover opacity-35 mix-blend-screen" />
-      </div>
-      <div className="relative z-10 w-full max-w-md text-left">
-        <h3 className="text-white text-2xl sm:text-3xl font-bold mb-5 text-left">Our Vision</h3>
-        <div className="flex flex-col gap-4 sm:gap-6 w-full">
-          <div>
-            <h4 className="text-white font-bold text-base sm:text-lg mb-1">Innovation & Technology</h4>
-            <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
-              To build a future-focused technology company that delivers innovative digital solutions and creates opportunities for businesses and individuals through modern technology and practical learning.
-            </p>
-          </div>
-          <div>
-            <h4 className="text-white font-bold text-base sm:text-lg mb-1">Growth & Digital Transformation</h4>
-            <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
-              To create a strong digital ecosystem that supports business growth, technology innovation, and industry-oriented skill development for the next generation.
-            </p>
-          </div>
-        </div>
-      </div>
-    </motion.div>
+              <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
+                <img src="/vision_mission_bg.png" alt="" className="absolute top-0 left-0 w-full h-full object-cover opacity-35 mix-blend-screen" />
+              </div>
+              <div className="relative z-10 w-full max-w-md text-left">
+                <h3 className="text-white text-2xl sm:text-3xl font-bold mb-5 text-left">Our Vision</h3>
+                <div className="flex flex-col gap-4 sm:gap-6 w-full">
+                  <div>
+                    <h4 className="text-white font-bold text-base sm:text-lg mb-1">Innovation & Technology</h4>
+                    <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                      To build a future-focused technology company that delivers innovative digital solutions and creates opportunities for businesses and individuals through modern technology and practical learning.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="text-white font-bold text-base sm:text-lg mb-1">Growth & Digital Transformation</h4>
+                    <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                      To create a strong digital ecosystem that supports business growth, technology innovation, and industry-oriented skill development for the next generation.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
 
-    {/* Our Mission */}
-    <motion.div
-      className="bg-[#0b0518] border border-purple-900/40 p-6 sm:p-8 rounded-[2rem] relative overflow-hidden group flex flex-col items-start justify-start transform-gpu will-change-transform"
-      initial={{ opacity: 0, x: isDesktop ? 150 : 40, scale: 0.96 }}
-      whileInView={{ opacity: 1, x: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1, delay: 0.15 }}
-      whileHover={{ scale: 1.03, y: -6, boxShadow: "0 0 40px rgba(168,85,247,0.4)" }}
-    >
-      {/* moving shimmer border, opposite direction */}
-      <div className="absolute inset-0 rounded-[2rem] pointer-events-none transform-gpu">
-        <motion.div
-          className="absolute inset-0 rounded-[2rem] transform-gpu will-change-transform"
-          style={{
-            padding: '1.5px',
-            background: 'linear-gradient(90deg, transparent, transparent, #a855f7, #e9d5ff, #a855f7, transparent, transparent)',
-            backgroundSize: '300% 100%',
-            WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-            WebkitMaskComposite: 'xor',
-            maskComposite: 'exclude',
-          }}
-          animate={{ backgroundPosition: ['-100% 0%', '200% 0%'] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'linear', delay: 0.2 }}
-        />
-      </div>
+            {/* Our Mission */}
+            <motion.div
+              className="bg-[#0b0518] border border-purple-900/40 p-6 sm:p-8 rounded-[2rem] relative overflow-hidden group flex flex-col items-start justify-start transform-gpu will-change-transform"
+              initial={{ opacity: 0, x: isDesktop ? 150 : 40, scale: 0.96 }}
+              whileInView={{ opacity: 1, x: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1, delay: 0.15 }}
+              whileHover={{ scale: 1.03, y: -6, boxShadow: "0 0 40px rgba(168,85,247,0.4)" }}
+            >
+              {/* moving shimmer border, opposite direction */}
+              <div className="absolute inset-0 rounded-[2rem] pointer-events-none transform-gpu">
+                <motion.div
+                  className="absolute inset-0 rounded-[2rem] transform-gpu will-change-transform"
+                  style={{
+                    padding: '1.5px',
+                    background: 'linear-gradient(90deg, transparent, transparent, #a855f7, #e9d5ff, #a855f7, transparent, transparent)',
+                    backgroundSize: '300% 100%',
+                    WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                    WebkitMaskComposite: 'xor',
+                    maskComposite: 'exclude',
+                  }}
+                  animate={{ backgroundPosition: ['-100% 0%', '200% 0%'] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'linear', delay: 0.2 }}
+                />
+              </div>
 
-      <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
-        <img src="/vision_mission_bg.png" alt="" className="absolute top-0 right-0 w-full h-full object-cover opacity-35 mix-blend-screen" />
-      </div>
-      <div className="relative z-10 w-full max-w-md text-left">
-        <h3 className="text-white text-2xl sm:text-3xl font-bold mb-5 text-left">Our Mission</h3>
-        <div className="flex flex-col gap-4 sm:gap-6 w-full">
-          <div>
-            <h4 className="text-white font-bold text-base sm:text-lg mb-1">Innovation & Quality</h4>
-            <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
-              We are committed to delivering innovative digital solutions and professional services that help businesses grow in the modern technology environment. Our focus is on quality, efficiency, and practical implementation.
-            </p>
+              <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
+                <img src="/vision_mission_bg.png" alt="" className="absolute top-0 right-0 w-full h-full object-cover opacity-35 mix-blend-screen" />
+              </div>
+              <div className="relative z-10 w-full max-w-md text-left">
+                <h3 className="text-white text-2xl sm:text-3xl font-bold mb-5 text-left">Our Mission</h3>
+                <div className="flex flex-col gap-4 sm:gap-6 w-full">
+                  <div>
+                    <h4 className="text-white font-bold text-base sm:text-lg mb-1">Innovation & Quality</h4>
+                    <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                      We are committed to delivering innovative digital solutions and professional services that help businesses grow in the modern technology environment. Our focus is on quality, efficiency, and practical implementation.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="text-white font-bold text-base sm:text-lg mb-1">Learning & Growth</h4>
+                    <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                      Our mission is to create opportunities for students and professionals through industry-focused training, real-world projects, and continuous skill development for future careers and business success.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </div>
-          <div>
-            <h4 className="text-white font-bold text-base sm:text-lg mb-1">Learning & Growth</h4>
-            <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
-              Our mission is to create opportunities for students and professionals through industry-focused training, real-world projects, and continuous skill development for future careers and business success.
-            </p>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  </div>
-</motion.div>
+        </motion.div>
 
         {/* 6. What Makes Us Different */}
         <motion.section className="relative py-8 sm:py-16 px-6 md:px-12 max-w-7xl mx-auto mb-4 sm:mb-16" id="about-different" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
@@ -772,58 +772,58 @@ useEffect(() => {
 
             </div>
             {/* Orb */}
-          {/* Different Orb — floats, follows cursor with parallax shift, glows on hover */}
-<div
-  className="absolute right-[-10%] top-[-280px] z-10 pointer-events-auto"
-  onMouseMove={(e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    e.currentTarget.style.setProperty("--mx", `${x * 30}px`);
-    e.currentTarget.style.setProperty("--my", `${y * 30}px`);
-  }}
-  onMouseLeave={(e) => {
-    e.currentTarget.style.setProperty("--mx", "0px");
-    e.currentTarget.style.setProperty("--my", "0px");
-  }}
->
-  <motion.img
-    src="/about_different_orb.png"
-    alt="Different Orb"
-    className="w-[580px] md:w-[760px] lg:w-[920px] object-contain mix-blend-screen"
-    style={{
-      x: "var(--mx, 0px)",
-      y: "var(--my, 0px)",
-    }}
-    animate={{
-      y: [0, -15, 0],
-    }}
-    transition={{
-      y: {
-        repeat: Infinity,
-        duration: 6,
-        ease: "easeInOut",
-      },
-      x: { type: "spring", stiffness: 100, damping: 15 },
-    }}
-    whileHover={{
-      scale: 1.08,
-      rotate: 5,
-      filter:
-        "brightness(1.2) drop-shadow(0 0 60px rgba(168,85,247,0.8))",
-    }}
-    whileTap={{
-      scale: 1.03,
-    }}
-  />
-</div>
+            {/* Different Orb — floats, follows cursor with parallax shift, glows on hover */}
+            <div
+              className="absolute right-[-10%] top-[-280px] z-10 pointer-events-auto"
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                const y = (e.clientY - rect.top) / rect.height - 0.5;
+                e.currentTarget.style.setProperty("--mx", `${x * 30}px`);
+                e.currentTarget.style.setProperty("--my", `${y * 30}px`);
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.setProperty("--mx", "0px");
+                e.currentTarget.style.setProperty("--my", "0px");
+              }}
+            >
+              <motion.img
+                src="/about_different_orb.png"
+                alt="Different Orb"
+                className="w-[580px] md:w-[760px] lg:w-[920px] object-contain mix-blend-screen"
+                style={{
+                  x: "var(--mx, 0px)",
+                  y: "var(--my, 0px)",
+                }}
+                animate={{
+                  y: [0, -15, 0],
+                }}
+                transition={{
+                  y: {
+                    repeat: Infinity,
+                    duration: 6,
+                    ease: "easeInOut",
+                  },
+                  x: { type: "spring", stiffness: 100, damping: 15 },
+                }}
+                whileHover={{
+                  scale: 1.08,
+                  rotate: 5,
+                  filter:
+                    "brightness(1.2) drop-shadow(0 0 60px rgba(168,85,247,0.8))",
+                }}
+                whileTap={{
+                  scale: 1.03,
+                }}
+              />
+            </div>
           </motion.div>
 
           {/* Background Glow - Fixed for mobile rendering */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
             <div className="w-[120%] h-[120%] max-w-[900px] max-h-[650px]" style={{ background: 'radial-gradient(circle, rgba(126,34,206,0.2) 0%, transparent 60%)' }} />
           </div>
-         <HexFeatureCards/>
+          <HexFeatureCards />
 
         </motion.section>
 

@@ -398,7 +398,7 @@ const GetTouch = () => {
                     <Icon className="w-4 h-4 text-purple-300" />
                   </motion.div>
                   <p className="text-white text-sm font-semibold">{label}</p>
-                  <p className="text-gray-500 text-xs leading-snug whitespace-pre-line">
+                  <p className="text-gray-400 text-xs leading-snug whitespace-pre-line break-words">
                     {value}
                   </p>
                 </motion.div>
@@ -528,11 +528,11 @@ const YourNextStep = () => {
 
         .ynx-hero-section {
           position: relative;
-          min-height: 100vh;
+          min-height: 85vh;
           display: flex;
           align-items: center;
-          justify-content: center;
-          padding: 72px 24px 100px;
+          justify-content: flex-start;
+          padding: 130px 24px 80px;
           overflow: hidden;
         }
         .ynx-hero-container {
@@ -559,9 +559,9 @@ const YourNextStep = () => {
 
         @media (max-width: 768px) {
           .ynx-hero-section {
-            padding: 80px 16px 60px;
-            align-items: flex-end;
-            min-height: 70vh;
+            padding: 110px 16px 60px;
+            align-items: center;
+            min-height: auto;
           }
           .ynx-hero-container { padding-left: 0; }
           .ynx-hero-img {
@@ -571,7 +571,7 @@ const YourNextStep = () => {
           .ynx-hero-text { max-width: 100%; }
         }
         @media (max-width: 480px) {
-          .ynx-hero-section { padding: 70px 16px 48px; }
+          .ynx-hero-section { padding: 100px 16px 48px; }
         }
 
         .ynx-section-padding { padding: 0 40px 100px; }
@@ -697,8 +697,8 @@ const YourNextStep = () => {
         ))}
 
         <div className="ynx-hero-container">
-          <div className="ynx-hero-text" style={{ marginTop: "-23vh" }}>
-            <h1 style={{ fontSize: "clamp(68px,12.5vw,135px)", fontWeight: 900, lineHeight: 0.95, margin: 0 }}>
+          <div className="ynx-hero-text">
+            <h1 style={{ fontSize: "clamp(38px,11vw,135px)", fontWeight: 900, lineHeight: 0.95, margin: 0 }}>
               YOUR<br />
               <span style={{ color: "#a855f7" }}>NEXT</span> STEP
             </h1>

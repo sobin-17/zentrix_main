@@ -5,51 +5,51 @@ import { Link } from 'react-router-dom';
 const Footer = () => {
   return (
     <motion.footer
-      className="relative bg-black pt-10 pb-4 overflow-hidden border-t border-white/5"
+      className="relative bg-black pt-10 pb-28 sm:pb-32 lg:pb-10 overflow-hidden border-t border-white/5"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 1 }}
     >
-      {/* Background Glow */}
+      {/* Background Glow - Top aligned */}
       <img
         src="/footer.jpeg"
         alt=""
         className="
           absolute
           left-1/2
-          top-1/2
+          top-0
           -translate-x-1/2
-          -translate-y-1/2
-          w-[900px]
+          w-[1000px]
           max-w-none
-          opacity-70
+          opacity-80
           pointer-events-none
           z-[1]
         "
       />
 
-      <div className="max-w-7xl mx-auto px-10 lg:px-20 xl:px-24 relative z-10">
+      <div className="max-w-7xl mx-auto px-2 sm:px-8 lg:px-20 xl:px-24 relative z-10">
 
         {/* TOP SECTION */}
         <div className="grid lg:grid-cols-[1.15fr_2fr_0.75fr_0.85fr] gap-8 items-start">
           {/* BRAND */}
           <div className="text-center lg:text-left">
 
-            <h2 className="text-[60px] lg:text-[78px] font-bold leading-none text-white">
+            <h2 className="text-[48px] sm:text-[60px] lg:text-[78px] font-bold leading-none text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
               Zentrix
             </h2>
 
-            <p className="text-[22px] lg:text-[32px] font-light text-slate-300 tracking-[0.15em] mt-2">
+            <p className="text-[18px] sm:text-[22px] lg:text-[32px] font-light text-slate-300 tracking-[0.15em] mt-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
               Technology
             </p>
 
           </div>
 
           {/* DESCRIPTION */}
-          <div className="max-w-[780px] lg:max-w-[850px]">
+          <div className="max-w-[780px] lg:max-w-[850px] text-center lg:text-left">
 
-            <p className="text-slate-200 text-[12px] lg:text-[13px] leading-[1.5]">              Zentrix Technology empowers businesses and learners through
+            <p className="text-slate-200 text-[12px] lg:text-[13px] leading-[1.6] drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
+              Zentrix Technology empowers businesses and learners through
               innovative technology solutions, professional training programs,
               and industry-driven expertise. Our mission is to bridge the gap
               between learning and real-world success through creativity,
@@ -58,48 +58,48 @@ const Footer = () => {
 
           </div>
 
-          {/* MOBILE TABLE WRAPPER FOR LINKS AND CONTACT */}
-          <div className="grid grid-cols-2 gap-4 lg:contents w-full pt-6 lg:pt-0 mt-4 lg:mt-0 border-t border-white/10 lg:border-none">
-            {/* QUICK LINKS */}
-            <div className="flex flex-col items-start lg:items-center justify-start">
+          {/* MOBILE TABLE WRAPPER FOR LINKS AND CONTACT (FULL VISIBILITY 2-COLUMN LAYOUT) */}
+          <div className="grid grid-cols-[0.85fr_1.15fr] sm:grid-cols-2 gap-2 sm:gap-6 lg:contents w-full pt-6 lg:pt-0 mt-4 lg:mt-0 border-t border-white/10 lg:border-none">
+            {/* QUICK LINKS (LEFT) */}
+            <div className="flex flex-col items-center lg:items-center justify-start text-center">
 
-              <div className="px-4 lg:px-6 py-2 border border-white/20 rounded-full text-[11px] lg:text-[13px] font-medium text-white mb-5 w-fit">
+              <div className="px-3.5 sm:px-5 py-1.5 sm:py-2 border border-white/20 bg-black/60 backdrop-blur-sm rounded-full text-[10px] sm:text-xs lg:text-[13px] font-medium text-white mb-4 lg:mb-5 w-fit shadow-md">
                 Quick Links
               </div>
 
-              <ul className="flex flex-col items-start lg:items-center gap-3 text-[13px] text-slate-300">
+              <ul className="flex flex-col items-center gap-2.5 sm:gap-3 text-[12px] sm:text-[13px] text-slate-200 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
 
-                <li className="text-left lg:text-center">
+                <li className="text-center">
                   <Link to="/" className="hover:text-white transition">
                     Orbit
                   </Link>
                 </li>
 
-                <li className="text-left lg:text-center">
+                <li className="text-center">
                   <Link to="/about" className="hover:text-white transition">
                     Meet Zentrix
                   </Link>
                 </li>
 
-                <li className="text-left lg:text-center">
+                <li className="text-center">
                   <Link to="/service" className="hover:text-white transition">
                     Tech Space
                   </Link>
                 </li>
 
-                <li className="text-left lg:text-center">
+                <li className="text-center">
                   <Link to="/your-next-step" className="hover:text-white transition">
                     Your Next Step
                   </Link>
                 </li>
 
-                <li className="text-left lg:text-center">
+                <li className="text-center">
                   <Link to="/career" className="hover:text-white transition">
                     Careers
                   </Link>
                 </li>
 
-                <li className="text-left lg:text-center">
+                <li className="text-center">
                   <Link to="/course" className="hover:text-white transition">
                     Courses
                   </Link>
@@ -109,34 +109,34 @@ const Footer = () => {
 
             </div>
 
-            {/* CONTACT */}
-            <div className="flex flex-col items-start lg:items-end justify-start">
+            {/* CONTACT (RIGHT - FULLY VISIBLE EMAIL) */}
+            <div className="flex flex-col items-center lg:items-end justify-start text-center lg:text-right overflow-visible">
 
-              <div className="px-4 lg:px-6 py-2 border border-white/20 rounded-full text-[11px] lg:text-[13px] font-medium text-white mb-5 w-fit">
+              <div className="px-3.5 sm:px-5 py-1.5 sm:py-2 border border-white/20 bg-black/60 backdrop-blur-sm rounded-full text-[10px] sm:text-xs lg:text-[13px] font-medium text-white mb-4 lg:mb-5 w-fit shadow-md">
                 Contact
               </div>
 
-              <ul className="space-y-4 text-[13px] text-slate-300 text-left lg:text-right">
+              <ul className="space-y-3 sm:space-y-4 text-[12px] sm:text-[13px] text-slate-300 text-center lg:text-right w-full flex flex-col items-center lg:items-end drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
 
-                <li>
+                <li className="w-full text-center lg:text-right">
                   <a
                     href="mailto:info.zentrixtechnology@gmail.com"
-                    className="hover:text-white transition whitespace-nowrap text-[11px] sm:text-xs lg:text-[13px] block"
+                    className="hover:text-purple-300 transition text-[10px] min-[360px]:text-[10.5px] min-[390px]:text-[11px] sm:text-xs lg:text-[13px] text-slate-300 block leading-normal tracking-tight sm:tracking-normal whitespace-nowrap"
                   >
                     info.zentrixtechnology@gmail.com
                   </a>
                 </li>
 
-                <li>
+                <li className="w-full text-center lg:text-right">
                   <a
                     href="tel:+919150973003"
-                    className="hover:text-white transition whitespace-nowrap"
+                    className="hover:text-purple-300 transition text-[12px] sm:text-[13px] text-slate-300 block"
                   >
                     +91 91509 73003
                   </a>
                 </li>
 
-                <li>
+                <li className="w-full text-center lg:text-right text-[12px] sm:text-[13px] text-slate-300">
                   Nagercoil
                   <br />
                   Tamilnadu
@@ -155,18 +155,18 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-white">
 
             {/* Left Links */}
-            <div className="flex gap-6 text-[13px]">
+            <div className="flex flex-wrap justify-center gap-6 text-[12px] sm:text-[13px]">
 
               <Link
                 to="/privacy-policy"
-                className="hover:text-purple-300 transition"
+                className="hover:text-purple-300 transition whitespace-nowrap"
               >
                 Privacy & Policy
               </Link>
 
               <Link
                 to="/terms-and-conditions"
-                className="hover:text-purple-300 transition"
+                className="hover:text-purple-300 transition whitespace-nowrap"
               >
                 Terms & Conditions
               </Link>
@@ -174,7 +174,7 @@ const Footer = () => {
             </div>
 
             {/* Copyright */}
-            <div className="text-[13px] text-center">
+            <div className="text-[12px] sm:text-[13px] text-center text-slate-300">
               © 2026 Zentrix Technology. All rights reserved.
             </div>
 

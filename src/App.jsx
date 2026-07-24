@@ -40,6 +40,7 @@ function AppLayout() {
 
   return (
     <div className="bg-transparent text-white font-poppins relative w-full max-w-[100vw]">
+      <ScrollToTop />
       <GlobalAtmosphere />
       
       {/* Persistent Navbar */}
