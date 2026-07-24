@@ -1,32 +1,33 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
-import About from './pages/About';
-import Service from './pages/Service';
-import Contact from './pages/Contact';
-import Course from './pages/Course';
-import CourseDetail from './pages/CourseDetail';
-import Careers from './pages/Careers';
-import JobDetail from './pages/JobDetail';
-import GetTouch from "./pages/GetTouch";
-import GetInTouch from "./pages/GetInTouch";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermsConditions from "./pages/TermsConditions";
 import FloatingCTA from './components/FloatingCTA';
 import ChatIntegration from './components/chatbot/ChatIntegration';
 import './firebase';
 import './index.css';
 import ScrollToTop from "./components/ScrollToTop";
-import OurProducts from './pages/OurProducts';
-import OurPortfolio from './pages/OurPortfolio';
-import YourNextStep from './pages/Yournextstepnew';
-import Admindashboard from './pages/Admindashboard';
-import AdminLogin from './pages/AdminLogin';
-// import AdminSignup from './pages/AdminSignup';
 import ProtectedRoute from "./components/ProtectedRoute";
-import ResumeViewer from './pages/ResumeViewer';
+
+// Lazy-loaded routes for code-splitting & reduced initial JS bundle size
+const About = lazy(() => import('./pages/About'));
+const Service = lazy(() => import('./pages/Service'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Course = lazy(() => import('./pages/Course'));
+const CourseDetail = lazy(() => import('./pages/CourseDetail'));
+const Careers = lazy(() => import('./pages/Careers'));
+const JobDetail = lazy(() => import('./pages/JobDetail'));
+const GetTouch = lazy(() => import('./pages/GetTouch'));
+const GetInTouch = lazy(() => import('./pages/GetInTouch'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsConditions = lazy(() => import('./pages/TermsConditions'));
+const OurProducts = lazy(() => import('./pages/OurProducts'));
+const OurPortfolio = lazy(() => import('./pages/OurPortfolio'));
+const YourNextStep = lazy(() => import('./pages/Yournextstepnew'));
+const Admindashboard = lazy(() => import('./pages/Admindashboard'));
+const AdminLogin = lazy(() => import('./pages/AdminLogin'));
+const ResumeViewer = lazy(() => import('./pages/ResumeViewer'));
 
 const GlobalAtmosphere = () => (
   <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
@@ -60,45 +61,46 @@ function AppLayout() {
 
       {/* Dynamic Page Content */}
       <main className="relative" id="main-scroll-container">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/service" element={<Service />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/course" element={<Course />} />
-          <Route path="/course/:courseId" element={<CourseDetail />} />
-          <Route path="/career" element={<Careers />} />
-          <Route path="/career/:jobId" element={<JobDetail />} />
-          <Route path="/ourproducts" element={<OurProducts />} />
-          <Route path="/our-products" element={<OurProducts />} />
-          <Route path="/ourporfolio" element={<OurPortfolio />} />
-          <Route path="/our-portfolio" element={<OurPortfolio />} />
-          <Route path="/get-touch" element={<GetTouch />} />
-          <Route path="/get-in-touch" element={<GetInTouch />} />
-          
-          <Route path="/your-next-step" element={<YourNextStep />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-and-conditions" element={<TermsConditions />} />
-          {/* <Route path="/admin-dashboard" element={<Admindashboard/>}/> */}
-          {/* <Route path="/admin-signup" element={<AdminSignup />} /> */}
-          <Route path="/admin-login" element={<AdminLogin />} />
-          <Route
-            path="/admin-dashboard"
-            element={
-              <ProtectedRoute>
-                <Admindashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/view-resume"
-            element={
-              <ProtectedRoute>
-                <ResumeViewer />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
+        <Suspense fallback={<div className="min-h-screen bg-black" />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/service" element={<Service />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/course" element={<Course />} />
+            <Route path="/course/:courseId" element={<CourseDetail />} />
+            <Route path="/career" element={<Careers />} />
+            <Route path="/career/:jobId" element={<JobDetail />} />
+            <Route path="/ourproducts" element={<OurProducts />} />
+            <Route path="/our-products" element={<OurProducts />} />
+            <Route path="/ourporfolio" element={<OurPortfolio />} />
+            <Route path="/our-portfolio" element={<OurPortfolio />} />
+            <Route path="/get-touch" element={<GetTouch />} />
+            <Route path="/get-in-touch" element={<GetInTouch />} />
+            
+            <Route path="/your-next-step" element={<YourNextStep />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-and-conditions" element={<TermsConditions />} />
+            <Route path="/admin-dashboard" element={<Admindashboard/>}/>
+            <Route path="/admin-login" element={<AdminLogin />} />
+            <Route
+              path="/admin-dashboard"
+              element={
+                <ProtectedRoute>
+                  <Admindashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/view-resume"
+              element={
+                <ProtectedRoute>
+                  <ResumeViewer />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </Suspense>
         
         {/* Persistent Footer */}
         {!isAdmin && <Footer />}

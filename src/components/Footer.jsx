@@ -15,6 +15,8 @@ const Footer = () => {
       <img
         src="/footer.jpeg"
         alt=""
+        loading="lazy"
+        decoding="async"
         className="
           absolute
           left-1/2
