@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ChevronDown, ChevronUp, ArrowRight, Users, Lightbulb, TrendingUp, Handshake, BookOpen, Trophy, LineChart, Star, Zap } from 'lucide-react';
+import { ChevronDown, ChevronUp, ArrowRight, Users, Lightbulb, TrendingUp, Handshake, BookOpen, Trophy, LineChart, Star, Zap, MapPin, Globe, Building2, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { getCareers } from "../services/careerService";
@@ -737,18 +737,14 @@ const Careers = () => {
                           {job.type}
                         </span>
 
-                        <span className="px-2 py-0.5 rounded-md bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] sm:text-[11px] font-mono font-bold">
-                          {job.jobId || job.id}
-                        </span>
-
-                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold flex items-center gap-1 border ${
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold flex items-center gap-1.5 border ${
                           (job.mode || 'Onsite') === 'Remote'
                             ? 'bg-sky-500/15 border-sky-500/30 text-sky-300'
                             : (job.mode || 'Onsite') === 'Onsite'
                             ? 'bg-amber-500/15 border-amber-500/30 text-amber-300'
                             : 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300'
                         }`}>
-                          🌐 {job.mode || 'Onsite'}
+                          <Globe className="w-3.5 h-3.5 shrink-0" /> {job.mode || 'Onsite'}
                         </span>
 
                       </div>
@@ -757,17 +753,26 @@ const Careers = () => {
                         {job.title}
                       </h4>
 
-                      <div className="mt-2 flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-5 text-xs text-slate-400">
+                      <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-400">
 
-                        <span>{job.experience}</span>
+                        <span className="flex items-center gap-1.5 text-slate-300 font-medium">
+                          <Clock className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                          {job.experience}
+                        </span>
 
-                        <span className="hidden sm:block">&bull;</span>
+                        <span className="hidden sm:inline text-slate-600">&bull;</span>
 
-                        <span>📍 {job.location || 'Nagercoil, Tamil Nadu'}</span>
+                        <span className="flex items-center gap-1.5 text-slate-300 font-medium">
+                          <MapPin className="w-3.5 h-3.5 text-pink-400 shrink-0" />
+                          {job.location || 'Nagercoil, Tamil Nadu'}
+                        </span>
 
-                        <span className="hidden sm:block">&bull;</span>
+                        <span className="hidden sm:inline text-slate-600">&bull;</span>
 
-                        <span>🏢 {job.mode || 'Onsite'}</span>
+                        <span className="flex items-center gap-1.5 text-slate-300 font-medium">
+                          <Building2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                          {job.mode || 'Onsite'}
+                        </span>
 
                       </div>
                     </div>
@@ -796,7 +801,8 @@ const Careers = () => {
                         to={`/career/${job.jobId || job.id}`}
                         className="inline-flex items-center gap-2 rounded-full bg-[var(--color-brand-purple)] px-5 sm:px-6 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-purple-700"
                       >
-                        Apply Now ({job.jobId || job.id}) ↗
+                        <span>Apply Now</span>
+                        <ArrowRight className="w-4 h-4" />
                       </Link>
 
                     </div>

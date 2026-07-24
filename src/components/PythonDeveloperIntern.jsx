@@ -51,7 +51,7 @@ const PythonDeveloperIntern = () => {
 
         {/* Title */}
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.05] mb-6">
-          Python Developer Intern
+          Python Full Stack Intern
         </h1>
 
         {/* Meta row */}
@@ -69,7 +69,7 @@ const PythonDeveloperIntern = () => {
 
         {/* Description */}
         <p className="text-slate-400 text-base md:text-lg leading-relaxed max-w-3xl mb-14">
-          We are seeking a motivated and enthusiastic Python Developer Intern to join
+          We are seeking a motivated and enthusiastic Python Full Stack Intern to join
           our development team. The intern will work on real-world projects,
           contribute to software development activities, and gain hands-on experience
           in Python programming, web development, APIs, databases, and modern

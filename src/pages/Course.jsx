@@ -247,7 +247,7 @@ function CourseCard({ course, index }) {
                 ? 'border-amber-500/30 text-amber-300 bg-amber-500/10'
                 : 'border-emerald-500/30 text-emerald-300 bg-emerald-500/10'
             }`}>
-              <span>🌐</span> {course.mode || 'Hybrid'}
+              <Globe className="w-3.5 h-3.5 inline-block shrink-0" /> {course.mode || 'Hybrid'}
             </span>
           </div>
 
