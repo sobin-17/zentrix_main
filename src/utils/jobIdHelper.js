@@ -286,7 +286,7 @@ export const computeJobTitle = (baseTitleOrRole, type = 'Internship') => {
 
 // Default initial Job IDs for predefined seed roles
 export const DEFAULT_SEED_CAREERS = [
-  { id: 'python', jobId: 'ZTPYF0001', baseTitle: 'Python Developer', title: 'Python Developer Intern', type: 'Internship', experience: '3 – 6 Months', location: 'Nagercoil, Tamil Nadu', mode: 'Onsite', status: 'Active', ...ROLE_PREDEFINED_DETAILS.python },
+  { id: 'python', jobId: 'ZTPYF0001', baseTitle: 'Python Full Stack', title: 'Python Full Stack Intern', type: 'Internship', experience: '3 – 6 Months', location: 'Nagercoil, Tamil Nadu', mode: 'Onsite', status: 'Active', ...ROLE_PREDEFINED_DETAILS.python },
   { id: 'dataanalytics', jobId: 'ZTDA0001', baseTitle: 'Data Analyst', title: 'Data Analyst Intern', type: 'Internship', experience: '3 – 6 Months', location: 'Nagercoil, Tamil Nadu', mode: 'Hybrid', status: 'Active', ...ROLE_PREDEFINED_DETAILS.dataanalytics },
   { id: 'mern', jobId: 'ZTMERN0001', baseTitle: 'Mern Stack', title: 'Mern Stack Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', mode: 'Hybrid', status: 'Active', ...ROLE_PREDEFINED_DETAILS.mern },
   { id: 'uiux', jobId: 'ZTUIUX0001', baseTitle: 'UI / UX', title: 'UI / UX Intern', type: 'Internship', experience: '3 Months', location: 'Nagercoil, Tamil Nadu', mode: 'Remote', status: 'Active', ...ROLE_PREDEFINED_DETAILS.uiux },

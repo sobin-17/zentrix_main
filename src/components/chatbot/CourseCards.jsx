@@ -5,66 +5,57 @@ import "./CourseCards.css";
 const ZENTRIX_COURSES = [
   {
     id: 1,
-    name: "MERN Stack Development",
+    name: "Full Stack Development",
     category: "Development",
     duration: "6 Months",
-    mode: "Online",
+    mode: "Hybrid",
     description:
-      "Build modern, scalable, and high-performance web applications using the MERN Stack. Learn to develop dynamic user interfaces, robust backend systems, and database-driven applications through hands-on projects and real-world development practices.",
+      "Master complete frontend and backend software development, database architecture, APIs, and cloud deployment through hands-on real-world projects.",
   },
   {
     id: 2,
-    name: "Java Programming",
-    category: "Development",
-    duration: "6 Months",
-    mode: "Online",
+    name: "UI / UX Design",
+    category: "Design",
+    duration: "3 Months",
+    mode: "Remote",
     description:
-      "Create fast, scalable, and reliable web applications using the Java ecosystem. Gain practical experience designing interactive UIs, building backend services with frameworks like Spring, and handling database-driven solutions through real-world projects.",
+      "Design intuitive and engaging digital experiences through UI/UX design. Learn to create user-friendly interfaces, wireframes, and interactive prototypes.",
   },
   {
     id: 3,
-    name: "Python Full Stack Development",
-    category: "Development",
-    duration: "5 Months",
-    mode: "Online",
-    description:
-      "Design and develop modern, efficient, and scalable web applications using Python full stack technologies. Build interactive front-end interfaces, implement backend logic with Django or Flask, and work with databases through practical, project-based learning.",
-  },
-  {
-    id: 4,
     name: "Data Analytics",
     category: "Data Science",
     duration: "6 Months",
-    mode: "Online",
+    mode: "Remote",
     description:
-      "Transform raw data into meaningful insights using powerful data analytics techniques and tools. Learn to clean, analyze, and visualize data, build data-driven reports, and uncover patterns through hands-on projects and real-world case studies.",
+      "Transform raw data into meaningful business insights using Python, SQL, Power BI, and statistical analysis tools.",
+  },
+  {
+    id: 4,
+    name: "Data Science & Machine Learning",
+    category: "Data Science",
+    duration: "6 Months",
+    mode: "Hybrid",
+    description:
+      "Harness the power of data modeling, predictive algorithms, and machine learning to build intelligent, data-driven solutions.",
   },
   {
     id: 5,
-    name: "Data Science & Machine Learning",
-    category: "Data Science",
-    duration: "2 Months",
-    mode: "Online",
+    name: "Artificial Intelligence",
+    category: "AI",
+    duration: "4 Months",
+    mode: "Onsite",
     description:
-      "Harness the power of data science and machine learning to build intelligent, data-driven solutions. Analyze complex datasets, develop predictive models, and implement algorithms that automate decision-making through hands-on projects.",
+      "Explore neural networks, computer vision, generative AI, and Large Language Models to create adaptive AI systems.",
   },
   {
     id: 6,
-    name: "AI (Artificial Intelligence)",
-    category: "Development",
-    duration: "4 Months",
-    mode: "Online & Offline",
-    description:
-      "Explore the world of Artificial Intelligence to create smart, adaptive, and innovative solutions. Build intelligent systems, work with advanced algorithms, and develop AI-powered applications through hands-on projects and real-world use cases.",
-  },
-  {
-    id: 7,
-    name: "UI / UX Designing",
-    category: "Designing",
+    name: "Digital Marketing",
+    category: "Marketing",
     duration: "3 Months",
-    mode: "Online & Offline",
+    mode: "Hybrid",
     description:
-      "Design intuitive and engaging digital experiences through UI/UX design. Learn to create user-friendly interfaces, enhance usability, and craft visually appealing designs by applying modern design principles, user research, and hands-on projects.",
+      "Master SEO, social media marketing, Google Ads, content strategy, and performance analytics for digital brand growth.",
   },
 ];
 
