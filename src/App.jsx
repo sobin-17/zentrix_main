@@ -70,7 +70,9 @@ function AppLayout() {
           <Route path="/career" element={<Careers />} />
           <Route path="/career/:jobId" element={<JobDetail />} />
           <Route path="/ourproducts" element={<OurProducts />} />
+          <Route path="/our-products" element={<OurProducts />} />
           <Route path="/ourporfolio" element={<OurPortfolio />} />
+          <Route path="/our-portfolio" element={<OurPortfolio />} />
           <Route path="/get-touch" element={<GetTouch />} />
           <Route path="/get-in-touch" element={<GetInTouch />} />
           
