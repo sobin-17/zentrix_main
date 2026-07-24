@@ -110,7 +110,7 @@ const AboutPreview = () => {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-80px" }}
         >
           {stats.map((stat, index) => (
             <motion.div 
@@ -118,40 +118,27 @@ const AboutPreview = () => {
               variants={cardVariants}
               className="relative h-full z-10"
             >
-              <div className="relative group p-[1px] rounded-2xl overflow-hidden bg-white/[0.02] hover:-translate-y-1 transition-all duration-500 hover:shadow-[0_8px_30px_-10px_rgba(168,85,247,0.25)] h-full">
+              <div className="relative group p-[1px] rounded-2xl overflow-hidden bg-gradient-to-r from-[#00c6ff]/30 via-[#a855f7]/30 to-[#ec4899]/30 hover:from-[#00c6ff] hover:via-[#a855f7] hover:to-[#ec4899] bg-[length:200%_100%] animate-gradient-x hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_15px_40px_-10px_rgba(168,85,247,0.45)] h-full transform-gpu">
                 
-                {/* Rotating Border Glow */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] opacity-30 group-hover:opacity-70 transition-opacity duration-700 pointer-events-none transform-gpu"
-                     style={{
-                       background: 'conic-gradient(from 0deg, transparent 0 340deg, #a855f7 360deg)',
-                       animation: 'spin 5s linear infinite'
-                     }}
-                />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] opacity-30 group-hover:opacity-70 transition-opacity duration-700 pointer-events-none transform-gpu"
-                     style={{
-                       background: 'conic-gradient(from 180deg, transparent 0 340deg, #00c6ff 360deg)',
-                       animation: 'spin 5s linear infinite'
-                     }}
-                />
-
-                {/* Inner Card */}
-                <div className="flex flex-col items-center justify-center h-full p-6 bg-[#0a0518]/90 backdrop-blur-md rounded-2xl relative z-10 overflow-hidden transform-gpu">
+                {/* Inner Card Panel */}
+                <div className="flex flex-col items-center justify-center h-full p-6 sm:p-7 bg-[#0a0518]/95 backdrop-blur-md rounded-2xl relative z-10 overflow-hidden transform-gpu">
                   
-                  {/* Ambient Light Effect (Shimmer Sweep) */}
-                  <div className="absolute inset-0 opacity-5 group-hover:opacity-15 transition-opacity duration-700 pointer-events-none">
-                    <div className="w-1/2 h-full bg-gradient-to-r from-transparent via-[#00c6ff] to-transparent opacity-50"
-                         style={{ animation: 'shimmer-sweep 6s ease-in-out infinite' }}
-                    />
-                  </div>
+                  {/* Hover Light Shimmer Beam */}
+                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none z-0" />
 
-                  {/* Very Soft Ambient Radial Glow Behind Numbers */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full blur-[40px] bg-[#a855f7] opacity-10 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none"></div>
+                  {/* Ambient Glow Blob */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-purple-500/10 group-hover:bg-purple-500/30 transition-all duration-500 pointer-events-none transform-gpu" />
 
-                  <h3 className="text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00c6ff] to-[#a855f7] mb-3 drop-shadow-[0_0_15px_rgba(0,198,255,0.3)] relative z-10">
+                  {/* Top Glowing Accent Line */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 group-hover:w-24 h-[2px] bg-gradient-to-r from-[#00c6ff] via-[#a855f7] to-[#ec4899] transition-all duration-500 rounded-full shadow-[0_0_10px_#a855f7]" />
+
+                  {/* Counter Number */}
+                  <h3 className="text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#00c6ff] via-[#a855f7] to-[#00c6ff] bg-[length:200%_auto] animate-gradient-x mb-3 drop-shadow-[0_0_15px_rgba(0,198,255,0.5)] relative z-10 group-hover:scale-110 transition-transform duration-300">
                     <Counter to={stat.value} suffix={stat.suffix} />
                   </h3>
 
-                  <span className="text-sm text-slate-300 uppercase tracking-wider font-medium text-center relative z-10 transition-colors duration-300 group-hover:text-white">
+                  {/* Label */}
+                  <span className="text-xs sm:text-sm text-slate-300 uppercase tracking-widest font-bold text-center relative z-10 transition-colors duration-300 group-hover:text-white">
                     {stat.label}
                   </span>
                 </div>

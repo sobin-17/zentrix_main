@@ -294,8 +294,6 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
           </svg>
         </button>
       </div>
-
-      <div className="zx-footer">⚡ Powered by Zentrix AI</div>
     </div>
   );
 };

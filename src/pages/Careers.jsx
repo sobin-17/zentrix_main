@@ -177,7 +177,7 @@ const Careers = () => {
         </motion.div>
 
         {/* Hero Content — Positioned at z-20 above hand */}
-        <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-8 sm:pt-12 lg:pt-16 pb-[140px] sm:pb-[180px] md:pb-[260px] lg:pb-[340px] xl:pb-[380px] 2xl:pb-[420px]">
+        <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-28 sm:pt-32 lg:pt-36 pb-[140px] sm:pb-[180px] md:pb-[260px] lg:pb-[340px] xl:pb-[380px] 2xl:pb-[420px]">
 
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6 lg:gap-12">
 

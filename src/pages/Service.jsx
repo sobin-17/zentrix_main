@@ -258,7 +258,7 @@ export default function Services() {
       {/*  HERO                                                        */}
       {/* ════════════════════════════════════════════════════════════ */}
 
-      <section className="relative pt-3 sm:pt-4 md:pt-6 pb-4 sm:pb-6 z-10">
+      <section className="relative pt-28 sm:pt-32 md:pt-36 pb-4 sm:pb-6 z-10">
         <motion.h1
           variants={fadeUp}
           initial="hidden"

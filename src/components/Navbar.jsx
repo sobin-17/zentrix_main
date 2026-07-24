@@ -25,6 +25,7 @@ const Navbar = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     setIsOpen(false);
+    setScrolled(false);
   }, [pathname]);
 
   const links = [
@@ -44,8 +45,8 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`sticky top-0 z-[100] w-full px-4 sm:px-8 lg:px-12 flex items-center justify-between transition-all duration-300 transform-gpu ${
-        scrolled ? 'bg-[#0a0514]/90 backdrop-blur-md py-3 shadow-[0_4px_30px_rgba(0,0,0,0.5)]' : 'bg-transparent py-4 md:py-5'
+      className={`fixed top-0 left-0 right-0 z-[100] w-full px-4 sm:px-8 lg:px-12 flex items-center justify-between transition-all duration-300 transform-gpu bg-transparent ${
+        scrolled ? 'py-3' : 'py-4 md:py-5'
       }`}
     >
       {/* Logo */}

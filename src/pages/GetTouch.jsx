@@ -73,7 +73,7 @@ const GetTouch = () => {
   ];
 
   return (
-    <section className="relative bg-[#07020f] min-h-screen overflow-hidden py-16 md:py-24 px-4 sm:px-6 md:px-10">
+    <section className="relative bg-[#07020f] min-h-screen overflow-hidden pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-24 px-4 sm:px-6 md:px-10">
       {/* Ambient purple glow, top right — slow breathing motion */}
       {/* Space dots / particles */}
   {particles.map((p) => (

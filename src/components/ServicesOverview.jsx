@@ -77,55 +77,45 @@ const ServicesOverview = () => {
           animate="visible"
         >
           {services.map((service, index) => {
-            // Assign a unique duration between 6s and ~10s for each card to prevent synchronization
-            const sweepDuration = 6 + (index * 1.3);
-            
             return (
               <motion.div 
                 key={index}
                 variants={cardVariants}
-                className="group relative cursor-pointer w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)] xl:w-auto shrink-0 transition-all duration-500 hover:-translate-y-2"
+                className="group relative cursor-pointer w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)] xl:w-auto shrink-0 transition-all duration-300 hover:-translate-y-1.5"
                 title={service.description}
               >
                 {/* Outer Glow on Hover */}
-                <div className="absolute inset-0 bg-purple-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 pointer-events-none"></div>
+                <div 
+                  className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 pointer-events-none transform-gpu"
+                  style={{ background: `radial-gradient(circle, ${service.color}30 0%, transparent 70%)` }}
+                />
 
                 {/* Elegant Energy Border (Seamless Perimeter Loop) */}
-                <div className="zentrix-energy-border transform-gpu">
-                  <div className="absolute top-1/2 left-1/2 w-[250%] h-[250%] -translate-x-1/2 -translate-y-1/2 transform-gpu">
+                <div className="zentrix-energy-border transform-gpu pointer-events-none">
+                  <div className="absolute top-1/2 left-1/2 w-[250%] h-[250%] -translate-x-1/2 -translate-y-1/2 transform-gpu will-change-transform">
                     <div 
-                      className="w-full h-full transform-gpu"
+                      className="w-full h-full transform-gpu will-change-transform"
                       style={{
-                        background: "conic-gradient(from 0deg, transparent 75%, rgba(168, 85, 247, 0.9) 100%)",
-                        animation: `zentrix-border-spin ${sweepDuration}s linear infinite`
+                        background: `conic-gradient(from 0deg, transparent 75%, ${service.color} 100%)`,
+                        animation: `zentrix-border-spin ${6 + index * 1.5}s linear infinite`
                       }}
                     />
                   </div>
                 </div>
 
                 {/* Glassmorphism Panel */}
-                <div className="relative flex items-center gap-4 px-5 py-4 bg-[#0a0518]/90 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden transition-all duration-500 transform-gpu">
+                <div className="relative flex items-center gap-4 px-5 py-4 bg-[#0a0518]/90 backdrop-blur-md border border-white/10 hover:border-purple-500/50 rounded-2xl overflow-hidden transition-all duration-300 transform-gpu">
                   
                   {/* Inner Highlight Gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0"></div>
-
-                  {/* Faint Energy Sweep (Hover & Continuous) */}
-                  <div className="absolute inset-0 opacity-60 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0 overflow-hidden transform-gpu">
-                    <div className="absolute top-1/2 left-1/2 w-[250%] h-[250%] -translate-x-1/2 -translate-y-1/2 transform-gpu">
-                      <div 
-                        className="w-full h-full transform-gpu"
-                        style={{
-                          background: "conic-gradient(from 0deg, transparent 75%, rgba(168, 85, 247, 0.15) 100%)",
-                          animation: `zentrix-border-spin ${sweepDuration}s linear infinite`
-                        }}
-                      />
-                    </div>
-                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-0"></div>
 
                   {/* Icon Container with Soft Glow */}
                   <div className="relative z-10 flex items-center justify-center shrink-0">
-                    <div className="absolute inset-[-4px] bg-purple-500/30 blur-md rounded-full pointer-events-none transition-all duration-500 group-hover:bg-purple-500/60 group-hover:scale-150"></div>
-                    <div className="relative z-10 text-white transition-transform duration-500 group-hover:scale-110">
+                    <div 
+                      className="absolute inset-[-4px] blur-md rounded-full pointer-events-none transition-all duration-300 group-hover:scale-125"
+                      style={{ backgroundColor: `${service.color}40` }}
+                    />
+                    <div className="relative z-10 text-white transition-transform duration-300 group-hover:scale-110">
                       {React.cloneElement(service.icon, { className: "w-5 h-5 shrink-0" })}
                     </div>
                   </div>

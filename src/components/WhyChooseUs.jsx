@@ -18,7 +18,7 @@ const WhyChooseUs = () => {
   const [cardDelays, setCardDelays] = useState(reasons.map((_, i) => i * 0.5)); // Fallback delays
   
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
-  const totalDuration = 3.5; // Premium 3.5s journey
+  const totalDuration = 1.8; // Fast & snappy 1.8s journey
 
   useEffect(() => {
     const calculatePath = () => {
