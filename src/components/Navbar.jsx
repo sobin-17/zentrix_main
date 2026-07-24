@@ -45,8 +45,10 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-[100] w-full px-4 sm:px-8 lg:px-12 flex items-center justify-between transition-all duration-300 transform-gpu bg-transparent ${
-        scrolled ? 'py-3' : 'py-4 md:py-5'
+      className={`fixed top-0 left-0 right-0 z-[100] w-full px-4 sm:px-8 lg:px-12 flex items-center justify-between transition-all duration-300 transform-gpu ${
+        scrolled || isOpen
+          ? 'bg-[#07020f]/80 backdrop-blur-xl border-b border-purple-500/20 shadow-[0_4px_30px_rgba(0,0,0,0.6)] py-3'
+          : 'bg-transparent border-b border-transparent py-4 md:py-5'
       }`}
     >
       {/* Logo */}
@@ -61,7 +63,11 @@ const Navbar = () => {
       </div>
 
       {/* Center Nav Links Pill Container - Desktop (Spacious & Non-Overlapping) */}
-      <div className="hidden lg:flex items-center justify-center gap-5 xl:gap-8 mx-auto border border-white/20 rounded-full px-6 xl:px-8 py-2.5 xl:py-3 bg-black/40 backdrop-blur-md shadow-lg">
+      <div className={`hidden lg:flex items-center justify-center gap-5 xl:gap-8 mx-auto border rounded-full px-6 xl:px-8 py-2.5 xl:py-3 transition-all duration-300 ${
+        scrolled 
+          ? 'bg-white/5 border-white/10 backdrop-blur-md shadow-md' 
+          : 'bg-black/40 border-white/20 backdrop-blur-md shadow-lg'
+      }`}>
         {links.map((link) => {
           const isActive = pathname === link.path || (link.dropdown && link.dropdown.some(d => pathname === d.path));
           

@@ -426,19 +426,18 @@ const Course = () => {
         >
           Courses
         </motion.h1>
-        {/* Arc Background - Scaled and Masked to crop Gemini Watermark */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-h-[85%] sm:max-h-[90%] pointer-events-none z-0 overflow-hidden">
+        {/* Arc Background - Shifted down slightly on mobile screens */}
+        <div className="absolute top-14 sm:top-8 md:top-0 left-1/2 -translate-x-1/2 w-full max-w-[1500px] pointer-events-none z-0 overflow-hidden">
           <motion.img
             src="/course_arc.png"
             alt="Arc"
-            className="w-full object-cover scale-[1.06] origin-top"
+            className="w-full h-auto object-contain origin-top opacity-95"
             style={{
-              maskImage: "radial-gradient(ellipse 95% 82% at 50% 40%, black 70%, transparent 100%)",
-              WebkitMaskImage: "radial-gradient(ellipse 95% 82% at 50% 40%, black 70%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, black 85%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, black 85%, transparent 100%)",
             }}
             animate={{
-              y: [0, -12, 0],
-              scale: [1.06, 1.075, 1.06],
+              y: [0, -8, 0],
             }}
             transition={{
               duration: 5,

@@ -126,9 +126,6 @@ const AboutPreview = () => {
                   {/* Hover Light Shimmer Beam */}
                   <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none z-0" />
 
-                  {/* Ambient Glow Blob */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-purple-500/10 group-hover:bg-purple-500/30 transition-all duration-500 pointer-events-none transform-gpu" />
-
                   {/* Top Glowing Accent Line */}
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 group-hover:w-24 h-[2px] bg-gradient-to-r from-[#00c6ff] via-[#a855f7] to-[#ec4899] transition-all duration-500 rounded-full shadow-[0_0_10px_#a855f7]" />
 
