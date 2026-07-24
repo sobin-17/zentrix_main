@@ -1,15 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-
-// Layout & Component Imports
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import FloatingCTA from './components/FloatingCTA';
-import ChatIntegration from './components/chatbot/ChatIntegration';
-import ScrollToTop from "./components/ScrollToTop";
-import ProtectedRoute from "./components/ProtectedRoute";
-
-// Page Imports
 import Home from './pages/Home';
 import About from './pages/About';
 import Service from './pages/Service';
@@ -18,26 +10,27 @@ import Course from './pages/Course';
 import CourseDetail from './pages/CourseDetail';
 import Careers from './pages/Careers';
 import JobDetail from './pages/JobDetail';
-import OurProducts from './pages/OurProducts';
-import OurPortfolio from './pages/OurPortfolio';
-import YourNextStep from './pages/Yournextstepnew';
 import GetTouch from "./pages/GetTouch";
 import GetInTouch from "./pages/GetInTouch";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
-
-// Admin Page Imports
+import FloatingCTA from './components/FloatingCTA';
+import ChatIntegration from './components/chatbot/ChatIntegration';
+import './firebase';
+import './index.css';
+import ScrollToTop from "./components/ScrollToTop";
+import OurProducts from './pages/OurProducts';
+import OurPortfolio from './pages/OurPortfolio';
+import YourNextStep from './pages/Yournextstepnew';
 import Admindashboard from './pages/Admindashboard';
 import AdminLogin from './pages/AdminLogin';
 import AdminSignup from './pages/AdminSignup';
+import ProtectedRoute from "./components/ProtectedRoute";
 import ResumeViewer from './pages/ResumeViewer';
-
-import './firebase';
-import './index.css';
 
 const GlobalAtmosphere = () => (
   <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
-    {/* Atmosphere Background */}
+    {/* Glows removed to prevent blur rendering artifacts */}
   </div>
 );
 
@@ -86,7 +79,7 @@ function AppLayout() {
           <Route path="/your-next-step" element={<YourNextStep />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsConditions />} />
-          
+          {/* <Route path="/admin-dashboard" element={<Admindashboard/>}/> */}
           <Route path="/admin-signup" element={<AdminSignup />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route

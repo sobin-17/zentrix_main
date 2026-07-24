@@ -510,14 +510,3 @@ a[href*="spline"] {
 .animate-marquee-right {
   animation: marquee-right 30s linear infinite;
 }
-
-/* Hardware Acceleration & Rendering Performance Optimizations */
-img, video {
-  content-visibility: auto;
-}
-
-.fixed, .backdrop-blur-xl, .backdrop-blur-md, .backdrop-blur-sm {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}

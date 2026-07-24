@@ -174,4 +174,4 @@ const ParticleBackground = () => {
   );
 };
 
-export default React.memo(ParticleBackground);
+export default ParticleBackground;
