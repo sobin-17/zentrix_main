@@ -77,8 +77,8 @@ const Planet = ({ planet, radius, index, canEmerge, onArrived, isSelected, isDim
     const startX = 22 + (index % 3) * 8 - 12;
     const startY = -20 + Math.sin(index) * 12;
 
-    const delay = index * 0.04;
-    const duration = 1.0 + index * 0.04;
+    const delay = index * 0.02;
+    const duration = 0.35 + index * 0.02;
 
     const timer = setTimeout(() => {
       animate(x, finalX, { duration, ease: 'easeOut' });
@@ -93,8 +93,8 @@ const Planet = ({ planet, radius, index, canEmerge, onArrived, isSelected, isDim
           }
         },
       });
-      animate(opacity, 1, { duration: 0.4, ease: 'easeOut' });
-      animate(scale, [0.3, 1.15, 1], { duration: 1.0, times: [0, 0.6, 1] });
+      animate(opacity, 1, { duration: 0.25, ease: 'easeOut' });
+      animate(scale, [0.3, 1.1, 1], { duration: 0.4, times: [0, 0.6, 1] });
     }, delay * 1000);
 
     x.set(startX);
@@ -156,14 +156,14 @@ const Technologies = () => {
   const ORBIT_DIRECTION = -1;
 
   const planets = [
-    { name: 'Node.js', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg" alt="Node.js" className="w-10 h-10 object-contain" />, angle: 0 },
-    { name: 'Python', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" alt="Python" className="w-10 h-10 object-contain" />, angle: 45 },
-    { name: 'Next.js', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg" alt="Next.js" className="w-10 h-10 object-contain bg-white rounded-full" />, angle: 90 },
-    { name: 'Firebase', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-plain.svg" alt="Firebase" className="w-10 h-10 object-contain" />, angle: 135 },
-    { name: 'MongoDB', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg" alt="MongoDB" className="w-10 h-10 object-contain" />, angle: 180 },
-    { name: 'MySQL', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" alt="MySQL" className="w-10 h-10 object-contain" />, angle: 225 },
-    { name: 'AWS', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" alt="AWS" className="w-10 h-10 object-contain bg-slate-50 p-1 rounded-sm" />, angle: 270 },
-    { name: 'React', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="React" className="w-10 h-10 object-contain" />, angle: 315 },
+    { name: 'Node.js', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg" alt="Node.js" loading="eager" decoding="async" className="w-10 h-10 object-contain" />, angle: 0 },
+    { name: 'Python', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" alt="Python" loading="eager" decoding="async" className="w-10 h-10 object-contain" />, angle: 45 },
+    { name: 'Next.js', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg" alt="Next.js" loading="eager" decoding="async" className="w-10 h-10 object-contain bg-white rounded-full" />, angle: 90 },
+    { name: 'Firebase', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-plain.svg" alt="Firebase" loading="eager" decoding="async" className="w-10 h-10 object-contain" />, angle: 135 },
+    { name: 'MongoDB', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg" alt="MongoDB" loading="eager" decoding="async" className="w-10 h-10 object-contain" />, angle: 180 },
+    { name: 'MySQL', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" alt="MySQL" loading="eager" decoding="async" className="w-10 h-10 object-contain" />, angle: 225 },
+    { name: 'AWS', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" alt="AWS" loading="eager" decoding="async" className="w-10 h-10 object-contain bg-slate-50 p-1 rounded-sm" />, angle: 270 },
+    { name: 'React', icon: <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="React" loading="eager" decoding="async" className="w-10 h-10 object-contain" />, angle: 315 },
   ].map((p) => ({ ...p, duration: ORBIT_DURATION, direction: ORBIT_DIRECTION }));
 
   const radius = useOrbitRadius();
@@ -181,8 +181,8 @@ const Technologies = () => {
 
   const shardVariants = {
     closed: { x: 0, y: 0, rotate: 0, transition: { type: 'spring', stiffness: 420, damping: 24, mass: 0.6 } },
-    left: { x: -58, y: -20, rotate: -14, transition: { duration: 1.8, ease: 'easeInOut' } },
-    right: { x: 58, y: 20, rotate: 14, transition: { duration: 1.8, ease: 'easeInOut' } },
+    left: { x: -58, y: -20, rotate: -14, transition: { duration: 0.35, ease: 'easeOut' } },
+    right: { x: 58, y: 20, rotate: 14, transition: { duration: 0.35, ease: 'easeOut' } },
   };
 
   // Shards open once cracking starts, then close back together the moment

@@ -6,18 +6,12 @@ import '../styles/services.css';
 
 const Hero = () => {
   const [splineApp, setSplineApp] = useState(null);
-  const [loadSpline, setLoadSpline] = useState(false);
+  const [loadSpline, setLoadSpline] = useState(true);
+  const [isSplineLoaded, setIsSplineLoaded] = useState(false);
   const heroRef = useRef(null);
 
   const words = ['Innovation', 'Technology', 'AI', 'Analytics', 'Automation'];
   const [currentWord, setCurrentWord] = useState(0);
-
-  useEffect(() => {
-    // Defer 3D canvas initialization so page opens instantly without delay
-    const timer = setTimeout(() => setLoadSpline(true), 150);
-    return () => clearTimeout(timer);
-  }, []);
-
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -26,43 +20,36 @@ const Hero = () => {
     return () => clearInterval(interval);
   }, [words.length]);
 
+  // Efficient non-blocking MutationObserver for Spline watermark cleanup
   useEffect(() => {
     if (!loadSpline) return;
 
-    const purgeSplineWatermark = () => {
-      // 1. Regular DOM search
-      document.querySelectorAll('a[href*="spline"], #logo, #spline-logo, .spline-watermark, [class*="watermark"]').forEach(el => {
+    const purgeSplineWatermark = (container) => {
+      if (!container) return;
+      const selectors = 'a[href*="spline"], #logo, #spline-logo, .spline-watermark, [class*="watermark"]';
+      container.querySelectorAll(selectors).forEach((el) => {
         try {
           el.style.setProperty('display', 'none', 'important');
-          el.style.setProperty('opacity', '0', 'important');
-          el.style.setProperty('visibility', 'hidden', 'important');
           el.remove();
         } catch (e) {}
       });
-
-      // 2. Shadow DOM search for custom elements
-      document.querySelectorAll('*').forEach(node => {
-        if (node.shadowRoot) {
-          node.shadowRoot.querySelectorAll('a, #logo, #spline-logo, [class*="watermark"], [class*="logo"]').forEach(el => {
-            try {
-              el.style.setProperty('display', 'none', 'important');
-              el.style.setProperty('opacity', '0', 'important');
-              el.style.setProperty('visibility', 'hidden', 'important');
-              el.remove();
-            } catch (e) {}
-          });
-        }
-      });
+      if (container.shadowRoot) {
+        container.shadowRoot.querySelectorAll(selectors).forEach((el) => {
+          try {
+            el.style.setProperty('display', 'none', 'important');
+            el.remove();
+          } catch (e) {}
+        });
+      }
     };
 
-    purgeSplineWatermark();
-    const interval = setInterval(purgeSplineWatermark, 100);
-    const timeout = setTimeout(() => clearInterval(interval), 5000);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
+    const wrapper = heroRef.current?.querySelector('.spline-wrapper');
+    if (wrapper) {
+      purgeSplineWatermark(wrapper);
+      const observer = new MutationObserver(() => purgeSplineWatermark(wrapper));
+      observer.observe(wrapper, { childList: true, subtree: true });
+      return () => observer.disconnect();
+    }
   }, [loadSpline]);
 
   useEffect(() => {
@@ -244,14 +231,28 @@ const Hero = () => {
             transition={{ duration: 0.12, ease: "easeOut" }}
             className="spline-wrapper w-full lg:w-1/2 h-[300px] sm:h-[400px] lg:h-[600px] flex justify-center lg:justify-end relative pointer-events-none lg:pointer-events-auto -translate-y-6 lg:-translate-y-10 transform-gpu will-change-transform overflow-hidden"
           >
+            {/* Glowing 3D Orbit Loading Placeholder Skeleton */}
+            {!isSplineLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+                <div className="relative w-48 h-48 sm:w-64 sm:h-64 flex items-center justify-center">
+                  <div className="absolute inset-0 rounded-full border border-purple-500/30 animate-[spin_8s_linear_infinite] shadow-[0_0_30px_rgba(168,85,247,0.2)]" />
+                  <div className="absolute inset-4 rounded-full border border-dashed border-cyan-400/30 animate-[spin_12s_linear_infinite_reverse]" />
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-purple-600/40 via-cyan-500/40 to-emerald-400/40 animate-pulse shadow-[0_0_25px_rgba(0,198,255,0.4)] flex items-center justify-center">
+                    <Orbit className="w-8 h-8 text-cyan-300 animate-spin" style={{ animationDuration: '6s' }} />
+                  </div>
+                </div>
+              </div>
+            )}
+
             {loadSpline && (
-              <div className="w-full h-[calc(100%+60px)] -mb-[60px] relative z-10 overflow-hidden">
+              <div className={`w-full h-[calc(100%+60px)] -mb-[60px] relative z-10 overflow-hidden transition-opacity duration-700 ${isSplineLoaded ? 'opacity-100' : 'opacity-0'}`}>
                 <Spline
                   scene="https://prod.spline.design/QYsjYTMQQVk8eqIS/scene.splinecode"
                   className="w-full h-full relative z-10"
                   style={{ background: 'transparent' }}
                   onLoad={(spline) => {
                     setSplineApp(spline);
+                    setIsSplineLoaded(true);
                     try {
                       if (spline && spline._runtime) {
                         if (spline._runtime.pipeline && spline._runtime.pipeline.logoOverlayPass) {
