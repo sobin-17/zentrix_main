@@ -481,13 +481,21 @@ function Toast({ message }) {
 }
 
 /* ────────────────────────────────────────────────────────────────────────
-   COURSE FORM MODAL (Simplified with Dropdowns)
+   COURSE FORM MODAL
 ──────────────────────────────────────────────────────────────────────── */
 function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
   const isEdit = Boolean(initial);
  
   // Default to the first seed course
   const defaultCourse = seedCourses[0];
+  const predefined = initial
+    ? (seedCourses.find(c => c.id === initial.id) || seedCourses[0])
+    : defaultCourse;
+
+  const initialDescription = initial?.description || initial?.overview || predefined.description || '';
+  const initialSkills = Array.isArray(initial?.skills)
+    ? initial.skills.join(', ')
+    : (typeof initial?.skills === 'string' ? initial.skills : (predefined.skills || []).join(', '));
 
   const [form, setForm] = useState(
     initial
@@ -501,6 +509,8 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
           level: initial.level || LEVELS[0],
           mode: initial.mode || 'Hybrid',
           status: initial.status || 'Draft',
+          description: initialDescription,
+          skillsText: initialSkills,
         }
       : {
           id: defaultCourse.id,
@@ -511,7 +521,9 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
           duration: defaultCourse.duration,
           level: defaultCourse.level,
           mode: 'Hybrid',
-          status: 'Published'
+          status: 'Published',
+          description: initialDescription,
+          skillsText: initialSkills,
         }
   );
 
@@ -530,7 +542,9 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
       title: predefined.title,
       category: predefined.category,
       duration: predefined.duration,
-      level: predefined.level
+      level: predefined.level,
+      description: predefined.description || '',
+      skillsText: (predefined.skills || []).join(', '),
     }));
   };
 
@@ -539,8 +553,11 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
  
     if (saving) return;
 
-    // Grab the predefined data for this course to auto-attach the description, skills, image etc.
     const predefined = seedCourses.find(c => c.id === form.id) || seedCourses[0];
+
+    const parsedSkills = form.skillsText
+      ? form.skillsText.split(',').map(s => s.trim()).filter(Boolean)
+      : (predefined.skills || []);
  
     const payload = {
       ...(isEdit ? { firestoreId: initial.firestoreId, courseId: initial.courseId } : { courseId: currentCourseId }),
@@ -552,13 +569,14 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
       level: form.level,
       mode: form.mode,
       status: form.status,
-      // Pre-defined static fields that user no longer manually enters:
+      // Editable description & skills:
+      overview: form.description,
+      description: form.description,
+      skills: parsedSkills,
+      // Pre-defined static fields:
       image: initial?.image || predefined.image || '',
       accentColor: initial?.accentColor || predefined.accentColor || '#a855f7',
-      overview: initial?.overview || predefined.description || '',
-      description: predefined.description || '',
       curriculum: initial?.curriculum || predefined.curriculum || [],
-      skills: initial?.skills || predefined.skills || [],
       internship: initial?.internship ?? predefined.internship ?? false,
       placement: initial?.placement ?? predefined.placement ?? true,
       students: isEdit ? initial.students : 0,
@@ -567,7 +585,9 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
     onSave(payload, isEdit);
   };
 
-  const activePredefined = seedCourses.find(c => c.id === form.id) || seedCourses[0];
+  const skillsArray = form.skillsText
+    ? form.skillsText.split(',').map(s => s.trim()).filter(Boolean)
+    : [];
 
   return (
     <ModalShell title={isEdit ? 'Edit Course' : 'Add New Course'} onClose={onClose}>
@@ -586,10 +606,36 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
           </select>
         </Field>
 
-        <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-2">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Predefined Description</p>
-          <p className="text-sm text-slate-300 leading-relaxed">{activePredefined.description}</p>
-        </div>
+        <Field label="Course Description / Overview">
+          <textarea
+            value={form.description}
+            onChange={(e) => set('description', e.target.value)}
+            rows={3}
+            className="input resize-none"
+            placeholder="Enter custom course description..."
+          />
+        </Field>
+
+        <Field label="Skills (comma separated)">
+          <input
+            value={form.skillsText}
+            onChange={(e) => set('skillsText', e.target.value)}
+            className="input"
+            placeholder="e.g. React, Node.js, Express, MongoDB"
+          />
+          {skillsArray.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-2">
+              {skillsArray.map((skill, idx) => (
+                <span
+                  key={idx}
+                  className="px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          )}
+        </Field>
 
         <Field label="Subtitle">
           <input value={form.subtitle} onChange={(e) => set('subtitle', e.target.value)} className="input" placeholder="e.g. Full Stack Development" />
@@ -640,6 +686,15 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
 
   // Default to the first seed career
   const defaultCareer = seedCareers[0];
+  const predefined = initial
+    ? (seedCareers.find(c => c.id === initial.id) || seedCareers[0])
+    : defaultCareer;
+  const roleDetails = getPredefinedDetailsForRole(initial?.id || initial?.title || defaultCareer.id);
+
+  const initialDescription = initial?.description || initial?.overview || predefined.description || roleDetails.overview || '';
+  const initialSkills = Array.isArray(initial?.skills)
+    ? initial.skills.join(', ')
+    : (typeof initial?.skills === 'string' ? initial.skills : (predefined.skills || roleDetails.skills || []).join(', '));
 
   const [form, setForm] = useState(
     initial
@@ -652,6 +707,8 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
           location: initial.location || 'Nagercoil, Tamil Nadu',
           mode: initial.mode || 'Onsite',
           status: initial.status || 'Active',
+          description: initialDescription,
+          skillsText: initialSkills,
         }
       : {
           id: defaultCareer.id,
@@ -662,6 +719,8 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
           location: defaultCareer.location,
           mode: 'Onsite',
           status: 'Active',
+          description: initialDescription,
+          skillsText: initialSkills,
         }
   );
 
@@ -674,6 +733,7 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
   const handleCareerChange = (e) => {
     const selectedId = e.target.value;
     const predefined = seedCareers.find(c => c.id === selectedId) || seedCareers[0];
+    const roleDetails = getPredefinedDetailsForRole(selectedId);
     const baseTitle = predefined.baseTitle || predefined.title.replace(/\s+Intern$/i, '');
     const currentType = form.type || predefined.type || 'Internship';
     const computedTitle = computeJobTitle(baseTitle, currentType);
@@ -685,7 +745,9 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
       title: computedTitle,
       type: currentType,
       experience: predefined.experience,
-      location: predefined.location
+      location: predefined.location,
+      description: predefined.description || roleDetails.overview || '',
+      skillsText: (predefined.skills || roleDetails.skills || []).join(', ')
     }));
   };
 
@@ -709,6 +771,10 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
     const finalBaseTitle = form.baseTitle || predefinedSeed.baseTitle || form.title;
     const finalTitle = computeJobTitle(finalBaseTitle, form.type);
 
+    const parsedSkills = form.skillsText
+      ? form.skillsText.split(',').map(s => s.trim()).filter(Boolean)
+      : (predefinedSeed.skills || roleDetails.skills || []);
+
     onSave(
       {
         ...(isEdit ? { firestoreId: initial.firestoreId, jobId: initial.jobId } : { jobId: currentJobId }),
@@ -720,10 +786,10 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
         mode: form.mode,
         status: form.status,
         category: roleDetails.category,
-        overview: initial?.overview || initial?.description || predefinedSeed.description || roleDetails.overview,
-        description: initial?.description || predefinedSeed.description || roleDetails.overview,
+        overview: form.description,
+        description: form.description,
         responsibilities: initial?.responsibilities || predefinedSeed.responsibilities || roleDetails.responsibilities,
-        skills: initial?.skills || predefinedSeed.skills || roleDetails.skills,
+        skills: parsedSkills,
         whatYouGet: initial?.whatYouGet || predefinedSeed.whatYouGet || roleDetails.whatYouGet,
       },
       isEdit
@@ -731,6 +797,10 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
   };
 
   const activePredefined = seedCareers.find(c => c.id === form.id) || seedCareers[0];
+
+  const skillsArray = form.skillsText
+    ? form.skillsText.split(',').map(s => s.trim()).filter(Boolean)
+    : [];
 
   return (
     <ModalShell title={isEdit ? 'Edit Career' : 'Add New Career'} onClose={onClose}>
@@ -758,10 +828,39 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
 
         <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-2">
           <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Generated Title Preview</p>
-          <p className="text-base font-bold text-purple-300 mb-2">{computeJobTitle(form.baseTitle || activePredefined.baseTitle || form.title, form.type)}</p>
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Role Description</p>
-          <p className="text-sm text-slate-300 leading-relaxed">{activePredefined.description || activePredefined.overview}</p>
+          <p className="text-base font-bold text-purple-300">{computeJobTitle(form.baseTitle || activePredefined.baseTitle || form.title, form.type)}</p>
         </div>
+
+        <Field label="Role Description / Overview">
+          <textarea
+            value={form.description}
+            onChange={(e) => set('description', e.target.value)}
+            rows={3}
+            className="input resize-none"
+            placeholder="Enter custom role description..."
+          />
+        </Field>
+
+        <Field label="Required Skills (comma separated)">
+          <input
+            value={form.skillsText}
+            onChange={(e) => set('skillsText', e.target.value)}
+            className="input"
+            placeholder="e.g. Python, REST APIs, Git, SQL"
+          />
+          {skillsArray.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-2">
+              {skillsArray.map((skill, idx) => (
+                <span
+                  key={idx}
+                  className="px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          )}
+        </Field>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Type">
