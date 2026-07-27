@@ -19,7 +19,6 @@ const CourseDetail = lazy(() => import('./pages/CourseDetail'));
 const Careers = lazy(() => import('./pages/Careers'));
 const JobDetail = lazy(() => import('./pages/JobDetail'));
 const GetTouch = lazy(() => import('./pages/GetTouch'));
-const GetInTouch = lazy(() => import('./pages/GetInTouch'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const TermsConditions = lazy(() => import('./pages/TermsConditions'));
 const OurProducts = lazy(() => import('./pages/OurProducts'));
@@ -43,10 +42,10 @@ function AppLayout() {
     <div className="bg-transparent text-white font-poppins relative w-full max-w-[100vw]">
       <ScrollToTop />
       <GlobalAtmosphere />
-      
+
       {/* Persistent Navbar */}
       {!isAdmin && <Navbar />}
-      
+
       {/* Persistent Floating Controls (Chatbot + Actions) */}
       {!isAdmin && (
         <div className="fixed right-6 bottom-6 md:right-8 md:bottom-8 z-[9999] flex flex-col gap-3 items-end pointer-events-none">
@@ -76,12 +75,10 @@ function AppLayout() {
             <Route path="/ourporfolio" element={<OurPortfolio />} />
             <Route path="/our-portfolio" element={<OurPortfolio />} />
             <Route path="/get-touch" element={<GetTouch />} />
-            <Route path="/get-in-touch" element={<GetInTouch />} />
-            
             <Route path="/your-next-step" element={<YourNextStep />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-and-conditions" element={<TermsConditions />} />
-            <Route path="/admin-dashboard" element={<Admindashboard/>}/>
+            <Route path="/admin-dashboard" element={<Admindashboard />} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route
               path="/admin-dashboard"
@@ -101,7 +98,7 @@ function AppLayout() {
             />
           </Routes>
         </Suspense>
-        
+
         {/* Persistent Footer */}
         {!isAdmin && <Footer />}
       </main>
