@@ -1,7 +1,16 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 
 const Roadmap = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const timelineData = [
     {
       badge: "Pillar 1",
@@ -30,23 +39,23 @@ const Roadmap = () => {
   ];
 
   const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const isInView = useInView(sectionRef, { once: true, margin: isMobile ? "-30px" : "-100px" });
 
-  const lineDuration = 1.5;
+  const lineDuration = 1.2;
 
   return (
     <section className="py-10 md:py-24 relative bg-transparent border-y border-white/5 overflow-hidden">
       <div className="container mx-auto px-6 md:px-12 max-w-5xl relative z-10">
 
-        <div className="flex flex-col items-center text-center mb-20">
+        <div className="flex flex-col items-center text-center mb-14 md:mb-20">
           <div className="badge mb-6">Roadmap</div>
-          <p className="text-slate-400 max-w-2xl text-lg">
+          <p className="text-slate-400 max-w-2xl text-base sm:text-lg">
             Our roadmap is centered around three pillars:
           </p>
         </div>
 
         {/* Timeline Container */}
-        <div className="relative max-w-4xl mx-auto mb-20" ref={sectionRef}>
+        <div className="relative max-w-4xl mx-auto mb-16 md:mb-20" ref={sectionRef}>
 
           {/* Faint Vertical Center Line */}
           <div className="absolute left-1/2 top-0 bottom-0 w-px bg-white/5 -translate-x-1/2 hidden md:block"></div>
@@ -56,7 +65,7 @@ const Roadmap = () => {
             className="absolute left-1/2 top-0 w-px bg-gradient-to-b from-indigo-500 via-violet-500 to-fuchsia-300 -translate-x-1/2 hidden md:block"
             initial={{ height: "0%" }}
             animate={isInView ? { height: "100%" } : { height: "0%" }}
-            transition={{ duration: lineDuration, ease: "linear" }}
+            transition={{ duration: lineDuration, ease: "easeInOut" }}
           />
 
           {/* Traveling Glowing Orb */}
@@ -67,43 +76,32 @@ const Roadmap = () => {
             transition={{ duration: lineDuration, ease: "linear" }}
           />
 
-          <div className="space-y-12 relative">
+          <div className="space-y-8 sm:space-y-12 relative">
             {timelineData.map((item, index) => {
               const isLeft = index % 2 === 0;
-              // Precise timing: 0.25s, 0.75s, 1.25s
-              const delay = 0.25 + (index * 0.5);
+              const delay = isMobile ? index * 0.12 : 0.2 + (index * 0.4);
 
               return (
                 <div key={index} className={`flex flex-col md:flex-row items-center w-full ${isLeft ? 'md:justify-start' : 'md:justify-end'} relative`}>
 
                   {/* Card */}
                   <motion.div
-                    className={`w-full md:w-[45%] bg-[#1a1b1e] rounded-2xl p-6 border-l-4 ${item.borderColor} shadow-2xl relative z-10 mb-8 md:mb-0`}
-                    initial={{ opacity: 0, x: isLeft ? -50 : 50, scale: 0.95, boxShadow: "0 0 0px rgba(0,0,0,0)" }}
-                    animate={isInView ? {
-                      opacity: 1,
-                      x: 0,
-                      scale: 1,
-                      boxShadow: [
-                        "0 0 0px rgba(0,0,0,0)",
-                        `0 0 40px ${item.glowColor}`,
-                        "0 25px 50px -12px rgba(0,0,0,0.25)"
-                      ]
-                    } : { opacity: 0, x: isLeft ? -50 : 50, scale: 0.95, boxShadow: "0 0 0px rgba(0,0,0,0)" }}
+                    className={`w-full md:w-[45%] bg-[#1a1b1e] rounded-2xl p-5 sm:p-6 border-l-4 ${item.borderColor} shadow-xl relative z-10 mb-6 md:mb-0 transform-gpu will-change-transform`}
+                    initial={isMobile ? { opacity: 0, y: 16 } : { opacity: 0, x: isLeft ? -40 : 40, scale: 0.96 }}
+                    animate={isInView ? (isMobile ? { opacity: 1, y: 0 } : { opacity: 1, x: 0, scale: 1 }) : (isMobile ? { opacity: 0, y: 16 } : { opacity: 0, x: isLeft ? -40 : 40, scale: 0.96 })}
                     transition={{
-                      opacity: { duration: 0.8, delay, ease: "easeOut" },
-                      x: { duration: 0.8, delay, ease: "easeOut" },
-                      scale: { duration: 0.8, delay, ease: "easeOut" },
-                      boxShadow: { duration: 1.5, delay, ease: "easeInOut" }
+                      duration: isMobile ? 0.4 : 0.6,
+                      delay,
+                      ease: "easeOut"
                     }}
                   >
-                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 sm:gap-4 mb-4">
-                      <span className={`whitespace-nowrap px-4 py-1.5 rounded-full text-white text-[13px] sm:text-sm font-bold ${item.color}`}>
+                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 sm:gap-4 mb-3">
+                      <span className={`whitespace-nowrap px-3.5 py-1 rounded-full text-white text-xs sm:text-sm font-bold ${item.color}`}>
                         {item.badge}
                       </span>
-                      <h3 className="text-white font-semibold text-[17px] sm:text-lg">{item.title}</h3>
+                      <h3 className="text-white font-semibold text-base sm:text-lg">{item.title}</h3>
                     </div>
-                    <p className="text-slate-400 text-sm leading-relaxed">
+                    <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">
                       {item.description}
                     </p>
                   </motion.div>
@@ -125,10 +123,10 @@ const Roadmap = () => {
         </div>
 
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <p className="text-lg text-slate-400 leading-relaxed">
+          <p className="text-base sm:text-lg text-slate-400 leading-relaxed">
             As we grow, our goal is to foster a community of innovators, learners, and businesses working together to create meaningful change through technology.
           </p>
-          <p className="text-lg text-slate-200 font-medium leading-relaxed">
+          <p className="text-base sm:text-lg text-slate-200 font-medium leading-relaxed">
             We're not just building solutions. We're building the future of innovation, learning, and digital transformation.
           </p>
         </div>

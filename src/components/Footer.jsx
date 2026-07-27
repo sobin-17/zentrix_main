@@ -63,45 +63,45 @@ const Footer = () => {
           {/* MOBILE TABLE WRAPPER FOR LINKS AND CONTACT (FULL VISIBILITY 2-COLUMN LAYOUT) */}
           <div className="grid grid-cols-[0.85fr_1.15fr] sm:grid-cols-2 gap-2 sm:gap-6 lg:contents w-full pt-6 lg:pt-0 mt-4 lg:mt-0 border-t border-white/10 lg:border-none">
             {/* QUICK LINKS (LEFT) */}
-            <div className="flex flex-col items-center lg:items-center justify-start text-center">
+            <div className="flex flex-col items-end lg:items-end justify-start text-right">
 
               <div className="px-3.5 sm:px-5 py-1.5 sm:py-2 border border-white/20 bg-black/60 backdrop-blur-sm rounded-full text-[10px] sm:text-xs lg:text-[13px] font-medium text-white mb-4 lg:mb-5 w-fit shadow-md">
                 Quick Links
               </div>
 
-              <ul className="flex flex-col items-center gap-2.5 sm:gap-3 text-[12px] sm:text-[13px] text-slate-200 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+              <ul className="flex flex-col items-end lg:items-end gap-2.5 sm:gap-3 text-[12px] sm:text-[13px] text-slate-200 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
 
-                <li className="text-center">
+                <li className="w-full text-right">
                   <Link to="/" className="hover:text-white transition">
                     Orbit
                   </Link>
                 </li>
 
-                <li className="text-center">
+                <li className="w-full text-right">
                   <Link to="/about" className="hover:text-white transition">
                     Meet Zentrix
                   </Link>
                 </li>
 
-                <li className="text-center">
+                <li className="w-full text-right">
                   <Link to="/service" className="hover:text-white transition">
                     Tech Space
                   </Link>
                 </li>
 
-                <li className="text-center">
+                <li className="w-full text-right">
                   <Link to="/your-next-step" className="hover:text-white transition">
                     Your Next Step
                   </Link>
                 </li>
 
-                <li className="text-center">
+                <li className="w-full text-right">
                   <Link to="/course" className="hover:text-white transition">
                     Courses
                   </Link>
                 </li>
 
-                <li className="text-center">
+                <li className="w-full text-right">
                   <Link to="/career" className="hover:text-white transition">
                     Careers
                   </Link>
