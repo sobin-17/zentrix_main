@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Send, User, Mail, Phone, MapPin, Clock, Zap, Users, ShieldCheck } from "lucide-react";
+import { Send, User, Mail, Phone, MapPin, Clock, Zap, Users, ShieldCheck, Loader2, CheckCircle2 } from "lucide-react";
 import { addContactMessage } from "../services/contactService";
 
 /* ─── SVG Icons ─────────────────────────────────────────────── */
@@ -112,22 +112,78 @@ const GetTouch = () => {
     }));
   });
 
-  const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", countryCode: "+91", phone: "", message: "" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const countryCodes = [
+    { code: "+91", label: "🇮🇳 +91 (IN)" },
+    { code: "+1", label: "🇺🇸 +1 (US)" },
+    { code: "+44", label: "🇬🇧 +44 (UK)" },
+    { code: "+61", label: "🇦🇺 +61 (AU)" },
+    { code: "+971", label: "🇦🇪 +971 (UAE)" },
+    { code: "+65", label: "🇸🇬 +65 (SG)" },
+    { code: "+966", label: "🇸🇦 +966 (SA)" },
+    { code: "+49", label: "🇩🇪 +49 (DE)" },
+    { code: "+33", label: "🇫🇷 +33 (FR)" },
+    { code: "+81", label: "🇯🇵 +81 (JP)" },
+  ];
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const handlePhoneChange = (e) => {
+    const val = e.target.value.replace(/\D/g, "");
+    if (form.countryCode === "+91" && val.length > 10) return;
+    setForm({ ...form, phone: val });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
+    if (!form.name.trim()) {
+      setError("Name is required.");
+      return;
+    }
+
+    if (!form.email.trim()) {
+      setError("Email address is required.");
+      return;
+    }
+
+    if (!form.phone.trim()) {
+      setError("Phone number is required.");
+      return;
+    }
+
+    if (form.countryCode === "+91" && form.phone.length !== 10) {
+      setError("Indian phone number must be exactly 10 digits.");
+      return;
+    }
+
+    if (form.countryCode !== "+91" && (form.phone.length < 6 || form.phone.length > 15)) {
+      setError("Please enter a valid phone number.");
+      return;
+    }
+
+    setLoading(true);
     try {
-      await addContactMessage(form);
-      alert("Message sent successfully!");
-      setForm({ name: "", email: "", phone: "", message: "" });
-    } catch (error) {
-      console.error(error);
-      alert("Failed to send message.");
+      await addContactMessage({
+        name: form.name,
+        email: form.email,
+        phone: `${form.countryCode} ${form.phone}`,
+        message: form.message,
+      });
+      setSubmitted(true);
+      setForm({ name: "", email: "", countryCode: "+91", phone: "", message: "" });
+    } catch (err) {
+      console.error(err);
+      setError("Failed to send message. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -269,6 +325,16 @@ const GetTouch = () => {
               </motion.div>
             </div>
 
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-4 text-xs sm:text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-xl p-3 text-center"
+              >
+                {error}
+              </motion.div>
+            )}
+
             <motion.form
               onSubmit={handleSubmit}
               variants={staggerContainer}
@@ -284,7 +350,8 @@ const GetTouch = () => {
                   transition={{ duration: 0.2 }}
                   type="text"
                   name="name"
-                  placeholder="Your Name"
+                  required
+                  placeholder="Your Name *"
                   value={form.name}
                   onChange={handleChange}
                   className="w-full bg-[#120a20] border border-purple-500/20 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-400/40 transition"
@@ -298,25 +365,48 @@ const GetTouch = () => {
                   transition={{ duration: 0.2 }}
                   type="email"
                   name="email"
-                  placeholder="Email Address"
+                  required
+                  placeholder="Email Address *"
                   value={form.email}
                   onChange={handleChange}
                   className="w-full bg-[#120a20] border border-purple-500/20 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-400/40 transition"
                 />
               </motion.div>
 
-              <motion.div variants={fadeUp} className="relative">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                <motion.input
-                  whileFocus={{ scale: 1.01, borderColor: "rgba(192,132,252,0.7)" }}
-                  transition={{ duration: 0.2 }}
-                  type="tel"
-                  name="phone"
-                  placeholder="Phone Number"
-                  value={form.phone}
-                  onChange={handleChange}
-                  className="w-full bg-[#120a20] border border-purple-500/20 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-400/40 transition"
-                />
+              <motion.div variants={fadeUp} className="flex gap-2">
+                <div className="relative shrink-0">
+                  <select
+                    name="countryCode"
+                    value={form.countryCode}
+                    onChange={handleChange}
+                    className="h-full bg-[#120a20] border border-purple-500/20 rounded-xl px-3 py-3 text-xs sm:text-sm text-white focus:outline-none focus:ring-1 focus:ring-purple-400/40 cursor-pointer transition appearance-none pr-7"
+                  >
+                    {countryCodes.map((c) => (
+                      <option key={c.code} value={c.code} className="bg-[#120a20] text-white">
+                        {c.label}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 text-[10px]">
+                    ▼
+                  </span>
+                </div>
+
+                <div className="relative flex-1">
+                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                  <motion.input
+                    whileFocus={{ scale: 1.01, borderColor: "rgba(192,132,252,0.7)" }}
+                    transition={{ duration: 0.2 }}
+                    type="tel"
+                    name="phone"
+                    required
+                    maxLength={form.countryCode === "+91" ? 10 : 15}
+                    placeholder={form.countryCode === "+91" ? "10-digit Phone Number *" : "Phone Number *"}
+                    value={form.phone}
+                    onChange={handlePhoneChange}
+                    className="w-full bg-[#120a20] border border-purple-500/20 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-400/40 transition"
+                  />
+                </div>
               </motion.div>
 
               <motion.textarea
@@ -473,6 +563,64 @@ const GetTouch = () => {
           </motion.div>
         </motion.div>
       </div>
+
+      {/* ── Submitting Pop-up Loading Overlay ── */}
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative bg-[#0e071e]/95 border border-purple-500/40 rounded-3xl p-8 max-w-sm w-full text-center shadow-[0_0_50px_rgba(168,85,247,0.35)] flex flex-col items-center gap-5"
+          >
+            <div className="relative flex items-center justify-center w-20 h-20">
+              <div className="absolute inset-0 rounded-full bg-purple-600/30 blur-xl animate-pulse" />
+              <Loader2 className="w-12 h-12 text-purple-400 animate-spin relative z-10" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-white tracking-wide">Sending Message...</h3>
+              <p className="text-slate-400 text-xs leading-relaxed mt-1">
+                Please wait while we transmit your message.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* ── Submitted Successfully Pop-up Screen ── */}
+      {submitted && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+            className="relative bg-[#0e071e]/95 border border-purple-500/50 rounded-3xl p-8 max-w-md w-full text-center shadow-[0_0_60px_rgba(168,85,247,0.4)] flex flex-col items-center gap-5"
+          >
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.15, type: 'spring', stiffness: 200 }}
+              className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 border border-purple-300/40 flex items-center justify-center shadow-lg"
+            >
+              <CheckCircle2 className="w-10 h-10 text-white" />
+            </motion.div>
+
+            <div>
+              <h3 className="text-2xl font-extrabold text-white">Message Sent Successfully! 🎉</h3>
+            </div>
+
+            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed bg-white/5 border border-white/10 rounded-2xl p-4">
+              Thank you for contacting Zentrix Technology! Our team has received your details and will get back to you shortly.
+            </p>
+
+            <button
+              onClick={() => setSubmitted(false)}
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-500 hover:from-purple-500 hover:to-indigo-400 text-white text-sm font-bold shadow-lg transition-all"
+            >
+              Done & Close
+            </button>
+          </motion.div>
+        </div>
+      )}
     </section>
   );
 };

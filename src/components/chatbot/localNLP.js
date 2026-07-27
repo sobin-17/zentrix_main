@@ -54,21 +54,21 @@ export const loadIntentsFromFirestore = async () => {
 
   loadPromise = (async () => {
     let loadedIntents = [];
-    
+
     for (const colName of COLLECTIONS_TO_FETCH) {
       try {
         const querySnapshot = await getDocs(collection(chatbotDb, colName));
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           const docId = doc.id;
-          
+
           if (["main", "social_media", "quick_links", "placement_information", "contact information"].includes(docId.toLowerCase())) {
             return;
           }
 
           let pattern = firstMatch(data, ["question", "title", "name", "role", "keyword"], "quest");
           let response = firstMatch(data, ["answer", "description", "details", "content", "text", "message"], "answ");
-          
+
           if (!response && firstMatch(data, ["role"])) {
             const role = firstMatch(data, ["role"]);
             const duration = firstMatch(data, ["duration"]);
@@ -98,7 +98,7 @@ export const loadIntentsFromFirestore = async () => {
         console.error(`Failed to fetch collection ${colName}:`, err);
       }
     }
-    
+
     if (loadedIntents.length > 0) {
       INTENTS = loadedIntents;
       console.log(`Loaded ${INTENTS.length} intents from live Firestore.`);
@@ -113,21 +113,43 @@ export const loadIntentsFromFirestore = async () => {
 
 const FALLBACK_RESPONSES = [
   "I'm not sure about that. Could you try asking about our Courses, Internships, Services, Placement, or Contact details?",
-  "That's a bit outside my knowledge right now. For specific questions, our team is available at:\n📧 hr.zentrixtechnology@gmail.com\n📞 +91 938423728",
+  "That's a bit outside my knowledge right now. For specific questions, our team is available at:\n hr.zentrixtechnology@gmail.com\n +91 938423728",
 ];
 
-const GREETINGS = ["hi", "hello", "hey", "hai", "good morning", "good evening", "howdy"];
+const GREETINGS = [
+  "h", "hi", "hii", "hiii", "hello", "helloo", "hey", "heyy", "hai", "haai",
+  "hola", "yo", "good morning", "good afternoon", "good evening", "howdy"
+];
 const GREETING_RESPONSE = "Hello! 👋 Welcome to Zentrix Technology. How can I help you today?";
 
 export const getFirestoreResponse = async (userInput) => {
   await loadIntentsFromFirestore(); // Just in case it's not loaded
-  
+
   const lower = userInput.toLowerCase().trim();
   if (!lower) return FALLBACK_RESPONSES[0];
 
-  // Hardcoded greeting check
-  if (GREETINGS.includes(lower) || lower.split(" ").some(w => GREETINGS.includes(w) && w !== "good")) {
+  const cleanInput = lower.replace(/[^\w\s]/g, "").trim();
+  const inputWords = cleanInput.split(/\s+/).filter(Boolean);
+
+  // 1. Hardcoded greeting check (handles "h", "hi", "hello", etc.)
+  if (
+    GREETINGS.includes(cleanInput) ||
+    (inputWords.length === 1 && GREETINGS.includes(inputWords[0])) ||
+    inputWords.some((w) => GREETINGS.includes(w) && w !== "good")
+  ) {
     return GREETING_RESPONSE;
+  }
+
+  // 2. Prevent single/2-character non-greetings from matching arbitrary substrings
+  if (cleanInput.length < 3) {
+    for (const intent of INTENTS) {
+      for (const kw of intent.keywords) {
+        if (kw.toLowerCase().trim() === cleanInput) {
+          return intent.response;
+        }
+      }
+    }
+    return FALLBACK_RESPONSES[0];
   }
 
   let bestIntent = null;
@@ -135,20 +157,46 @@ export const getFirestoreResponse = async (userInput) => {
 
   for (const intent of INTENTS) {
     let score = 0;
-    for (const kw of intent.keywords) {
-      if (lower.includes(kw) || kw.includes(lower)) {
-        // Boost exact matches
-        if (lower === kw) score += 10;
-        else score += kw.split(" ").length * 2;
+    for (const kwRaw of intent.keywords) {
+      const kw = kwRaw.toLowerCase().trim();
+      if (!kw) continue;
+
+      // Exact full query match
+      if (cleanInput === kw) {
+        score += 30;
+        continue;
+      }
+
+      // Word-level exact matches
+      const kwWords = kw.split(/\s+/).filter(Boolean);
+      for (const word of inputWords) {
+        if (word.length < 3) continue; // Skip stop words/tiny tokens
+
+        if (kwWords.includes(word)) {
+          score += 10;
+        } else if (word.length >= 4 && kw.includes(word)) {
+          score += 5;
+        }
+      }
+
+      // Phrase containment match (only for phrases >= 3 chars)
+      if (kw.length >= 3 && cleanInput.length >= 3) {
+        if (cleanInput.includes(kw)) {
+          score += kwWords.length * 8;
+        } else if (kw.includes(cleanInput)) {
+          score += cleanInput.length > 5 ? 6 : 3;
+        }
       }
     }
+
     if (score > bestScore) {
       bestScore = score;
       bestIntent = intent;
     }
   }
 
-  if (bestIntent && bestScore > 0) {
+  // Minimum threshold score of 5 required to consider it a valid intent match
+  if (bestIntent && bestScore >= 5) {
     return bestIntent.response;
   }
 

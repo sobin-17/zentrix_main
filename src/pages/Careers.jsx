@@ -147,7 +147,7 @@ const Careers = () => {
         >
           <motion.img
             src="/career_hand.png"
-            alt="Career opportunities at Zentrix Technologies"
+            alt="Career opportunities at Zentrix Technology"
             className="
         w-full
         h-auto
@@ -232,7 +232,7 @@ const Careers = () => {
             md:text-lg
           "
               >
-                At Zentrix Technologies, we create opportunities to learn,
+                At Zentrix Technology, we create opportunities to learn,
                 create, innovate, and grow together. Join a passionate team
                 building impactful technology while shaping your future.
               </p>
@@ -655,7 +655,7 @@ const Careers = () => {
             </div>
 
             {/* Hero Text */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pt-14 sm:pt-22 md:pt-28 lg:pt-36 xl:pt-40 translate-y-8 sm:translate-y-11 md:translate-y-14 lg:translate-y-18">
 
               <h2
                 className="

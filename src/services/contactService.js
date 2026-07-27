@@ -23,10 +23,22 @@ export const addContactMessage = async (data) => {
 export const getContactMessages = async () => {
   const snapshot = await getDocs(contactRef);
 
-  return snapshot.docs.map(doc => ({
+  const messages = snapshot.docs.map(doc => ({
     firestoreId: doc.id,
     ...doc.data(),
   }));
+
+  const getTimestamp = (msg) => {
+    const raw = msg.createdAt || msg.submittedAt || msg.date || msg.timestamp;
+    if (!raw) return 0;
+    if (typeof raw === 'object' && raw.seconds) {
+      return raw.seconds * 1000;
+    }
+    const parsed = new Date(raw).getTime();
+    return isNaN(parsed) ? 0 : parsed;
+  };
+
+  return messages.sort((a, b) => getTimestamp(b) - getTimestamp(a));
 };
 
 export const updateContactMessageStatus = async (id, status) => {
