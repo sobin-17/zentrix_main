@@ -219,17 +219,16 @@ export default function AboutView() {
                 </motion.span>
 
                 <motion.span
-                  className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl xl:text-[5rem] leading-[0.95] flex flex-wrap gap-2"
+                  className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl xl:text-[5rem] leading-[0.92] block"
                   initial={{ opacity: 0, y: -20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.5, delay: 0.15 }}
                 >
-                  <span className="text-white">
+                  <span className="text-white block">
                     Zentrix
-                  </span>{" "}
-
-                  <span className="bg-gradient-to-r from-[#c084fc] to-[#a855f7] text-transparent bg-clip-text">
+                  </span>
+                  <span className="bg-gradient-to-r from-[#c084fc] to-[#a855f7] text-transparent bg-clip-text inline-block pb-3 -mb-3">
                     Technology
                   </span>
                 </motion.span>
@@ -618,7 +617,7 @@ export default function AboutView() {
         </div>
 
         {/* 5. Vision & Mission */}
-        <motion.div className="mb-8" id="about-vision-mission" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.div className="mb-8" id="about-vision-mission" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: false }}>
           <div className="mb-10 sm:mb-14 flex items-center gap-4 sm:gap-6">
             <div className="w-[4px] h-12 sm:h-20 bg-purple-600 rounded-full"></div>
             <h2 className="text-white text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight">
@@ -631,7 +630,7 @@ export default function AboutView() {
               className="bg-[#0b0518] border border-purple-900/40 p-6 sm:p-8 rounded-[2rem] relative overflow-hidden group flex flex-col items-start justify-start transform-gpu will-change-transform"
               initial={{ opacity: 0, x: isDesktop ? -150 : -40, scale: 0.96 }}
               whileInView={{ opacity: 1, x: 0, scale: 1 }}
-              viewport={{ once: true, amount: 0.15 }}
+              viewport={{ once: false, amount: 0.15 }}
               transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1 }}
               whileHover={{ scale: 1.03, y: -6, boxShadow: "0 0 40px rgba(168,85,247,0.4)" }}
             >
@@ -679,7 +678,7 @@ export default function AboutView() {
               className="bg-[#0b0518] border border-purple-900/40 p-6 sm:p-8 rounded-[2rem] relative overflow-hidden group flex flex-col items-start justify-start transform-gpu will-change-transform"
               initial={{ opacity: 0, x: isDesktop ? 150 : 40, scale: 0.96 }}
               whileInView={{ opacity: 1, x: 0, scale: 1 }}
-              viewport={{ once: true, amount: 0.15 }}
+              viewport={{ once: false, amount: 0.15 }}
               transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1, delay: 0.15 }}
               whileHover={{ scale: 1.03, y: -6, boxShadow: "0 0 40px rgba(168,85,247,0.4)" }}
             >

@@ -652,9 +652,20 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
               {skillsArray.map((skill, idx) => (
                 <span
                   key={idx}
-                  className="px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30"
                 >
-                  {skill}
+                  <span>{skill}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = skillsArray.filter((_, i) => i !== idx);
+                      set('skillsText', updated.join(', '));
+                    }}
+                    className="p-0.5 rounded-full hover:bg-red-500/30 text-purple-300 hover:text-red-300 transition-colors"
+                    title={`Remove ${skill}`}
+                  >
+                    <X size={12} />
+                  </button>
                 </span>
               ))}
             </div>
@@ -667,9 +678,13 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Category">
-            <select value={form.category} onChange={(e) => set('category', e.target.value)} className="input">
-              {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
-            </select>
+            <input
+              type="text"
+              value={form.category}
+              onChange={(e) => set('category', e.target.value)}
+              className="input"
+              placeholder="e.g. Development, Design, AI"
+            />
           </Field>
           <Field label="Level">
             <select value={form.level} onChange={(e) => set('level', e.target.value)} className="input">
@@ -908,9 +923,20 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
               {skillsArray.map((skill, idx) => (
                 <span
                   key={idx}
-                  className="px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30"
                 >
-                  {skill}
+                  <span>{skill}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = skillsArray.filter((_, i) => i !== idx);
+                      set('skillsText', updated.join(', '));
+                    }}
+                    className="p-0.5 rounded-full hover:bg-red-500/30 text-purple-300 hover:text-red-300 transition-colors"
+                    title={`Remove ${skill}`}
+                  >
+                    <X size={12} />
+                  </button>
                 </span>
               ))}
             </div>
