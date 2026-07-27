@@ -118,12 +118,12 @@ const Footer = () => {
                 Contact
               </div>
 
-              <ul className="space-y-3 sm:space-y-4 text-[12px] sm:text-[13px] text-slate-300 text-center lg:text-right w-full flex flex-col items-center lg:items-end drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+              <ul className="flex flex-col items-center lg:items-end gap-2.5 sm:gap-3 text-[12px] sm:text-[13px] text-slate-200 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
 
                 <li className="w-full text-center lg:text-right">
                   <a
                     href="mailto:info.zentrixtechnology@gmail.com"
-                    className="hover:text-purple-300 transition text-[10px] min-[360px]:text-[10.5px] min-[390px]:text-[11px] sm:text-xs lg:text-[13px] text-slate-300 block leading-normal tracking-tight sm:tracking-normal whitespace-nowrap"
+                    className="hover:text-white transition whitespace-nowrap"
                   >
                     info.zentrixtechnology@gmail.com
                   </a>
@@ -132,16 +132,14 @@ const Footer = () => {
                 <li className="w-full text-center lg:text-right">
                   <a
                     href="tel:+919150973003"
-                    className="hover:text-purple-300 transition text-[12px] sm:text-[13px] text-slate-300 block"
+                    className="hover:text-white transition whitespace-nowrap"
                   >
                     +91 91509 73003
                   </a>
                 </li>
 
-                <li className="w-full text-center lg:text-right text-[12px] sm:text-[13px] text-slate-300">
-                  Nagercoil
-                  <br />
-                  Tamilnadu
+                <li className="w-full text-center lg:text-right whitespace-nowrap">
+                  Nagercoil, Tamil Nadu
                 </li>
 
               </ul>

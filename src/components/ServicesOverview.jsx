@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Layers, Smartphone, Globe, Cloud } from 'lucide-react';
+import { Smartphone, Globe, Cloud, GraduationCap } from 'lucide-react';
 import '../styles/services.css';
 
 const ServicesOverview = () => {
@@ -13,25 +13,25 @@ const ServicesOverview = () => {
       color: "#00c6ff", // Blue glow
     },
     {
-      title: "Mobile Development",
+      title: "Mobile App Development",
       tagline: "Native Experiences",
       description: "Native and cross-platform mobile experiences that engage users on any device.",
       icon: <Smartphone className="w-5 h-5 shrink-0" />,
       color: "#25D366", // Green glow
     },
     {
-      title: "UI/UX Design",
-      tagline: "Intuitive Interfaces",
-      description: "Intuitive, accessible, and visually stunning interfaces designed for user retention.",
-      icon: <Layers className="w-5 h-5 shrink-0" />,
-      color: "#a855f7", // Purple glow
-    },
-    {
       title: "Digital Marketing",
       tagline: "Growth & Brand Visibility",
       description: "Data-driven marketing strategies to accelerate your growth and brand visibility.",
       icon: <Cloud className="w-5 h-5 shrink-0" />,
-      color: "#ec4899", // Violet/Pink glow
+      color: "#a855f7", // Purple glow
+    },
+    {
+      title: "Professional Training",
+      tagline: "Industry & Skill Oriented",
+      description: "Industry-focused training and practical skill development programs for career growth.",
+      icon: <GraduationCap className="w-5 h-5 shrink-0" />,
+      color: "#ec4899", // Pink glow
     }
   ];
 

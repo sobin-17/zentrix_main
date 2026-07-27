@@ -23,10 +23,20 @@ import {
   export const getEnrollments = async () => {
     const snapshot = await getDocs(enrollRef);
   
-    return snapshot.docs.map((doc) => ({
+    const enrollments = snapshot.docs.map((doc) => ({
       firestoreId: doc.id,
       ...doc.data(),
     }));
+
+    const getTimestamp = (e) => {
+      const raw = e.createdAt || e.enrolledDate || e.date || e.timestamp;
+      if (!raw) return 0;
+      if (typeof raw === 'object' && raw.seconds) return raw.seconds * 1000;
+      const parsed = new Date(raw).getTime();
+      return isNaN(parsed) ? 0 : parsed;
+    };
+
+    return enrollments.sort((a, b) => getTimestamp(b) - getTimestamp(a));
   };
   
   // Update Enrollment Status

@@ -535,10 +535,23 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
 
   const handleCourseChange = (e) => {
     const selectedId = e.target.value;
+    if (selectedId === 'custom') {
+      setForm(prev => ({
+        ...prev,
+        id: 'custom',
+        isCustom: true,
+        title: '',
+        subtitle: '',
+        description: '',
+        skillsText: '',
+      }));
+      return;
+    }
     const predefined = seedCourses.find(c => c.id === selectedId) || seedCourses[0];
     setForm(prev => ({
       ...prev,
       id: predefined.id,
+      isCustom: false,
       title: predefined.title,
       category: predefined.category,
       duration: predefined.duration,
@@ -595,15 +608,26 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
        
         <Field label="Course Title *">
           <select
-            value={form.id}
+            value={seedCourses.some(c => c.id === form.id) ? form.id : 'custom'}
             onChange={handleCourseChange}
-            className="input"
-            disabled={isEdit}
+            className="input mb-2"
           >
             {seedCourses.map(c => (
               <option key={c.id} value={c.id}>{c.title}</option>
             ))}
+            <option value="custom">➕ Add New / Custom Course Title...</option>
           </select>
+
+          {(!seedCourses.some(c => c.id === form.id) || form.id === 'custom' || form.isCustom) && (
+            <input
+              required
+              type="text"
+              value={form.title}
+              onChange={(e) => set('title', e.target.value)}
+              className="input mt-2"
+              placeholder="Enter custom course title (e.g. Flutter Mobile Development)"
+            />
+          )}
         </Field>
 
         <Field label="Course Description / Overview">
@@ -732,6 +756,18 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
 
   const handleCareerChange = (e) => {
     const selectedId = e.target.value;
+    if (selectedId === 'custom') {
+      setForm(prev => ({
+        ...prev,
+        id: 'custom',
+        isCustom: true,
+        baseTitle: '',
+        title: computeJobTitle('', prev.type),
+        description: '',
+        skillsText: ''
+      }));
+      return;
+    }
     const predefined = seedCareers.find(c => c.id === selectedId) || seedCareers[0];
     const roleDetails = getPredefinedDetailsForRole(selectedId);
     const baseTitle = predefined.baseTitle || predefined.title.replace(/\s+Intern$/i, '');
@@ -741,6 +777,7 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
     setForm(prev => ({
       ...prev,
       id: predefined.id,
+      isCustom: false,
       baseTitle,
       title: computedTitle,
       type: currentType,
@@ -813,17 +850,35 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
           </span>
         </div>
 
-        <Field label="Job Role *">
+        <Field label="Job Role / Title *">
           <select
-            value={form.id}
+            value={seedCareers.some(c => c.id === form.id) ? form.id : 'custom'}
             onChange={handleCareerChange}
-            className="input"
-            disabled={isEdit}
+            className="input mb-2"
           >
             {seedCareers.map(c => (
                <option key={c.id} value={c.id}>{c.baseTitle || c.title.replace(/\s+Intern$/i, '')}</option>
             ))}
+            <option value="custom">➕ Add New / Custom Career Role...</option>
           </select>
+
+          {(!seedCareers.some(c => c.id === form.id) || form.id === 'custom' || form.isCustom) && (
+            <input
+              required
+              type="text"
+              value={form.baseTitle || form.title}
+              onChange={(e) => {
+                const val = e.target.value;
+                setForm(prev => ({
+                  ...prev,
+                  baseTitle: val,
+                  title: computeJobTitle(val, prev.type)
+                }));
+              }}
+              className="input mt-2"
+              placeholder="Enter custom role title (e.g. Flutter Developer)"
+            />
+          )}
         </Field>
 
         <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-2">

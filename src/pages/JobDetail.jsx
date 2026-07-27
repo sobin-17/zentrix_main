@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, MapPin, Clock, Briefcase, ChevronRight, Send, Loader2, X } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, Briefcase, ChevronRight, Send, Loader2, X, CheckCircle2 } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import { getCareers } from "../services/careerService";
 import { ensureCareerJobIds, getPredefinedDetailsForRole } from "../utils/jobIdHelper";
@@ -199,8 +199,9 @@ const fileToDataURL = (file) => {
 
 /* ─── Application Form ───────────────────────────────────────────────── */
 const ApplyForm = ({ jobTitle, jobId }) => {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '', resume: null });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', qualification: '', customQualification: '', message: '', resume: null });
   const [status, setStatus] = useState('idle'); // idle | sending | success | error
+  const [phoneError, setPhoneError] = useState('');
   const fileInputRef = useRef(null);
 
   const handleChange = (e) => {
@@ -211,8 +212,23 @@ const ApplyForm = ({ jobTitle, jobId }) => {
     }
   };
 
+  const handlePhoneChange = (e) => {
+    const val = e.target.value.replace(/\D/g, "");
+    if (val.length <= 10) {
+      setForm({ ...form, phone: val });
+      if (phoneError) setPhoneError('');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setPhoneError('');
+
+    if (form.phone.length !== 10) {
+      setPhoneError('Phone number must be exactly 10 digits.');
+      return;
+    }
+
     setStatus('sending');
 
     try {
@@ -248,12 +264,17 @@ const ApplyForm = ({ jobTitle, jobId }) => {
         }
       }
 
+      const finalQualification = form.qualification === 'Other'
+        ? (form.customQualification ? `Other (${form.customQualification.trim()})` : 'Other')
+        : (form.qualification || 'Not Specified');
+
       const applicationData = {
         careerId: jobId || 'general',
         jobTitle: jobTitle || 'General Application',
         name: form.name.trim(),
         email: form.email.trim(),
         phone: form.phone.trim(),
+        qualification: finalQualification,
         message: form.message ? form.message.trim() : '',
         resumeUrl: resumeUrl || 'No resume uploaded',
         status: "New",
@@ -293,25 +314,6 @@ const ApplyForm = ({ jobTitle, jobId }) => {
     }
   };
 
-  if (status === 'success') {
-    return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="text-center py-16"
-      >
-        <div className="w-20 h-20 rounded-full bg-purple-600/20 border border-purple-500/50 flex items-center justify-center mx-auto mb-6">
-          <Send className="w-8 h-8 text-purple-400" />
-        </div>
-        <h3 className="text-2xl font-bold text-white mb-3">Application Submitted!</h3>
-        <p className="text-slate-400 max-w-sm mx-auto">
-          Thank you for applying for <span className="text-purple-400">{jobTitle}</span>.
-          Our HR team will review your application and reach out soon.
-        </p>
-      </motion.div>
-    );
-  }
-
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -330,12 +332,17 @@ const ApplyForm = ({ jobTitle, jobId }) => {
           <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Phone *</label>
           <input
             required
+            type="tel"
             name="phone"
+            maxLength={10}
             value={form.phone}
-            onChange={handleChange}
-            placeholder="+91 00000 00000"
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-purple-500 transition-colors text-sm"
+            onChange={handlePhoneChange}
+            placeholder="10-digit phone number"
+            className={`w-full bg-white/5 border ${phoneError ? 'border-red-500' : 'border-white/10'} rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-purple-500 transition-colors text-sm`}
           />
+          {phoneError && (
+            <p className="text-red-400 text-xs mt-1">{phoneError}</p>
+          )}
         </div>
       </div>
       <div>
@@ -349,6 +356,35 @@ const ApplyForm = ({ jobTitle, jobId }) => {
           placeholder="you@example.com"
           className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-purple-500 transition-colors text-sm"
         />
+      </div>
+
+      {/* Qualification */}
+      <div>
+        <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Highest Qualification *</label>
+        <select
+          required name="qualification" value={form.qualification} onChange={handleChange}
+          className="w-full bg-[#0d0d0d] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-colors text-sm"
+        >
+          <option value="" disabled>Select your qualification</option>
+          <option>12th / HSC</option>
+          <option>Diploma</option>
+          <option>B.E / B.Tech</option>
+          <option>B.Sc / BCA / B.Com</option>
+          <option>M.E / M.Tech</option>
+          <option>MCA / MBA</option>
+          <option>Other</option>
+        </select>
+        {form.qualification === 'Other' && (
+          <input
+            required
+            type="text"
+            name="customQualification"
+            value={form.customQualification || ''}
+            onChange={handleChange}
+            placeholder="Please specify your qualification *"
+            className="mt-3 w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-purple-500 transition-colors text-sm"
+          />
+        )}
       </div>
       <div>
         <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Resume / CV *</label>
@@ -417,6 +453,69 @@ const ApplyForm = ({ jobTitle, jobId }) => {
           </>
         )}
       </button>
+
+      {/* ── Submitting Pop-up Loading Overlay ── */}
+      {status === 'sending' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative bg-[#0e071e]/95 border border-purple-500/40 rounded-3xl p-8 max-w-sm w-full text-center shadow-[0_0_50px_rgba(168,85,247,0.35)] flex flex-col items-center gap-5"
+          >
+            <div className="relative flex items-center justify-center w-20 h-20">
+              <div className="absolute inset-0 rounded-full bg-purple-600/30 blur-xl animate-pulse" />
+              <Loader2 className="w-12 h-12 text-purple-400 animate-spin relative z-10" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-white tracking-wide">Submitting Application...</h3>
+              <p className="text-slate-400 text-xs leading-relaxed mt-1">
+                Please wait while we send your details.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* ── Submitted Successfully Pop-up Screen ── */}
+      {status === 'success' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+            className="relative bg-[#0e071e]/95 border border-purple-500/50 rounded-3xl p-8 max-w-md w-full text-center shadow-[0_0_60px_rgba(168,85,247,0.4)] flex flex-col items-center gap-5"
+          >
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.15, type: 'spring', stiffness: 200 }}
+              className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 border border-purple-300/40 flex items-center justify-center shadow-lg"
+            >
+              <CheckCircle2 className="w-10 h-10 text-white" />
+            </motion.div>
+
+            <div>
+              <h3 className="text-2xl font-extrabold text-white">Application Submitted! 🎉</h3>
+              <p className="text-purple-300 font-semibold text-sm mt-1">{jobTitle}</p>
+            </div>
+
+            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed bg-white/5 border border-white/10 rounded-2xl p-4">
+              Thank you for applying! Our HR team has received your application and will review your profile shortly.
+            </p>
+
+            <button
+              onClick={() => {
+                setStatus('idle');
+                setForm({ name: '', email: '', phone: '', qualification: '', customQualification: '', message: '', resume: null });
+                if (fileInputRef.current) fileInputRef.current.value = '';
+              }}
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-500 hover:from-purple-500 hover:to-indigo-400 text-white text-sm font-bold shadow-lg transition-all"
+            >
+              Done & Close
+            </button>
+          </motion.div>
+        </div>
+      )}
     </form>
   );
 };
