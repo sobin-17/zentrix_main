@@ -8,10 +8,11 @@ import {
   GraduationCap, Globe, TrendingUp, Layout,
 } from 'lucide-react';
 import ParticleBackground from '../components/ParticleBackground';
-import { ChevronRight, ArrowRight } from "lucide-react";
+import { ChevronRight, ArrowRight, Share2 } from "lucide-react";
 import WhyChooseUs from '../components/WhyChooseUs';
 import Technologies from '../components/Technologies';
 import Footer from '../components/Footer';
+import ShareModal from '../components/ShareModal';
 
 
 import { getCourses } from "../services/courseService";
@@ -127,7 +128,7 @@ function SectionLabel({ children }) {
   );
 }
 
-function CourseCard({ course, index }) {
+function CourseCard({ course, index, onShare }) {
 
   const getAccent = () => {
     switch (course.id || course.slug) {
@@ -268,15 +269,27 @@ function CourseCard({ course, index }) {
           )}
         </div>
 
-        <Link to={`/course/${course.courseId || course.id || course.firestoreId}`} className="block w-max mt-auto relative z-20">
-          <button
-            className={`px-8 py-3.5 rounded-2xl font-bold text-sm tracking-wide ${accent.btn} flex items-center gap-2 relative overflow-hidden`}
-            style={{ transition: 'box-shadow 0.25s ease, background-color 0.25s ease' }}
-          >
-            <div className="absolute inset-x-0 top-0 h-[1px] bg-white/30" />
-            Enroll Now <ArrowRight className="w-4 h-4 ml-1" />
-          </button>
-        </Link>
+        <div className="flex flex-wrap items-center gap-3 mt-auto relative z-20">
+          <Link to={`/course/${course.courseId || course.id || course.firestoreId}`} className="block">
+            <button
+              className={`px-8 py-3.5 rounded-2xl font-bold text-sm tracking-wide ${accent.btn} flex items-center gap-2 relative overflow-hidden`}
+              style={{ transition: 'box-shadow 0.25s ease, background-color 0.25s ease' }}
+            >
+              <div className="absolute inset-x-0 top-0 h-[1px] bg-white/30" />
+              Enroll Now <ArrowRight className="w-4 h-4 ml-1" />
+            </button>
+          </Link>
+          {onShare && (
+            <button
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onShare(course); }}
+              className="px-4 py-3.5 rounded-2xl font-bold text-sm tracking-wide bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center gap-2 transition-all cursor-pointer"
+              title="Share Course"
+            >
+              <Share2 className="w-4 h-4" />
+              <span>Share</span>
+            </button>
+          )}
+        </div>
       </div>
 
 
@@ -351,6 +364,7 @@ function StageCard({ stage, index, total }) {
 
 const Course = () => {
   const [courses, setCourses] = useState([]);
+  const [shareModalState, setShareModalState] = useState({ isOpen: false, item: null });
 
   useEffect(() => {
     loadCourses();
@@ -517,6 +531,7 @@ const Course = () => {
       <CourseCard
         course={course}
         index={index}
+        onShare={(c) => setShareModalState({ isOpen: true, item: c })}
       />
     </div>
   ))}
@@ -781,15 +796,14 @@ const Course = () => {
 
       {/* ══════════ TECHNOLOGIES ══════════
       <Technologies />
+      */}
 
-      ══════════ FOOTER TRANSITION ══════════
-      <div className="relative py-16 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-brand-purple)]/20 via-transparent to-transparent pointer-events-none" />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[900px] h-[300px] bg-[var(--color-brand-purple)]/20 blur-[120px] pointer-events-none rounded-full" />
-        <div className="relative z-10">
-          <Footer />
-        </div>
-      </div>*/}
+      <ShareModal
+        isOpen={shareModalState.isOpen}
+        onClose={() => setShareModalState({ isOpen: false, item: null })}
+        item={shareModalState.item}
+        type="course"
+      />
     </div>
   );
 };

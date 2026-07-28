@@ -1,7 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Share2 } from "lucide-react";
 
-const CourseCard = ({ course }) => {
+const CourseCard = ({ course, onShare }) => {
   return (
     <motion.div
       whileHover={{ y: -6 }}
@@ -61,23 +62,35 @@ const CourseCard = ({ course }) => {
             {course.description}
           </p>
 
-          <button
-            className="
-              px-8
-              py-2.5
-              rounded-xl
-              bg-gradient-to-r
-              from-purple-700
-              to-fuchsia-600
-              text-white
-              text-sm
-              font-semibold
-              transition
-              hover:opacity-90
-            "
-          >
-            ENROLL NOW
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              className="
+                px-8
+                py-2.5
+                rounded-xl
+                bg-gradient-to-r
+                from-purple-700
+                to-fuchsia-600
+                text-white
+                text-sm
+                font-semibold
+                transition
+                hover:opacity-90
+              "
+            >
+              ENROLL NOW
+            </button>
+
+            {onShare && (
+              <button
+                onClick={(e) => { e.stopPropagation(); onShare(course); }}
+                className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 transition cursor-pointer"
+                title="Share Course"
+              >
+                <Share2 className="w-4 h-4" />
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </motion.div>
