@@ -43,10 +43,11 @@ import {
 } from "../services/contactService";
 import ContactMessagesManager from "../components/ContactMessagesManager";
 import AdminsManager from "../components/AdminsManager";
+import ShareModal from "../components/ShareModal";
 import {
   LayoutDashboard, BookOpen, Grid3x3, PlayCircle, ClipboardList, Star,
   Award, Briefcase, FileText, Users, UserCog, Shield, Settings, Globe,
-  Search, Bell, ChevronDown, Plus, Pencil, Trash2, Eye, X, Check,
+  Search, Bell, ChevronDown, Plus, Pencil, Trash2, Eye, X, Check, Share2,
   ChevronRight, TrendingUp, LogOut, ArrowLeft, GraduationCap, Mail, Phone,
   MessageSquare, Calendar, Menu,
 } from 'lucide-react';
@@ -1205,7 +1206,7 @@ function DashboardHome({
    COURSES MANAGER
 ──────────────────────────────────────────────────────────────────────── */
 
-function CoursesManager({ courses, query, onAdd, onEdit, onDelete }) {
+function CoursesManager({ courses, query, onAdd, onEdit, onDelete, onShare }) {
   const filtered = useMemo(
     () => courses.filter((c) => c.title.toLowerCase().includes(query.toLowerCase())),
     [courses, query]
@@ -1256,6 +1257,11 @@ function CoursesManager({ courses, query, onAdd, onEdit, onDelete }) {
                     <Link to={`/course/${c.courseId || c.id}`} target="_blank" className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors" title="Open Course Page">
                       <Eye className="w-3.5 h-3.5" />
                     </Link>
+                    {onShare && (
+                      <button onClick={() => onShare(c, 'course')} className="w-8 h-8 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 flex items-center justify-center text-purple-400 transition-colors" title="Share Course">
+                        <Share2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                     <button onClick={() => onEdit(c)} className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors" title="Edit Course">
                       <Pencil className="w-3.5 h-3.5" />
                     </button>
@@ -1280,7 +1286,7 @@ function CoursesManager({ courses, query, onAdd, onEdit, onDelete }) {
    CAREERS MANAGER
 ──────────────────────────────────────────────────────────────────────── */
 
-function CareersManager({ careers, query, onAdd, onEdit, onDelete }) {
+function CareersManager({ careers, query, onAdd, onEdit, onDelete, onShare }) {
   const filtered = useMemo(
     () => careers.filter((j) => j.title.toLowerCase().includes(query.toLowerCase())),
     [careers, query]
@@ -1329,6 +1335,11 @@ function CareersManager({ careers, query, onAdd, onEdit, onDelete }) {
                     <Link to={`/career/${j.jobId || j.id}`} target="_blank" className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors" title="Open Role Detail Page">
                       <Eye className="w-3.5 h-3.5" />
                     </Link>
+                    {onShare && (
+                      <button onClick={() => onShare(j, 'career')} className="w-8 h-8 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 flex items-center justify-center text-purple-400 transition-colors" title="Share Role">
+                        <Share2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                     <button onClick={() => onEdit(j)} className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors" title="Edit Role">
                       <Pencil className="w-3.5 h-3.5" />
                     </button>
@@ -2049,6 +2060,8 @@ const loadEnrollments = async () => {
   const [courseModal, setCourseModal] = useState(null);
   const [careerModal, setCareerModal] = useState(null);
   const [toast, setToast] = useState('');
+  const [shareModalState, setShareModalState] = useState({ isOpen: false, item: null, type: 'career' });
+  const handleOpenShare = (item, type) => setShareModalState({ isOpen: true, item, type });
 
   useEffect(() => {
     loadCourses();
@@ -2326,6 +2339,7 @@ const saveCourse = async (payload, isEdit) => {
               onAdd={() => setCourseModal('add')}
               onEdit={(c) => setCourseModal(c)}
               onDelete={deleteCourse}
+              onShare={handleOpenShare}
             />
           )}
 
@@ -2336,6 +2350,7 @@ const saveCourse = async (payload, isEdit) => {
               onAdd={() => setCareerModal('add')}
               onEdit={(j) => setCareerModal(j)}
               onDelete={deleteCareer}
+              onShare={handleOpenShare}
             />
           )}
 
@@ -2353,6 +2368,7 @@ const saveCourse = async (payload, isEdit) => {
     onAdd={() => setCareerModal("add")}
     onEdit={(j) => setCareerModal(j)}
     onDelete={deleteCareer}
+    onShare={handleOpenShare}
   />
 )}
 
@@ -2363,6 +2379,7 @@ const saveCourse = async (payload, isEdit) => {
     onAdd={() => setCareerModal("add")}
     onEdit={(j) => setCareerModal(j)}
     onDelete={deleteCareer}
+    onShare={handleOpenShare}
   />
 )}
 
@@ -2413,6 +2430,13 @@ const saveCourse = async (payload, isEdit) => {
       </AnimatePresence>
 
       <AnimatePresence>{toast && <Toast key="toast" message={toast} />}</AnimatePresence>
+
+      <ShareModal
+        isOpen={shareModalState.isOpen}
+        onClose={() => setShareModalState((prev) => ({ ...prev, isOpen: false }))}
+        item={shareModalState.item}
+        type={shareModalState.type}
+      />
     </div>
   );
 }

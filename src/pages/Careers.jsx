@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { ChevronDown, ChevronUp, ArrowRight, Users, Lightbulb, TrendingUp, Handshake, BookOpen, Trophy, LineChart, Star, Zap, MapPin, Globe, Building2, Clock } from 'lucide-react';
+import { ChevronDown, ChevronUp, ArrowRight, Users, Lightbulb, TrendingUp, Handshake, BookOpen, Trophy, LineChart, Star, Zap, MapPin, Globe, Building2, Clock, Share2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { getCareers } from "../services/careerService";
 import { ensureCareerJobIds } from "../utils/jobIdHelper";
-
+import ShareModal from "../components/ShareModal";
 
 const Careers = () => {
   const [jobOpenings, setJobOpenings] = useState([]);
   const [expandedJobId, setExpandedJobId] = useState(null);
+  const [shareModalState, setShareModalState] = useState({ isOpen: false, item: null });
 
   useEffect(() => {
     const loadCareers = async () => {
@@ -797,13 +798,22 @@ const Careers = () => {
                         {job.description}
                       </p>
 
-                      <Link
-                        to={`/career/${job.jobId || job.id}`}
-                        className="inline-flex items-center gap-2 rounded-full bg-[var(--color-brand-purple)] px-5 sm:px-6 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-purple-700"
-                      >
-                        <span>Apply Now</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </Link>
+                      <div className="flex flex-wrap items-center gap-3">
+                        <Link
+                          to={`/career/${job.jobId || job.id}`}
+                          className="inline-flex items-center gap-2 rounded-full bg-[var(--color-brand-purple)] px-5 sm:px-6 py-3 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-purple-700"
+                        >
+                          <span>Apply Now</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </Link>
+                        <button
+                          onClick={() => setShareModalState({ isOpen: true, item: job })}
+                          className="inline-flex items-center gap-2 rounded-full border border-purple-500/40 bg-purple-500/10 px-4 py-3 text-xs font-bold uppercase tracking-wider text-purple-300 transition hover:bg-purple-500/20 hover:text-white"
+                        >
+                          <Share2 className="w-4 h-4" />
+                          <span>Share</span>
+                        </button>
+                      </div>
 
                     </div>
                   )}
@@ -1097,6 +1107,13 @@ const Careers = () => {
         </section>
 
       </div >
+
+      <ShareModal
+        isOpen={shareModalState.isOpen}
+        onClose={() => setShareModalState({ isOpen: false, item: null })}
+        item={shareModalState.item}
+        type="career"
+      />
     </main >
   );
 };

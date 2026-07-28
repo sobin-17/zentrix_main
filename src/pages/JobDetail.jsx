@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, MapPin, Clock, Briefcase, ChevronRight, Send, Loader2, X, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, Briefcase, ChevronRight, Send, Loader2, X, CheckCircle2, Share2 } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import { getCareers } from "../services/careerService";
 import { ensureCareerJobIds, getPredefinedDetailsForRole } from "../utils/jobIdHelper";
 import { addApplication } from "../services/applicationService";
+import ShareModal from "../components/ShareModal";
 import { storage } from "../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -528,6 +529,7 @@ const JobDetail = () => {
   
   const [fetchedJob, setFetchedJob] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -654,10 +656,17 @@ const JobDetail = () => {
           transition={{ duration: 0.6, delay: 0.1 }}
         >
           {/* Category badge */}
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
             <span className="inline-block px-4 py-1.5 rounded-full border border-white/20 text-white/80 text-sm font-medium bg-white/5">
               {category}
             </span>
+            <button
+              onClick={() => setShareModalOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 text-xs font-semibold transition-all cursor-pointer"
+            >
+              <Share2 className="w-4 h-4" />
+              Share Role
+            </button>
           </div>
 
           {/* Title */}
@@ -763,6 +772,13 @@ const JobDetail = () => {
 
         </div>
       </div>
+
+      <ShareModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        item={job}
+        type="career"
+      />
     </main>
   );
 };

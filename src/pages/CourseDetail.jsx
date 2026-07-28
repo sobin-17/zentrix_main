@@ -4,12 +4,13 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft, Clock, BookOpen, ChevronRight,
-  Send, Loader2, CheckCircle2, Award, Star, Briefcase, Users, Globe,
+  Send, Loader2, CheckCircle2, Award, Star, Briefcase, Users, Globe, Share2,
 } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import { getCourses } from "../services/courseService";
 import { ensureCourseIds } from "../utils/courseIdHelper";
 import { addEnrollment } from "../services/enrollmentService";
+import ShareModal from "../components/ShareModal";
 
 import { storage } from "../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -312,6 +313,7 @@ const CourseDetail = () => {
 
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   useEffect(() => {
     const loadCourse = async () => {
@@ -423,10 +425,17 @@ if (!course) {
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>
 
           {/* Category badge */}
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
             <span className="inline-block px-4 py-1.5 rounded-full border border-white/20 text-white/80 text-sm font-medium bg-white/5">
               {course.category}
             </span>
+            <button
+              onClick={() => setShareModalOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 text-xs font-semibold transition-all cursor-pointer"
+            >
+              <Share2 className="w-4 h-4" />
+              Share Course
+            </button>
           </div>
 
           {/* Title */}
@@ -578,6 +587,13 @@ if (!course) {
 
 </div>
       </div>
+
+      <ShareModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        item={course}
+        type="course"
+      />
     </main>
   );
 };
