@@ -486,11 +486,30 @@ function Toast({ message }) {
 ──────────────────────────────────────────────────────────────────────── */
 function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
   const isEdit = Boolean(initial);
+
+  // Combine seed courses and any existing courses from Firestore so custom ones appear in dropdown
+  const allCourseOptions = useMemo(() => {
+    const optionsMap = new Map();
+
+    seedCourses.forEach(c => {
+      optionsMap.set(c.id, { id: c.id, label: c.title, source: c });
+    });
+
+    (courses || []).forEach(c => {
+      const rawId = (c.id && c.id !== 'custom') ? c.id : (slugify(c.title || '') || c.firestoreId);
+      const courseId = (rawId && rawId !== 'custom') ? rawId : `course-${c.firestoreId || Date.now()}`;
+      if (c.title && !optionsMap.has(courseId)) {
+        optionsMap.set(courseId, { id: courseId, label: c.title, source: { ...c, id: courseId } });
+      }
+    });
+
+    return Array.from(optionsMap.values());
+  }, [courses]);
  
   // Default to the first seed course
   const defaultCourse = seedCourses[0];
   const predefined = initial
-    ? (seedCourses.find(c => c.id === initial.id) || seedCourses[0])
+    ? (allCourseOptions.find(c => c.id === initial.id)?.source || seedCourses.find(c => c.id === initial.id) || seedCourses[0])
     : defaultCourse;
 
   const initialDescription = initial?.description || initial?.overview || predefined.description || '';
@@ -512,6 +531,7 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
           status: initial.status || 'Draft',
           description: initialDescription,
           skillsText: initialSkills,
+          isCustom: initial.id === 'custom' || !allCourseOptions.some(c => c.id === initial.id),
         }
       : {
           id: defaultCourse.id,
@@ -525,6 +545,7 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
           status: 'Published',
           description: initialDescription,
           skillsText: initialSkills,
+          isCustom: false,
         }
   );
 
@@ -548,17 +569,18 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
       }));
       return;
     }
-    const predefined = seedCourses.find(c => c.id === selectedId) || seedCourses[0];
+    const matched = allCourseOptions.find(c => c.id === selectedId);
+    const predefined = matched ? matched.source : seedCourses[0];
     setForm(prev => ({
       ...prev,
-      id: predefined.id,
+      id: predefined.id || selectedId,
       isCustom: false,
       title: predefined.title,
-      category: predefined.category,
-      duration: predefined.duration,
-      level: predefined.level,
-      description: predefined.description || '',
-      skillsText: (predefined.skills || []).join(', '),
+      category: predefined.category || prev.category,
+      duration: predefined.duration || prev.duration,
+      level: predefined.level || prev.level,
+      description: predefined.description || predefined.overview || '',
+      skillsText: Array.isArray(predefined.skills) ? predefined.skills.join(', ') : (predefined.skills || ''),
     }));
   };
 
@@ -567,15 +589,17 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
  
     if (saving) return;
 
-    const predefined = seedCourses.find(c => c.id === form.id) || seedCourses[0];
+    const predefined = allCourseOptions.find(c => c.id === form.id)?.source || seedCourses[0];
 
     const parsedSkills = form.skillsText
       ? form.skillsText.split(',').map(s => s.trim()).filter(Boolean)
       : (predefined.skills || []);
+
+    const finalId = (form.id && form.id !== 'custom') ? form.id : slugify(form.title);
  
     const payload = {
       ...(isEdit ? { firestoreId: initial.firestoreId, courseId: initial.courseId } : { courseId: currentCourseId }),
-      id: form.id,
+      id: finalId,
       title: form.title,
       subtitle: form.subtitle,
       category: form.category,
@@ -609,17 +633,17 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
        
         <Field label="Course Title *">
           <select
-            value={seedCourses.some(c => c.id === form.id) ? form.id : 'custom'}
+            value={form.isCustom ? 'custom' : form.id}
             onChange={handleCourseChange}
             className="input mb-2"
           >
-            {seedCourses.map(c => (
-              <option key={c.id} value={c.id}>{c.title}</option>
+            {allCourseOptions.map(c => (
+              <option key={c.id} value={c.id}>{c.label}</option>
             ))}
             <option value="custom">➕ Add New / Custom Course Title...</option>
           </select>
 
-          {(!seedCourses.some(c => c.id === form.id) || form.id === 'custom' || form.isCustom) && (
+          {form.isCustom && (
             <input
               required
               type="text"
@@ -724,10 +748,34 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
 function CareerModal({ initial, careers = [], onClose, onSave }) {
   const isEdit = Boolean(initial);
 
+  // Combine seed careers and any existing careers from Firestore so custom ones appear in dropdown
+  const allCareerOptions = useMemo(() => {
+    const optionsMap = new Map();
+
+    // 1. Add predefined seed careers
+    seedCareers.forEach(c => {
+      const base = c.baseTitle || c.title.replace(/\s+(Intern|Developer|Engineer|Analyst|Specialist|Designer|Manager)$/i, '');
+      optionsMap.set(c.id, { id: c.id, label: base, source: c });
+    });
+
+    // 2. Add existing careers created dynamically (clean up ID if it was 'custom')
+    (careers || []).forEach(c => {
+      const rawId = (c.id && c.id !== 'custom') ? c.id : (slugify(c.baseTitle || c.title || '') || c.firestoreId);
+      const roleId = (rawId && rawId !== 'custom') ? rawId : `role-${c.firestoreId || Date.now()}`;
+
+      if (c.title && !optionsMap.has(roleId)) {
+        const base = c.baseTitle || c.title.replace(/\s+(Intern|Developer|Engineer|Analyst|Specialist|Designer|Manager)$/i, '');
+        optionsMap.set(roleId, { id: roleId, label: base || c.title, source: { ...c, id: roleId, baseTitle: base } });
+      }
+    });
+
+    return Array.from(optionsMap.values());
+  }, [careers]);
+
   // Default to the first seed career
   const defaultCareer = seedCareers[0];
   const predefined = initial
-    ? (seedCareers.find(c => c.id === initial.id) || seedCareers[0])
+    ? (allCareerOptions.find(c => c.id === initial.id)?.source || seedCareers.find(c => c.id === initial.id) || seedCareers[0])
     : defaultCareer;
   const roleDetails = getPredefinedDetailsForRole(initial?.id || initial?.title || defaultCareer.id);
 
@@ -736,12 +784,39 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
     ? initial.skills.join(', ')
     : (typeof initial?.skills === 'string' ? initial.skills : (predefined.skills || roleDetails.skills || []).join(', '));
 
+  const getInitialRespStr = (item, seed, details) => {
+    if (item?.responsibilities) {
+      if (Array.isArray(item.responsibilities) && item.responsibilities.length > 0) {
+        return item.responsibilities.join('\n');
+      }
+      if (typeof item.responsibilities === 'string') {
+        return item.responsibilities;
+      }
+    }
+    const fallback = seed?.responsibilities || details?.responsibilities || [];
+    return Array.isArray(fallback) ? fallback.join('\n') : String(fallback);
+  };
+
+  const getInitialGetStr = (item, seed, details) => {
+    if (item?.whatYouGet) {
+      if (Array.isArray(item.whatYouGet) && item.whatYouGet.length > 0) {
+        return item.whatYouGet.join('\n');
+      }
+      if (typeof item.whatYouGet === 'string') {
+        return item.whatYouGet;
+      }
+    }
+    const fallback = seed?.whatYouGet || details?.whatYouGet || [];
+    return Array.isArray(fallback) ? fallback.join('\n') : String(fallback);
+  };
+
   const [form, setForm] = useState(
     initial
       ? {
           id: initial.id || '',
           jobId: initial.jobId || '',
           title: initial.title || '',
+          baseTitle: initial.baseTitle || initial.title?.replace(/\s+(Intern|Developer|Engineer|Analyst|Specialist|Designer|Manager)$/i, '') || '',
           type: initial.type || CAREER_TYPES[0],
           experience: initial.experience || '',
           location: initial.location || 'Nagercoil, Tamil Nadu',
@@ -749,11 +824,15 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
           status: initial.status || 'Active',
           description: initialDescription,
           skillsText: initialSkills,
+          responsibilitiesText: getInitialRespStr(initial, predefined, roleDetails),
+          whatYouGetText: getInitialGetStr(initial, predefined, roleDetails),
+          isCustom: initial.id === 'custom' || !allCareerOptions.some(c => c.id === initial.id),
         }
       : {
           id: defaultCareer.id,
           jobId: defaultCareer.jobId,
           title: defaultCareer.title,
+          baseTitle: defaultCareer.baseTitle || defaultCareer.title.replace(/\s+Intern$/i, ''),
           type: defaultCareer.type,
           experience: defaultCareer.experience,
           location: defaultCareer.location,
@@ -761,6 +840,9 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
           status: 'Active',
           description: initialDescription,
           skillsText: initialSkills,
+          responsibilitiesText: getInitialRespStr(null, defaultCareer, roleDetails),
+          whatYouGetText: getInitialGetStr(null, defaultCareer, roleDetails),
+          isCustom: false,
         }
   );
 
@@ -780,34 +862,59 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
         baseTitle: '',
         title: computeJobTitle('', prev.type),
         description: '',
-        skillsText: ''
+        skillsText: '',
+        responsibilitiesText: '',
+        whatYouGetText: ''
       }));
       return;
     }
-    const predefined = seedCareers.find(c => c.id === selectedId) || seedCareers[0];
+    const matchedOption = allCareerOptions.find(opt => opt.id === selectedId);
+    const item = matchedOption ? matchedOption.source : seedCareers[0];
     const roleDetails = getPredefinedDetailsForRole(selectedId);
-    const baseTitle = predefined.baseTitle || predefined.title.replace(/\s+Intern$/i, '');
-    const currentType = form.type || predefined.type || 'Internship';
+    const baseTitle = item.baseTitle || item.title.replace(/\s+(Intern|Developer|Engineer|Analyst|Specialist|Designer|Manager)$/i, '');
+    const currentType = form.type || item.type || 'Internship';
     const computedTitle = computeJobTitle(baseTitle, currentType);
+
+    const getRespStr = (it, details) => {
+      if (it?.responsibilities && it.responsibilities.length > 0) {
+        return Array.isArray(it.responsibilities) ? it.responsibilities.join('\n') : String(it.responsibilities);
+      }
+      return (details.responsibilities || []).join('\n');
+    };
+    const getGetStr = (it, details) => {
+      if (it?.whatYouGet && it.whatYouGet.length > 0) {
+        return Array.isArray(it.whatYouGet) ? it.whatYouGet.join('\n') : String(it.whatYouGet);
+      }
+      return (details.whatYouGet || []).join('\n');
+    };
+    const getSkillsStr = (it, details) => {
+      if (it?.skills && it.skills.length > 0) {
+        return Array.isArray(it.skills) ? it.skills.join(', ') : String(it.skills);
+      }
+      return (details.skills || []).join(', ');
+    };
 
     setForm(prev => ({
       ...prev,
-      id: predefined.id,
+      id: item.id || selectedId,
       isCustom: false,
       baseTitle,
       title: computedTitle,
       type: currentType,
-      experience: predefined.experience,
-      location: predefined.location,
-      description: predefined.description || roleDetails.overview || '',
-      skillsText: (predefined.skills || roleDetails.skills || []).join(', ')
+      experience: item.experience || prev.experience || '3 Months',
+      location: item.location || prev.location || 'Nagercoil, Tamil Nadu',
+      description: item.description || item.overview || roleDetails.overview || '',
+      skillsText: getSkillsStr(item, roleDetails),
+      responsibilitiesText: getRespStr(item, roleDetails),
+      whatYouGetText: getGetStr(item, roleDetails)
     }));
   };
 
   const handleTypeChange = (e) => {
     const newType = e.target.value;
-    const predefined = seedCareers.find(c => c.id === form.id) || seedCareers[0];
-    const baseTitle = form.baseTitle || predefined.baseTitle || form.title.replace(/\s+Intern$/i, '').replace(/\s*\([^)]*\)$/g, '');
+    const matchedOption = allCareerOptions.find(opt => opt.id === form.id);
+    const predefinedSeed = matchedOption ? matchedOption.source : seedCareers[0];
+    const baseTitle = form.baseTitle || predefinedSeed.baseTitle || form.title.replace(/\s+Intern$/i, '').replace(/\s*\([^)]*\)$/g, '');
     const computedTitle = computeJobTitle(baseTitle, newType);
 
     setForm(prev => ({
@@ -819,37 +926,48 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const predefinedSeed = seedCareers.find(c => c.id === form.id) || seedCareers[0];
+    const matchedOption = allCareerOptions.find(opt => opt.id === form.id);
+    const predefinedSeed = matchedOption ? matchedOption.source : (seedCareers.find(c => c.id === form.id) || seedCareers[0]);
     const roleDetails = getPredefinedDetailsForRole(form.id || form.title);
     const finalBaseTitle = form.baseTitle || predefinedSeed.baseTitle || form.title;
     const finalTitle = computeJobTitle(finalBaseTitle, form.type);
+    const finalId = (form.id && form.id !== 'custom') ? form.id : slugify(finalBaseTitle || finalTitle);
 
     const parsedSkills = form.skillsText
       ? form.skillsText.split(',').map(s => s.trim()).filter(Boolean)
       : (predefinedSeed.skills || roleDetails.skills || []);
 
+    const parsedResponsibilities = form.responsibilitiesText
+      ? form.responsibilitiesText.split('\n').map(r => r.trim()).filter(Boolean)
+      : (predefinedSeed.responsibilities || roleDetails.responsibilities || []);
+
+    const parsedWhatYouGet = form.whatYouGetText
+      ? form.whatYouGetText.split('\n').map(w => w.trim()).filter(Boolean)
+      : (predefinedSeed.whatYouGet || roleDetails.whatYouGet || []);
+
     onSave(
       {
         ...(isEdit ? { firestoreId: initial.firestoreId, jobId: initial.jobId } : { jobId: currentJobId }),
-        id: form.id,
+        id: finalId,
         title: finalTitle,
+        baseTitle: finalBaseTitle,
         type: form.type,
         experience: form.experience,
         location: form.location,
         mode: form.mode,
         status: form.status,
-        category: roleDetails.category,
+        category: roleDetails.category || 'Software Development',
         overview: form.description,
         description: form.description,
-        responsibilities: initial?.responsibilities || predefinedSeed.responsibilities || roleDetails.responsibilities,
+        responsibilities: parsedResponsibilities,
         skills: parsedSkills,
-        whatYouGet: initial?.whatYouGet || predefinedSeed.whatYouGet || roleDetails.whatYouGet,
+        whatYouGet: parsedWhatYouGet,
       },
       isEdit
     );
   };
 
-  const activePredefined = seedCareers.find(c => c.id === form.id) || seedCareers[0];
+  const activeItem = allCareerOptions.find(c => c.id === form.id)?.source || seedCareers[0];
 
   const skillsArray = form.skillsText
     ? form.skillsText.split(',').map(s => s.trim()).filter(Boolean)
@@ -868,17 +986,17 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
 
         <Field label="Job Role / Title *">
           <select
-            value={seedCareers.some(c => c.id === form.id) ? form.id : 'custom'}
+            value={form.isCustom ? 'custom' : form.id}
             onChange={handleCareerChange}
             className="input mb-2"
           >
-            {seedCareers.map(c => (
-               <option key={c.id} value={c.id}>{c.baseTitle || c.title.replace(/\s+Intern$/i, '')}</option>
+            {allCareerOptions.map(c => (
+               <option key={c.id} value={c.id}>{c.label}</option>
             ))}
             <option value="custom">➕ Add New / Custom Career Role...</option>
           </select>
 
-          {(!seedCareers.some(c => c.id === form.id) || form.id === 'custom' || form.isCustom) && (
+          {form.isCustom && (
             <input
               required
               type="text"
@@ -899,7 +1017,7 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
 
         <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-2">
           <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Generated Title Preview</p>
-          <p className="text-base font-bold text-purple-300">{computeJobTitle(form.baseTitle || activePredefined.baseTitle || form.title, form.type)}</p>
+          <p className="text-base font-bold text-purple-300">{computeJobTitle(form.baseTitle || activeItem.baseTitle || form.title, form.type)}</p>
         </div>
 
         <Field label="Role Description / Overview">
@@ -910,6 +1028,19 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
             className="input resize-none"
             placeholder="Enter custom role description..."
           />
+        </Field>
+
+        <Field label="Roles & Responsibilities (one per line)">
+          <textarea
+            value={form.responsibilitiesText}
+            onChange={(e) => set('responsibilitiesText', e.target.value)}
+            rows={5}
+            className="input resize-y min-h-[100px]"
+            placeholder="Enter responsibilities (one point per line)...&#10;e.g. Write clean Python code&#10;Develop REST APIs"
+          />
+          <p className="text-[11px] text-slate-500 mt-1">
+            Enter each responsibility on a new line. They will appear as bullet points on the job page.
+          </p>
         </Field>
 
         <Field label="Required Skills (comma separated)">
@@ -942,6 +1073,16 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
               ))}
             </div>
           )}
+        </Field>
+
+        <Field label="What You Get / Perks (one per line)">
+          <textarea
+            value={form.whatYouGetText}
+            onChange={(e) => set('whatYouGetText', e.target.value)}
+            rows={3}
+            className="input resize-y min-h-[80px]"
+            placeholder="Enter perks (one point per line)...&#10;e.g. Hands-on real-world experience&#10;Official Internship Certificate"
+          />
         </Field>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

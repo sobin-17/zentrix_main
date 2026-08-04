@@ -62,46 +62,46 @@ const Footer = () => {
 
           {/* MOBILE TABLE WRAPPER FOR LINKS AND CONTACT (FULL VISIBILITY 2-COLUMN LAYOUT) */}
           <div className="grid grid-cols-[0.85fr_1.15fr] sm:grid-cols-2 gap-2 sm:gap-6 lg:contents w-full pt-6 lg:pt-0 mt-4 lg:mt-0 border-t border-white/10 lg:border-none">
-            {/* QUICK LINKS (LEFT) */}
-            <div className="flex flex-col items-end lg:items-end justify-start text-right">
+            {/* QUICK LINKS (LEFT ALIGNED) */}
+            <div className="flex flex-col items-start justify-start text-left">
 
               <div className="px-3.5 sm:px-5 py-1.5 sm:py-2 border border-white/20 bg-black/60 backdrop-blur-sm rounded-full text-[10px] sm:text-xs lg:text-[13px] font-medium text-white mb-4 lg:mb-5 w-fit shadow-md">
                 Quick Links
               </div>
 
-              <ul className="flex flex-col items-end lg:items-end gap-2.5 sm:gap-3 text-[12px] sm:text-[13px] text-slate-200 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+              <ul className="flex flex-col items-start gap-2.5 sm:gap-3 pl-6 text-[12px] sm:text-[13px] text-slate-200 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
 
-                <li className="w-full text-right">
+                <li className="w-full text-left">
                   <Link to="/" className="hover:text-white transition">
                     Orbit
                   </Link>
                 </li>
 
-                <li className="w-full text-right">
+                <li className="w-full text-left">
                   <Link to="/about" className="hover:text-white transition">
                     Meet Zentrix
                   </Link>
                 </li>
 
-                <li className="w-full text-right">
+                <li className="w-full text-left">
                   <Link to="/service" className="hover:text-white transition">
                     Tech Space
                   </Link>
                 </li>
 
-                <li className="w-full text-right">
+                <li className="w-full text-left">
                   <Link to="/your-next-step" className="hover:text-white transition">
                     Your Next Step
                   </Link>
                 </li>
 
-                <li className="w-full text-right">
+                <li className="w-full text-left">
                   <Link to="/course" className="hover:text-white transition">
                     Courses
                   </Link>
                 </li>
 
-                <li className="w-full text-right">
+                <li className="w-full text-left">
                   <Link to="/career" className="hover:text-white transition">
                     Careers
                   </Link>
@@ -111,16 +111,16 @@ const Footer = () => {
 
             </div>
 
-            {/* CONTACT (RIGHT - FULLY VISIBLE EMAIL) */}
-            <div className="flex flex-col items-center lg:items-end justify-start text-center lg:text-right overflow-visible">
+            {/* CONTACT (LEFT ALIGNED - FULLY VISIBLE EMAIL) */}
+            <div className="flex flex-col items-start justify-start text-left overflow-visible">
 
               <div className="px-3.5 sm:px-5 py-1.5 sm:py-2 border border-white/20 bg-black/60 backdrop-blur-sm rounded-full text-[10px] sm:text-xs lg:text-[13px] font-medium text-white mb-4 lg:mb-5 w-fit shadow-md">
                 Contact
               </div>
 
-              <ul className="flex flex-col items-center lg:items-end gap-2.5 sm:gap-3 text-[12px] sm:text-[13px] text-slate-200 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+              <ul className="flex flex-col items-start gap-2.5 sm:gap-3 pl-3 text-[12px] sm:text-[13px] text-slate-200 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
 
-                <li className="w-full text-center lg:text-right">
+                <li className="w-full text-left">
                   <a
                     href="mailto:info.zentrixtechnology@gmail.com"
                     className="hover:text-white transition whitespace-nowrap"
@@ -129,7 +129,7 @@ const Footer = () => {
                   </a>
                 </li>
 
-                <li className="w-full text-center lg:text-right">
+                <li className="w-full text-left">
                   <a
                     href="tel:+919150973003"
                     className="hover:text-white transition whitespace-nowrap"
@@ -138,7 +138,7 @@ const Footer = () => {
                   </a>
                 </li>
 
-                <li className="w-full text-center lg:text-right whitespace-nowrap">
+                <li className="w-full text-left whitespace-nowrap">
                   Nagercoil, Tamil Nadu
                 </li>
 

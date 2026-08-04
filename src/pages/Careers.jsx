@@ -794,9 +794,20 @@ const Careers = () => {
                         Role Description & Responsibilities
                       </h5>
 
-                      <p className="mb-6 text-sm md:text-base leading-7 text-slate-300">
+                      <p className="mb-4 text-sm md:text-base leading-7 text-slate-300">
                         {job.description}
                       </p>
+
+                      {Array.isArray(job.responsibilities) && job.responsibilities.length > 0 && (
+                        <ul className="mb-6 space-y-2 pl-1">
+                          {job.responsibilities.map((resp, rIdx) => (
+                            <li key={rIdx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-300">
+                              <span className="text-purple-400 font-bold mt-0.5">•</span>
+                              <span>{resp}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
 
                       <div className="flex flex-wrap items-center gap-3">
                         <Link

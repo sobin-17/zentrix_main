@@ -583,9 +583,9 @@ const JobDetail = () => {
 
   const predefined = getPredefinedDetailsForRole(job.id || job.title || job.jobId);
 
-  const hasSpecificResp = job.responsibilities && job.responsibilities.length > 0 && !job.responsibilities[0].includes('Contribute to real-world');
-  const hasSpecificSkills = job.skills && job.skills.length > 0 && !job.skills[0].includes('Relevant domain skills');
-  const hasSpecificGet = job.whatYouGet && job.whatYouGet.length > 0 && !job.whatYouGet[0].includes('Hands-on real-world');
+  const hasSpecificResp = Array.isArray(job.responsibilities) && job.responsibilities.length > 0;
+  const hasSpecificSkills = Array.isArray(job.skills) && job.skills.length > 0;
+  const hasSpecificGet = Array.isArray(job.whatYouGet) && job.whatYouGet.length > 0;
 
   const responsibilities = hasSpecificResp ? job.responsibilities : predefined.responsibilities;
   const skills = hasSpecificSkills ? job.skills : predefined.skills;
