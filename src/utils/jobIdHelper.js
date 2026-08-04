@@ -306,9 +306,9 @@ export const ensureCareerJobIds = (careersList = []) => {
   careersList.forEach((item) => {
     const details = getPredefinedDetailsForRole(item.id || item.title || item.jobId);
 
-    const hasSpecificResp = item.responsibilities && item.responsibilities.length > 0 && !item.responsibilities[0].includes('Contribute to real-world');
-    const hasSpecificSkills = item.skills && item.skills.length > 0 && !item.skills[0].includes('Relevant domain skills');
-    const hasSpecificGet = item.whatYouGet && item.whatYouGet.length > 0 && !item.whatYouGet[0].includes('Hands-on real-world');
+    const hasSpecificResp = Array.isArray(item.responsibilities) && item.responsibilities.length > 0;
+    const hasSpecificSkills = Array.isArray(item.skills) && item.skills.length > 0;
+    const hasSpecificGet = Array.isArray(item.whatYouGet) && item.whatYouGet.length > 0;
 
     const formattedItem = {
       ...item,

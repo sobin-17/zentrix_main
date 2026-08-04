@@ -478,34 +478,7 @@ if (!course) {
     className="space-y-8"
   >
 
-    {/* Curriculum */}
-    <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-8">
-      <h2
-        className="text-xs font-bold uppercase tracking-widest mb-6"
-        style={{ color: course.accentColor || "#a855f7" }}
-      >
-        Curriculum
-      </h2>
 
-      <ul className="space-y-3">
-        {course.curriculum?.length ? (
-          course.curriculum.map((item, i) => (
-            <li
-              key={i}
-              className="flex items-start gap-3 text-slate-300 text-sm leading-relaxed"
-            >
-              <ChevronRight
-                className="w-4 h-4 flex-shrink-0 mt-0.5"
-                style={{ color: course.accentColor || "#a855f7" }}
-              />
-              {item}
-            </li>
-          ))
-        ) : (
-          <li className="text-slate-500">Curriculum coming soon.</li>
-        )}
-      </ul>
-    </div>
 
     {/* Skills */}
     <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-8">
