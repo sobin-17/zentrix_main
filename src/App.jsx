@@ -23,6 +23,7 @@ const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const TermsConditions = lazy(() => import('./pages/TermsConditions'));
 const OurProducts = lazy(() => import('./pages/OurProducts'));
 const OurPortfolio = lazy(() => import('./pages/OurPortfolio'));
+const AbijoeFurnitureERP = lazy(() => import('./pages/AbijoeFurnitureERP'));
 const YourNextStep = lazy(() => import('./pages/Yournextstepnew'));
 const Admindashboard = lazy(() => import('./pages/Admindashboard'));
 const AdminLogin = lazy(() => import('./pages/AdminLogin'));
@@ -74,6 +75,7 @@ function AppLayout() {
             <Route path="/our-products" element={<OurProducts />} />
             <Route path="/ourporfolio" element={<OurPortfolio />} />
             <Route path="/our-portfolio" element={<OurPortfolio />} />
+            <Route path="/portfolio/abijoefurniture-erp" element={<AbijoeFurnitureERP />} />
             <Route path="/get-touch" element={<GetTouch />} />
             <Route path="/your-next-step" element={<YourNextStep />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
