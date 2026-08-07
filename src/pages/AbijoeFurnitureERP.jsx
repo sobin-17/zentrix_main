@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useSpring as useSpringMotion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import {
   ArrowLeft, ExternalLink, MessageCircle, CheckCircle2, Circle,
   Layers, Code2, Database, Cpu, BarChart3, Users, Package,
   Calculator, Clock, FileText, Settings, ChevronRight, X,
   Monitor, Briefcase, TrendingUp, AlertCircle, ZapIcon
 } from 'lucide-react';
+import { getProjects, DEFAULT_SEED_PROJECTS } from '../services/projectService';
 
 /* ─── Animation Variants ────────────────────────────────────────────── */
 const fadeUp = {
@@ -218,8 +219,22 @@ function Lightbox({ src, label, onClose }) {
 
 /* ─── Main Component ─────────────────────────────────────────────────── */
 export default function AbijoeFurnitureERP() {
+  const { projectId } = useParams();
   const [activeSection, setActiveSection] = useState('overview');
   const [lightbox, setLightbox] = useState(null);
+  const [projectData, setProjectData] = useState(null);
+
+  useEffect(() => {
+    getProjects().then(all => {
+      const target = projectId || 'abijoefurniture-erp';
+      const found = all.find(p => p.id === target || p.firestoreId === target) || all[0];
+      if (found) setProjectData(found);
+    }).catch(() => {});
+  }, [projectId]);
+
+  const activeScreenshots = (projectData && Array.isArray(projectData.screenshots) && projectData.screenshots.length > 0)
+    ? projectData.screenshots
+    : screenshots;
 
   /* Throttled 60fps Scroll spy */
   useEffect(() => {
@@ -647,9 +662,9 @@ export default function AbijoeFurnitureERP() {
             viewport={{ once: true, amount: 0.1 }}
             className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"
           >
-            {screenshots.map((s) => (
+            {activeScreenshots.map((s, idx) => (
               <motion.div
-                key={s.label}
+                key={s.label || idx}
                 variants={fadeUp}
                 className="relative group overflow-hidden rounded-[20px] border border-white/[0.08] cursor-zoom-in hover:border-purple-500/40 transition-all duration-300"
                 style={{ boxShadow: '0 4px 30px rgba(0,0,0,0.5)' }}

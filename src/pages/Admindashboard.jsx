@@ -41,15 +41,24 @@ import {
   updateContactMessageStatus,
   deleteContactMessage as deleteContactMessageFromDB,
 } from "../services/contactService";
+import {
+  getProjects,
+  createProject,
+  updateProject,
+  deleteProject as deleteProjectFromDB,
+  DEFAULT_SEED_PROJECTS
+} from "../services/projectService";
 import ContactMessagesManager from "../components/ContactMessagesManager";
 import AdminsManager from "../components/AdminsManager";
+import ProjectsManager from "../components/ProjectsManager";
+import ProjectModal from "../components/ProjectModal";
 import ShareModal from "../components/ShareModal";
 import {
   LayoutDashboard, BookOpen, Grid3x3, PlayCircle, ClipboardList, Star,
   Award, Briefcase, FileText, Users, UserCog, Shield, Settings, Globe,
   Search, Bell, ChevronDown, Plus, Pencil, Trash2, Eye, X, Check, Share2,
   ChevronRight, TrendingUp, LogOut, ArrowLeft, GraduationCap, Mail, Phone,
-  MessageSquare, Calendar, Menu,
+  MessageSquare, Calendar, Menu, Layers,
 } from 'lucide-react';
 
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -148,7 +157,7 @@ function useLocalStorageState(key, initial) {
     }
   });
   useEffect(() => {
-    try { window.localStorage?.setItem(key, JSON.stringify(state)); } catch {}
+    try { window.localStorage?.setItem(key, JSON.stringify(state)); } catch { }
   }, [key, state]);
   return [state, setState];
 }
@@ -177,6 +186,12 @@ const NAV_SECTIONS = [
       { key: 'contacts', label: 'Contact Messages', icon: Mail },
       { key: 'opening careers', label: 'Opening Careers', icon: Briefcase },
       { key: 'closing careers', label: 'Closing Careers', icon: Briefcase },
+    ],
+  },
+  {
+    section: 'Portfolio Management',
+    items: [
+      { key: 'projects', label: 'Portfolio Projects', icon: Layers },
     ],
   },
   {
@@ -224,11 +239,10 @@ function Sidebar({ active, setActive, mobileOpen, setMobileOpen }) {
                   <button
                     key={key}
                     onClick={() => handleSelect(key)}
-                    className={`w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                      isActive
-                        ? 'bg-[var(--color-brand-purple)] text-white shadow-[0_0_20px_rgba(157,0,255,0.35)]'
-                        : 'text-slate-400 hover:text-white hover:bg-white/5'
-                    }`}
+                    className={`w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${isActive
+                      ? 'bg-[var(--color-brand-purple)] text-white shadow-[0_0_20px_rgba(157,0,255,0.35)]'
+                      : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      }`}
                   >
                     <span className="flex items-center gap-3">
                       <Icon className="w-4 h-4" />
@@ -343,100 +357,100 @@ function Topbar({
         >
           <Search className="w-4 h-4" />
         </button>
-      <div className="relative">
-  <button
-    onClick={() => setShowNotifications(!showNotifications)}
-    className="relative w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white"
-  >
-    <Bell className="w-4 h-4" />
-
-    {notificationCount > 0 && (
-      <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-[9px] font-bold flex items-center justify-center">
-        {notificationCount}
-      </span>
-    )}
-  </button>
-
-  {showNotifications && (
-  <div className="absolute right-0 mt-3 w-[90vw] max-w-96 rounded-xl bg-[#111] border border-white/10 shadow-xl z-50 overflow-hidden">
-
-    {/* Header */}
-    <div className="flex items-center justify-between p-4 border-b border-white/10 bg-white/[0.02]">
-      <h3 className="text-white font-semibold text-sm">
-        Notifications ({notificationCount})
-      </h3>
-
-      {notificationCount > 0 && (
-        <button
-          onClick={markAllNotificationsAsRead}
-          className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
-        >
-          Mark all as read
-        </button>
-      )}
-    </div>
-
-    {/* Notification List */}
-    <div className="max-h-80 overflow-y-auto divide-y divide-white/5">
-
-      {notifications.length === 0 ? (
-        <p className="text-slate-500 p-6 text-center text-xs">
-          No new notifications
-        </p>
-      ) : (
-        notifications.map((item) => (
-          <div
-            key={item.id}
-            onClick={() => onSelectNotification && onSelectNotification(item)}
-            className="p-4 hover:bg-purple-600/10 transition-colors cursor-pointer group"
+        <div className="relative">
+          <button
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="relative w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white"
           >
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-white text-xs font-semibold group-hover:text-purple-300 transition-colors">
-                {item.type === "enrollment" && `📚 ${item.name} enrolled`}
-                {item.type === "application" && `💼 ${item.name} applied`}
-                {item.type === "contact" && `📩 ${item.name} sent a message`}
-              </p>
+            <Bell className="w-4 h-4" />
 
-              <span className="text-[10px] text-purple-400 font-bold uppercase tracking-wider group-hover:underline flex-shrink-0">
-                View Full Info →
+            {notificationCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-[9px] font-bold flex items-center justify-center">
+                {notificationCount}
               </span>
+            )}
+          </button>
+
+          {showNotifications && (
+            <div className="absolute right-0 mt-3 w-[90vw] max-w-96 rounded-xl bg-[#111] border border-white/10 shadow-xl z-50 overflow-hidden">
+
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 border-b border-white/10 bg-white/[0.02]">
+                <h3 className="text-white font-semibold text-sm">
+                  Notifications ({notificationCount})
+                </h3>
+
+                {notificationCount > 0 && (
+                  <button
+                    onClick={markAllNotificationsAsRead}
+                    className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
+                  >
+                    Mark all as read
+                  </button>
+                )}
+              </div>
+
+              {/* Notification List */}
+              <div className="max-h-80 overflow-y-auto divide-y divide-white/5">
+
+                {notifications.length === 0 ? (
+                  <p className="text-slate-500 p-6 text-center text-xs">
+                    No new notifications
+                  </p>
+                ) : (
+                  notifications.map((item) => (
+                    <div
+                      key={item.id}
+                      onClick={() => onSelectNotification && onSelectNotification(item)}
+                      className="p-4 hover:bg-purple-600/10 transition-colors cursor-pointer group"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-white text-xs font-semibold group-hover:text-purple-300 transition-colors">
+                          {item.type === "enrollment" && `📚 ${item.name} enrolled`}
+                          {item.type === "application" && `💼 ${item.name} applied`}
+                          {item.type === "contact" && `📩 ${item.name} sent a message`}
+                        </p>
+
+                        <span className="text-[10px] text-purple-400 font-bold uppercase tracking-wider group-hover:underline flex-shrink-0">
+                          View Full Info →
+                        </span>
+                      </div>
+
+                      <p className="text-slate-400 text-xs mt-1.5 line-clamp-2 leading-relaxed">
+                        {item.title}
+                      </p>
+
+                      <p className="text-slate-500 text-[10px] mt-2">
+                        {new Date(item.time).toLocaleString()}
+                      </p>
+                    </div>
+                  ))
+                )}
+
+              </div>
+
             </div>
-
-            <p className="text-slate-400 text-xs mt-1.5 line-clamp-2 leading-relaxed">
-              {item.title}
-            </p>
-
-            <p className="text-slate-500 text-[10px] mt-2">
-              {new Date(item.time).toLocaleString()}
-            </p>
-          </div>
-        ))
-      )}
-
-    </div>
-
-  </div>
-)}
-</div>
+          )}
+        </div>
         <div className="hidden sm:flex items-center gap-2 pl-3 border-l border-white/10">
           <div className="w-9 h-9 rounded-full bg-purple-600 flex items-center justify-center text-sm font-bold text-white flex-shrink-0">HR</div>
           <div className="hidden md:block leading-tight">
-  <p className="text-sm font-semibold text-white">
-    {admin?.email?.split("@")[0]}
-  </p>
-  <p className="text-xs text-slate-500">
-    {admin?.email}
-  </p>
-</div>
+            <p className="text-sm font-semibold text-white">
+              {admin?.email?.split("@")[0]}
+            </p>
+            <p className="text-xs text-slate-500">
+              {admin?.email}
+            </p>
+          </div>
           <ChevronDown className="w-4 h-4 text-slate-500" />
         </div>
         <button
-  onClick={handleLogout}
-  className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm flex-shrink-0"
->
-  <LogOut className="w-4 h-4" />
-  <span className="hidden sm:inline">Logout</span>
-</button>
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm flex-shrink-0"
+        >
+          <LogOut className="w-4 h-4" />
+          <span className="hidden sm:inline">Logout</span>
+        </button>
       </div>
     </header>
   );
@@ -460,9 +474,8 @@ function StatusPill({ status }) {
   const positive = status === 'Published' || status === 'Active';
   return (
     <span
-      className={`px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap ${
-        positive ? 'bg-emerald-500/15 text-emerald-400' : 'bg-amber-500/15 text-amber-400'
-      }`}
+      className={`px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap ${positive ? 'bg-emerald-500/15 text-emerald-400' : 'bg-amber-500/15 text-amber-400'
+        }`}
     >
       {status}
     </span>
@@ -505,7 +518,7 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
 
     return Array.from(optionsMap.values());
   }, [courses]);
- 
+
   // Default to the first seed course
   const defaultCourse = seedCourses[0];
   const predefined = initial
@@ -520,33 +533,33 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
   const [form, setForm] = useState(
     initial
       ? {
-          id: initial.id || '',
-          courseId: initial.courseId || '',
-          title: initial.title || '',
-          subtitle: initial.subtitle || '',
-          category: initial.category || CATEGORIES[0],
-          duration: initial.duration || '',
-          level: initial.level || LEVELS[0],
-          mode: initial.mode || 'Hybrid',
-          status: initial.status || 'Draft',
-          description: initialDescription,
-          skillsText: initialSkills,
-          isCustom: initial.id === 'custom' || !allCourseOptions.some(c => c.id === initial.id),
-        }
+        id: initial.id || '',
+        courseId: initial.courseId || '',
+        title: initial.title || '',
+        subtitle: initial.subtitle || '',
+        category: initial.category || CATEGORIES[0],
+        duration: initial.duration || '',
+        level: initial.level || LEVELS[0],
+        mode: initial.mode || 'Hybrid',
+        status: initial.status || 'Draft',
+        description: initialDescription,
+        skillsText: initialSkills,
+        isCustom: initial.id === 'custom' || !allCourseOptions.some(c => c.id === initial.id),
+      }
       : {
-          id: defaultCourse.id,
-          courseId: defaultCourse.courseId,
-          title: defaultCourse.title,
-          subtitle: '',
-          category: defaultCourse.category,
-          duration: defaultCourse.duration,
-          level: defaultCourse.level,
-          mode: 'Hybrid',
-          status: 'Published',
-          description: initialDescription,
-          skillsText: initialSkills,
-          isCustom: false,
-        }
+        id: defaultCourse.id,
+        courseId: defaultCourse.courseId,
+        title: defaultCourse.title,
+        subtitle: '',
+        category: defaultCourse.category,
+        duration: defaultCourse.duration,
+        level: defaultCourse.level,
+        mode: 'Hybrid',
+        status: 'Published',
+        description: initialDescription,
+        skillsText: initialSkills,
+        isCustom: false,
+      }
   );
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
@@ -586,7 +599,7 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
- 
+
     if (saving) return;
 
     const predefined = allCourseOptions.find(c => c.id === form.id)?.source || seedCourses[0];
@@ -596,7 +609,7 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
       : (predefined.skills || []);
 
     const finalId = (form.id && form.id !== 'custom') ? form.id : slugify(form.title);
- 
+
     const payload = {
       ...(isEdit ? { firestoreId: initial.firestoreId, courseId: initial.courseId } : { courseId: currentCourseId }),
       id: finalId,
@@ -619,7 +632,7 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
       placement: initial?.placement ?? predefined.placement ?? true,
       students: isEdit ? initial.students : 0,
     };
- 
+
     onSave(payload, isEdit);
   };
 
@@ -630,7 +643,7 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
   return (
     <ModalShell title={isEdit ? 'Edit Course' : 'Add New Course'} onClose={onClose}>
       <form onSubmit={handleSubmit} className="space-y-4">
-       
+
         <Field label="Course Title *">
           <select
             value={form.isCustom ? 'custom' : form.id}
@@ -727,8 +740,8 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
           </Field>
           <Field label="Status">
             <select value={form.status} onChange={(e) => set('status', e.target.value)} className="input">
-               <option>Draft</option>
-               <option>Published</option>
+              <option>Draft</option>
+              <option>Published</option>
             </select>
           </Field>
         </div>
@@ -811,37 +824,37 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
   const [form, setForm] = useState(
     initial
       ? {
-          id: initial.id || '',
-          jobId: initial.jobId || '',
-          title: initial.title || '',
-          baseTitle: initial.baseTitle || initial.title?.replace(/\s+(Intern|Developer|Engineer|Analyst|Specialist|Designer|Manager)$/i, '') || '',
-          type: initial.type || CAREER_TYPES[0],
-          experience: initial.experience || '',
-          location: initial.location || 'Nagercoil, Tamil Nadu',
-          mode: initial.mode || 'Onsite',
-          status: initial.status || 'Active',
-          description: initialDescription,
-          skillsText: initialSkills,
-          responsibilitiesText: getInitialRespStr(initial, predefined, roleDetails),
-          whatYouGetText: getInitialGetStr(initial, predefined, roleDetails),
-          isCustom: initial.id === 'custom' || !allCareerOptions.some(c => c.id === initial.id),
-        }
+        id: initial.id || '',
+        jobId: initial.jobId || '',
+        title: initial.title || '',
+        baseTitle: initial.baseTitle || initial.title?.replace(/\s+(Intern|Developer|Engineer|Analyst|Specialist|Designer|Manager)$/i, '') || '',
+        type: initial.type || CAREER_TYPES[0],
+        experience: initial.experience || '',
+        location: initial.location || 'Nagercoil, Tamil Nadu',
+        mode: initial.mode || 'Onsite',
+        status: initial.status || 'Active',
+        description: initialDescription,
+        skillsText: initialSkills,
+        responsibilitiesText: getInitialRespStr(initial, predefined, roleDetails),
+        whatYouGetText: getInitialGetStr(initial, predefined, roleDetails),
+        isCustom: initial.id === 'custom' || !allCareerOptions.some(c => c.id === initial.id),
+      }
       : {
-          id: defaultCareer.id,
-          jobId: defaultCareer.jobId,
-          title: defaultCareer.title,
-          baseTitle: defaultCareer.baseTitle || defaultCareer.title.replace(/\s+Intern$/i, ''),
-          type: defaultCareer.type,
-          experience: defaultCareer.experience,
-          location: defaultCareer.location,
-          mode: 'Onsite',
-          status: 'Active',
-          description: initialDescription,
-          skillsText: initialSkills,
-          responsibilitiesText: getInitialRespStr(null, defaultCareer, roleDetails),
-          whatYouGetText: getInitialGetStr(null, defaultCareer, roleDetails),
-          isCustom: false,
-        }
+        id: defaultCareer.id,
+        jobId: defaultCareer.jobId,
+        title: defaultCareer.title,
+        baseTitle: defaultCareer.baseTitle || defaultCareer.title.replace(/\s+Intern$/i, ''),
+        type: defaultCareer.type,
+        experience: defaultCareer.experience,
+        location: defaultCareer.location,
+        mode: 'Onsite',
+        status: 'Active',
+        description: initialDescription,
+        skillsText: initialSkills,
+        responsibilitiesText: getInitialRespStr(null, defaultCareer, roleDetails),
+        whatYouGetText: getInitialGetStr(null, defaultCareer, roleDetails),
+        isCustom: false,
+      }
   );
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
@@ -974,7 +987,7 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
   return (
     <ModalShell title={isEdit ? 'Edit Career' : 'Add New Career'} onClose={onClose}>
       <form onSubmit={handleSubmit} className="space-y-4">
-        
+
         <div className="flex items-center justify-between bg-purple-500/10 border border-purple-500/30 rounded-xl p-3.5 mb-2 gap-2">
           <span className="text-xs font-semibold text-purple-300 uppercase tracking-wider">Assigned Job ID:</span>
           <span className="px-3 py-1 rounded-lg bg-purple-600 text-white font-mono font-bold text-sm tracking-widest shadow-[0_0_10px_rgba(157,0,255,0.3)] whitespace-nowrap">
@@ -989,7 +1002,7 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
             className="input mb-2"
           >
             {allCareerOptions.map(c => (
-               <option key={c.id} value={c.id}>{c.label}</option>
+              <option key={c.id} value={c.id}>{c.label}</option>
             ))}
             <option value="custom">➕ Add New / Custom Career Role...</option>
           </select>
@@ -1110,13 +1123,12 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
                 key={opt}
                 type="button"
                 onClick={() => set('status', opt)}
-                className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-colors border ${
-                  form.status === opt
-                    ? opt === 'Active'
-                      ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40'
-                      : 'bg-amber-500/15 text-amber-400 border-amber-500/40'
-                    : 'bg-white/5 text-slate-400 border-white/10 hover:bg-white/10'
-                }`}
+                className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-colors border ${form.status === opt
+                  ? opt === 'Active'
+                    ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40'
+                    : 'bg-amber-500/15 text-amber-400 border-amber-500/40'
+                  : 'bg-white/5 text-slate-400 border-white/10 hover:bg-white/10'
+                  }`}
               >
                 {opt === 'Active' ? 'Open for applications' : 'Closed'}
               </button>
@@ -1687,38 +1699,38 @@ function EnrollmentsManager({ courses, enrollments, onUpdateStatus, onDeleteEnro
                             <p className="leading-relaxed">{s.message}</p>
                           </div>
                           <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-slate-500 mt-3">
-  <span className="flex items-center gap-1.5">
-    <Calendar className="w-3.5 h-3.5" />
-    Enrolled on {s.enrolledDate ? new Date(s.enrolledDate).toLocaleDateString() : 'N/A'}
-  </span>
+                            <span className="flex items-center gap-1.5">
+                              <Calendar className="w-3.5 h-3.5" />
+                              Enrolled on {s.enrolledDate ? new Date(s.enrolledDate).toLocaleDateString() : 'N/A'}
+                            </span>
 
-  {s.resume ? (
-    s.resume.startsWith('http') ? (
-      <a
-        href={s.resume}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-purple-600/20 text-purple-400 hover:bg-purple-600/30 transition"
-      >
-        <FileText className="w-4 h-4" />
-        View Resume
-      </a>
-    ) : (
-      <span className="inline-flex items-center gap-2 px-2 py-1 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs text-center max-w-[150px]">
-        {s.resume}
-      </span>
-    )
-  ) : (
-    <span className="text-slate-500 text-sm">No Resume</span>
-  )}
-  <button
-    onClick={(e) => { e.stopPropagation(); onDeleteEnrollment(s); }}
-    className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-red-600/10 text-red-500 hover:bg-red-600/20 transition sm:ml-auto"
-  >
-    <Trash2 className="w-4 h-4" />
-    Delete Student
-  </button>
-</div>
+                            {s.resume ? (
+                              s.resume.startsWith('http') ? (
+                                <a
+                                  href={s.resume}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-purple-600/20 text-purple-400 hover:bg-purple-600/30 transition"
+                                >
+                                  <FileText className="w-4 h-4" />
+                                  View Resume
+                                </a>
+                              ) : (
+                                <span className="inline-flex items-center gap-2 px-2 py-1 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs text-center max-w-[150px]">
+                                  {s.resume}
+                                </span>
+                              )
+                            ) : (
+                              <span className="text-slate-500 text-sm">No Resume</span>
+                            )}
+                            <button
+                              onClick={(e) => { e.stopPropagation(); onDeleteEnrollment(s); }}
+                              className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-red-600/10 text-red-500 hover:bg-red-600/20 transition sm:ml-auto"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                              Delete Student
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     )}
@@ -1860,7 +1872,7 @@ function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp 
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-full bg-purple-600/20 border border-purple-500/40 text-purple-300 text-xs font-bold flex items-center justify-center flex-shrink-0">
-                        {app.name ? app.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase() : 'AP'}
+                        {app.name ? app.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'AP'}
                       </div>
                       <div>
                         <p className="text-white font-semibold text-sm">{app.name}</p>
@@ -2040,14 +2052,14 @@ function ComingSoon({ label }) {
 export default function AdminDashboard() {
   const navigate = useNavigate();
 
-const handleLogout = async () => {
-  try {
-    await signOut(auth);
-    navigate("/admin-login");
-  } catch (error) {
-    console.error(error);
-  }
-};
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/admin-login");
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const [active, setActive] = useState('dashboard');
   const [query, setQuery] = useState('');
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -2073,14 +2085,14 @@ const handleLogout = async () => {
 
   const [contactMessages, setContactMessages] = useState([]);
 
-const loadContacts = async () => {
-  const data = await getContactMessages();
-  setContactMessages(data);
-};
+  const loadContacts = async () => {
+    const data = await getContactMessages();
+    setContactMessages(data);
+  };
 
-useEffect(() => {
-  loadContacts();
-}, []);
+  useEffect(() => {
+    loadContacts();
+  }, []);
 
   const [admin, setAdmin] = useState(null);
   useEffect(() => {
@@ -2091,33 +2103,33 @@ useEffect(() => {
         });
       }
     });
-  
+
     return unsubscribe;
   }, []);
 
-useEffect(() => {
-  loadEnrollments();
-}, []);
+  useEffect(() => {
+    loadEnrollments();
+  }, []);
 
-const loadCareers = async () => {
-  try {
-    const data = await getCareers();
-    const formatted = ensureCareerJobIds(data);
-    setCareers(formatted);
-  } catch (error) {
-    console.error("Failed to load careers:", error);
-    setCareers([]);
-  }
-};
+  const loadCareers = async () => {
+    try {
+      const data = await getCareers();
+      const formatted = ensureCareerJobIds(data);
+      setCareers(formatted);
+    } catch (error) {
+      console.error("Failed to load careers:", error);
+      setCareers([]);
+    }
+  };
 
-useEffect(() => {
-  loadCareers();
-}, []);
+  useEffect(() => {
+    loadCareers();
+  }, []);
 
-const loadEnrollments = async () => {
-  const data = await getEnrollments();
-  setEnrollments(data);
-};
+  const loadEnrollments = async () => {
+    const data = await getEnrollments();
+    setEnrollments(data);
+  };
   const [careerApplications, setCareerApplications] = useState([]);
 
   const notifications = [
@@ -2130,7 +2142,7 @@ const loadEnrollments = async () => {
         title: e.courseTitle || e.courseId,
         time: e.enrolledDate,
       })),
-  
+
     ...careerApplications
       .filter(a => a.status === "New")
       .map(a => ({
@@ -2141,19 +2153,19 @@ const loadEnrollments = async () => {
         time: a.appliedAt,
       })),
 
-      ...contactMessages
-  .filter(c => c.status === "New")
-  .map(c => ({
-    id: c.firestoreId,
-    type: "contact",
-    name: c.name,
-    title: c.message,
-    time: c.createdAt,
-  }))
+    ...contactMessages
+      .filter(c => c.status === "New")
+      .map(c => ({
+        id: c.firestoreId,
+        type: "contact",
+        name: c.name,
+        title: c.message,
+        time: c.createdAt,
+      }))
   ].sort((a, b) => new Date(b.time) - new Date(a.time));
-  
+
   const notificationCount = notifications.length;
- 
+
   const loadApplications = async () => {
     try {
       const data = await getApplications();
@@ -2169,7 +2181,7 @@ const loadEnrollments = async () => {
       for (const enrollment of enrollments.filter(e => e.status === "New")) {
         await updateEnrollmentStatus(enrollment.firestoreId, "Contacted");
       }
-  
+
       // Update applications
       for (const application of careerApplications.filter(a => a.status === "New")) {
         await updateAppStatusService(application.firestoreId, "Pending");
@@ -2179,12 +2191,12 @@ const loadEnrollments = async () => {
       for (const contact of contactMessages.filter(c => c.status === "New")) {
         await updateContactMessageStatus(contact.firestoreId, "Read");
       }
-  
+
       // Reload data
       await loadEnrollments();
       await loadApplications();
       await loadContacts();
-  
+
       setShowNotifications(false);
     } catch (error) {
       console.error(error);
@@ -2196,14 +2208,65 @@ const loadEnrollments = async () => {
   }, []);
   const [courseModal, setCourseModal] = useState(null);
   const [careerModal, setCareerModal] = useState(null);
+  const [projectModal, setProjectModal] = useState(null);
+  const [projects, setProjects] = useState([]);
+  const [savingProject, setSavingProject] = useState(false);
   const [toast, setToast] = useState('');
   const [shareModalState, setShareModalState] = useState({ isOpen: false, item: null, type: 'career' });
   const handleOpenShare = (item, type) => setShareModalState({ isOpen: true, item, type });
 
+  const loadProjects = async () => {
+    try {
+      const data = await getProjects();
+      setProjects(data || []);
+    } catch (err) {
+      console.error("Error loading projects:", err);
+      setProjects([]);
+    }
+  };
+
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
+  const saveProject = async (payload, isEdit) => {
+    if (savingProject) return;
+    setSavingProject(true);
+    try {
+      if (isEdit) {
+        await updateProject(payload.firestoreId, payload);
+      } else {
+        await createProject(payload);
+      }
+      await loadProjects();
+      setProjectModal(null);
+      flash(isEdit ? "Portfolio project updated" : "Portfolio project added");
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Failed to save project");
+    } finally {
+      setSavingProject(false);
+    }
+  };
+
+  const deleteProjectHandler = async (project) => {
+    if (!window.confirm(`Delete project "${project.title}"?`)) return;
+    try {
+      if (project.firestoreId) {
+        await deleteProjectFromDB(project.firestoreId);
+      }
+      setProjects(prev => prev.filter(p => p.firestoreId !== project.firestoreId && p.id !== project.id));
+      flash("Project removed");
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Failed to delete project");
+    }
+  };
+
   useEffect(() => {
     loadCourses();
   }, []);
- 
+
   const loadCourses = async () => {
     try {
       const data = await getCourses();
@@ -2222,36 +2285,37 @@ const loadEnrollments = async () => {
     setMobileNavOpen(false);
     if (action === 'add' && view === 'courses') setCourseModal('add');
     if (action === 'add' && view === 'careers') setCareerModal('add');
+    if (action === 'add' && view === 'projects') setProjectModal('add');
   };
 
   const [savingCourse, setSavingCourse] = useState(false);
 
-const saveCourse = async (payload, isEdit) => {
-  if (savingCourse) return; // block re-entrant calls
-  setSavingCourse(true);
-  try {
-    const cleanData = Object.fromEntries(
-      Object.entries(payload).filter(([_, value]) => value !== undefined)
-    );
+  const saveCourse = async (payload, isEdit) => {
+    if (savingCourse) return; // block re-entrant calls
+    setSavingCourse(true);
+    try {
+      const cleanData = Object.fromEntries(
+        Object.entries(payload).filter(([_, value]) => value !== undefined)
+      );
 
-    if (isEdit) {
-      await updateCourse(payload.firestoreId, cleanData);
-    } else {
-      const nextCourseId = generateNextCourseId(cleanData.category || cleanData.title || cleanData.id, courses);
-      cleanData.courseId = nextCourseId;
-      await addCourse(cleanData);
+      if (isEdit) {
+        await updateCourse(payload.firestoreId, cleanData);
+      } else {
+        const nextCourseId = generateNextCourseId(cleanData.category || cleanData.title || cleanData.id, courses);
+        cleanData.courseId = nextCourseId;
+        await addCourse(cleanData);
+      }
+
+      await loadCourses();
+      setCourseModal(null);
+      flash(isEdit ? "Course updated" : "Course added");
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    } finally {
+      setSavingCourse(false);
     }
-
-    await loadCourses();
-    setCourseModal(null);
-    flash(isEdit ? "Course updated" : "Course added");
-  } catch (err) {
-    console.error(err);
-    alert(err.message);
-  } finally {
-    setSavingCourse(false);
-  }
-};
+  };
   const deleteCourse = async (course) => {
     if (!window.confirm(`Delete "${course.title}"?`)) return;
 
@@ -2325,9 +2389,9 @@ const saveCourse = async (payload, isEdit) => {
         enrollment.firestoreId,
         status
       );
- 
+
       await loadEnrollments();
- 
+
       flash(`${enrollment.name} marked as ${status}`);
     } catch (error) {
       console.error("Error updating enrollment status:", error);
@@ -2345,7 +2409,7 @@ const saveCourse = async (payload, isEdit) => {
       alert("Failed to delete enrollment");
     }
   };
- 
+
 
 
   const updateApplicationStatus = async (application, status) => {
@@ -2393,7 +2457,7 @@ const saveCourse = async (payload, isEdit) => {
   const openingCareers = careers.filter(
     (career) => career.status === "Active"
   );
-  
+
   const closingCareers = careers.filter(
     (career) => career.status === "Closed"
   );
@@ -2452,19 +2516,19 @@ const saveCourse = async (payload, isEdit) => {
       <Sidebar active={active} setActive={setActive} mobileOpen={mobileNavOpen} setMobileOpen={setMobileNavOpen} />
 
       <div className="flex-1 min-w-0">
-      <Topbar
-  query={query}
-  setQuery={setQuery}
-  handleLogout={handleLogout}
-  admin={admin}
-  notifications={notifications}
-  notificationCount={notificationCount}
-  showNotifications={showNotifications}
-  setShowNotifications={setShowNotifications}
-  markAllNotificationsAsRead={markAllNotificationsAsRead}
-  onSelectNotification={handleNotificationClick}
-  onOpenMobileNav={() => setMobileNavOpen(true)}
-/>
+        <Topbar
+          query={query}
+          setQuery={setQuery}
+          handleLogout={handleLogout}
+          admin={admin}
+          notifications={notifications}
+          notificationCount={notificationCount}
+          showNotifications={showNotifications}
+          setShowNotifications={setShowNotifications}
+          markAllNotificationsAsRead={markAllNotificationsAsRead}
+          onSelectNotification={handleNotificationClick}
+          onOpenMobileNav={() => setMobileNavOpen(true)}
+        />
 
         <main className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto">
           {active === 'dashboard' && <DashboardHome courses={courses} careers={careers} enrollments={enrollments} careerApplications={careerApplications} goTo={goTo} />}
@@ -2491,70 +2555,81 @@ const saveCourse = async (payload, isEdit) => {
             />
           )}
 
-{active === "contacts" && (
-  <ContactMessagesManager
-    messages={contactMessages}
-    onDelete={removeContactMessage}
-  />
-)}
+          {active === "contacts" && (
+            <ContactMessagesManager
+              messages={contactMessages}
+              onDelete={removeContactMessage}
+            />
+          )}
 
-{active === "opening careers" && (
-  <CareersManager
-    careers={openingCareers}
-    query={query}
-    onAdd={() => setCareerModal("add")}
-    onEdit={(j) => setCareerModal(j)}
-    onDelete={deleteCareer}
-    onShare={handleOpenShare}
-  />
-)}
+          {active === "opening careers" && (
+            <CareersManager
+              careers={openingCareers}
+              query={query}
+              onAdd={() => setCareerModal("add")}
+              onEdit={(j) => setCareerModal(j)}
+              onDelete={deleteCareer}
+              onShare={handleOpenShare}
+            />
+          )}
 
-{active === "closing careers" && (
-  <CareersManager
-    careers={closingCareers}
-    query={query}
-    onAdd={() => setCareerModal("add")}
-    onEdit={(j) => setCareerModal(j)}
-    onDelete={deleteCareer}
-    onShare={handleOpenShare}
-  />
-)}
+          {active === "closing careers" && (
+            <CareersManager
+              careers={closingCareers}
+              query={query}
+              onAdd={() => setCareerModal("add")}
+              onEdit={(j) => setCareerModal(j)}
+              onDelete={deleteCareer}
+              onShare={handleOpenShare}
+            />
+          )}
 
           {active === 'enrollments' && (
             <EnrollmentsManager
-  courses={courses}
-  enrollments={enrollments}
-  onUpdateStatus={changeEnrollmentStatus}
-  onDeleteEnrollment={deleteStudentEnrollment}
-/>
+              courses={courses}
+              enrollments={enrollments}
+              onUpdateStatus={changeEnrollmentStatus}
+              onDeleteEnrollment={deleteStudentEnrollment}
+            />
           )}
 
           {active === 'applications' && <ApplicationsManager
-    careers={careers}
-    applications={careerApplications}
-    updateStatus={updateApplicationStatus}
-    onDeleteApp={removeApplication}
-/>}
+            careers={careers}
+            applications={careerApplications}
+            updateStatus={updateApplicationStatus}
+            onDeleteApp={removeApplication}
+          />}
 
           {active === 'admins' && <AdminsManager />}
 
-          {!['dashboard', 'courses', 'careers', "opening careers", "closing careers", 'enrollments', 'applications', 'contacts', 'admins'].includes(active) && (
+          {active === 'projects' && (
+            <ProjectsManager
+              projects={projects}
+              query={query}
+              onAdd={() => setProjectModal('add')}
+              onEdit={(p) => setProjectModal(p)}
+              onDelete={deleteProjectHandler}
+              onShare={handleOpenShare}
+            />
+          )}
+
+          {!['dashboard', 'courses', 'careers', "opening careers", "closing careers", 'enrollments', 'applications', 'contacts', 'admins', 'projects'].includes(active) && (
             <ComingSoon label={titles[active] || active} />
           )}
         </main>
       </div>
 
       <AnimatePresence>
-      {courseModal && (
-        <CourseModal
-          key="course-modal"
-          initial={courseModal === 'add' ? null : courseModal}
-          courses={courses}
-          onClose={() => setCourseModal(null)}
-          onSave={saveCourse}
-          saving={savingCourse}
-        />
-      )}
+        {courseModal && (
+          <CourseModal
+            key="course-modal"
+            initial={courseModal === 'add' ? null : courseModal}
+            courses={courses}
+            onClose={() => setCourseModal(null)}
+            onSave={saveCourse}
+            saving={savingCourse}
+          />
+        )}
         {careerModal && (
           <CareerModal
             key="career-modal"
@@ -2562,6 +2637,15 @@ const saveCourse = async (payload, isEdit) => {
             careers={careers}
             onClose={() => setCareerModal(null)}
             onSave={saveCareer}
+          />
+        )}
+        {projectModal && (
+          <ProjectModal
+            key="project-modal"
+            initial={projectModal === 'add' ? null : projectModal}
+            onClose={() => setProjectModal(null)}
+            onSave={saveProject}
+            saving={savingProject}
           />
         )}
       </AnimatePresence>

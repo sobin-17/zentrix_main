@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import './firebase';
@@ -87,6 +87,7 @@ function AppLayout() {
             <Route path="/ourporfolio" element={<OurPortfolio />} />
             <Route path="/our-portfolio" element={<OurPortfolio />} />
             <Route path="/portfolio/abijoefurniture-erp" element={<AbijoeFurnitureERP />} />
+            <Route path="/portfolio/:projectId" element={<AbijoeFurnitureERP />} />
             <Route path="/get-touch" element={<GetTouch />} />
             <Route path="/your-next-step" element={<YourNextStep />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -108,6 +109,7 @@ function AppLayout() {
                 </ProtectedRoute>
               }
             />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
 
