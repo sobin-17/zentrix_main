@@ -43,6 +43,7 @@ import {
 } from "../services/contactService";
 import {
   getProjects,
+  getCachedProjects,
   createProject,
   updateProject,
   deleteProject as deleteProjectFromDB,
@@ -2209,7 +2210,7 @@ export default function AdminDashboard() {
   const [courseModal, setCourseModal] = useState(null);
   const [careerModal, setCareerModal] = useState(null);
   const [projectModal, setProjectModal] = useState(null);
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState(() => getCachedProjects());
   const [savingProject, setSavingProject] = useState(false);
   const [toast, setToast] = useState('');
   const [shareModalState, setShareModalState] = useState({ isOpen: false, item: null, type: 'career' });
@@ -2218,10 +2219,9 @@ export default function AdminDashboard() {
   const loadProjects = async () => {
     try {
       const data = await getProjects();
-      setProjects(data || []);
+      if (data) setProjects(data);
     } catch (err) {
       console.error("Error loading projects:", err);
-      setProjects([]);
     }
   };
 

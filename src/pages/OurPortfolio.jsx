@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowUpRight, Layers, Code2, Database, Cpu, ChevronRight } from 'lucide-react';
-import { getProjects, DEFAULT_SEED_PROJECTS } from '../services/projectService';
+import { getProjects, getCachedProjects, DEFAULT_SEED_PROJECTS } from '../services/projectService';
 
 /* ─── Animation Variants ────────────────────────────────────────────── */
 const fadeUp = {
@@ -119,21 +119,20 @@ function FloatingParticles() {
 /* ─── Main Portfolio Page ─────────────────────────────────────────────── */
 export default function OurPortfolio() {
   const navigate = useNavigate();
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [projects, setProjects] = useState(() => getCachedProjects());
+  const [loading, setLoading] = useState(() => !getCachedProjects()?.length);
   const [imagesLoaded, setImagesLoaded] = useState({});
 
   useEffect(() => {
     let isMounted = true;
     getProjects().then((data) => {
-      if (isMounted) {
-        setProjects(data || []);
+      if (isMounted && data) {
+        setProjects(data);
         setLoading(false);
       }
     }).catch(err => {
       console.warn("Could not fetch Firestore projects:", err);
       if (isMounted) {
-        setProjects([]);
         setLoading(false);
       }
     });
