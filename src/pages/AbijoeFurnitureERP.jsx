@@ -227,10 +227,50 @@ export default function AbijoeFurnitureERP() {
   useEffect(() => {
     getProjects().then(all => {
       const target = projectId || 'abijoefurniture-erp';
-      const found = all.find(p => p.id === target || p.firestoreId === target) || all[0];
+      let found = all.find(p => p.id === target || p.firestoreId === target);
+      if (!found) {
+        found = DEFAULT_SEED_PROJECTS.find(p => p.id === target || p.firestoreId === target);
+      }
+      if (!found) {
+        found = all[0] || DEFAULT_SEED_PROJECTS[0];
+      }
       if (found) setProjectData(found);
-    }).catch(() => {});
+    }).catch(() => {
+      const target = projectId || 'abijoefurniture-erp';
+      const found = DEFAULT_SEED_PROJECTS.find(p => p.id === target || p.firestoreId === target) || DEFAULT_SEED_PROJECTS[0];
+      setProjectData(found);
+    });
   }, [projectId]);
+
+  const projectTitle = projectData?.title || 'Abijoe Furnitures ERP Management System';
+  const projectSubtitle = projectData?.subtitle || projectData?.category || 'Enterprise ERP · Furniture Industry';
+  const projectCategory = projectData?.category || projectData?.subtitle || 'Enterprise ERP';
+  const projectStatus = projectData?.status || 'In Development';
+  const projectProgress = projectData?.progress || '70%';
+  const projectImage = projectData?.image || '/abijoe furniture.png';
+  const projectOverview = projectData?.overview || projectData?.description || 'A complete ERP solution for furniture manufacturers and retailers to manage billing, accounting, inventory, attendance, reports, GST, and business operations from a single platform.';
+  const projectClient = projectData?.client || 'AbiJoe Furniture';
+  const projectYear = projectData?.year || '2026';
+  const projectLiveLink = projectData?.liveLink;
+
+  const techList = Array.isArray(projectData?.technologies)
+    ? projectData.technologies
+    : (typeof projectData?.technologies === 'string'
+        ? projectData.technologies.split(',').map(s => s.trim()).filter(Boolean)
+        : ['React.js', 'Python Flask', 'MySQL', 'Tailwind CSS']);
+
+  const currentTechData = techList.map(t => {
+    const existing = techData.find(td => td.label.toLowerCase() === t.toLowerCase());
+    return existing || { label: t, color: '#a855f7', bg: 'rgba(168,85,247,0.1)', border: 'rgba(168,85,247,0.35)', desc: 'Technology' };
+  });
+
+  const currentStats = [
+    { icon: Briefcase, label: 'Client / Industry', value: projectClient },
+    { icon: Layers, label: 'Modules', value: projectData?.modulesCount || '7 Core Modules' },
+    { icon: Monitor, label: 'Pages', value: projectData?.pagesCount || '40+' },
+    { icon: Code2, label: 'REST APIs', value: projectData?.apisCount || '50+' },
+    { icon: Database, label: 'DB Tables', value: projectData?.tablesCount || '20+' },
+  ];
 
   const activeScreenshots = (projectData && Array.isArray(projectData.screenshots) && projectData.screenshots.length > 0)
     ? projectData.screenshots
@@ -308,10 +348,10 @@ export default function AbijoeFurnitureERP() {
             className="flex flex-wrap items-center gap-3 mb-6"
           >
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/15 border border-amber-400/35 text-amber-300 text-xs font-bold uppercase tracking-wide">
-              <span>🚧</span> In Development
+              <span>🚀</span> {projectStatus}
             </span>
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-900/30 border border-purple-500/30 text-purple-300 text-xs font-semibold uppercase tracking-wide">
-              <Layers className="w-3 h-3" /> Enterprise ERP
+              <Layers className="w-3 h-3" /> {projectCategory}
             </span>
           </motion.div>
 
@@ -322,18 +362,7 @@ export default function AbijoeFurnitureERP() {
             transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[0.95] tracking-tight mb-4 sm:mb-6"
           >
-            Abijoe Furnitures ERP{' '}
-            <span
-              style={{
-                background: 'linear-gradient(135deg, #c084fc 0%, #9d00ff 50%, #7c3aed 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              Management
-            </span>{' '}
-            System
+            {projectTitle}
           </motion.h1>
 
           {/* Progress + Tech */}
@@ -350,16 +379,16 @@ export default function AbijoeFurnitureERP() {
                   className="h-full rounded-full"
                   style={{ background: 'linear-gradient(90deg, #7c3aed, #9d00ff, #d470ff)' }}
                   initial={{ width: '0%' }}
-                  animate={{ width: '70%' }}
+                  animate={{ width: projectProgress }}
                   transition={{ duration: 1.5, ease: 'easeOut', delay: 0.5 }}
                 />
               </div>
-              <span className="text-sm font-bold text-purple-300 whitespace-nowrap">70% Completed</span>
+              <span className="text-sm font-bold text-purple-300 whitespace-nowrap">{projectProgress} Completed</span>
             </div>
 
             {/* Tech chips */}
             <div className="flex flex-wrap gap-2">
-              {techData.map((t) => (
+              {currentTechData.map((t) => (
                 <span
                   key={t.label}
                   className="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-bold border tracking-wide"
@@ -378,17 +407,20 @@ export default function AbijoeFurnitureERP() {
             transition={{ duration: 0.6, delay: 0.35 }}
             className="flex flex-wrap gap-4 mb-12"
           >
-            <button
-              className="flex items-center gap-2.5 px-6 py-3 rounded-xl font-bold text-sm tracking-wide transition-all duration-300 hover:scale-105"
-              style={{
-                background: 'linear-gradient(135deg, #7c3aed, #9d00ff)',
-                boxShadow: '0 0 30px rgba(157,0,255,0.35)',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 50px rgba(157,0,255,0.6)'; }}
-              onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 30px rgba(157,0,255,0.35)'; }}
-            >
-              <ExternalLink className="w-4 h-4" /> Live Demo
-            </button>
+            {projectLiveLink && projectLiveLink.startsWith('http') && (
+              <a
+                href={projectLiveLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 px-6 py-3 rounded-xl font-bold text-sm tracking-wide transition-all duration-300 hover:scale-105 text-white"
+                style={{
+                  background: 'linear-gradient(135deg, #7c3aed, #9d00ff)',
+                  boxShadow: '0 0 30px rgba(157,0,255,0.35)',
+                }}
+              >
+                <ExternalLink className="w-4 h-4" /> Live Demo
+              </a>
+            )}
             <Link
               to="/your-next-step#get-in-touch"
               className="flex items-center gap-2.5 px-6 py-3 rounded-xl font-bold text-sm tracking-wide border border-white/20 hover:bg-white/[0.07] hover:border-purple-500/50 transition-all duration-300"
@@ -406,12 +438,12 @@ export default function AbijoeFurnitureERP() {
             style={{
               boxShadow: '0 0 0 1px rgba(168,85,247,0.2), 0 40px 120px rgba(0,0,0,0.8), 0 0 80px rgba(157,0,255,0.1)',
             }}
-            onClick={() => setLightbox({ src: '/abijoe furniture.png', label: 'ERP Dashboard' })}
+            onClick={() => setLightbox({ src: projectImage, label: `${projectTitle} Dashboard` })}
           >
             <img
-              src="/abijoe furniture.png"
-              alt="Abijoe Furniture ERP Dashboard"
-              className="w-full h-auto object-cover"
+              src={projectImage}
+              alt={projectTitle}
+              className="w-full h-auto object-cover max-h-[550px] object-top"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
           </motion.div>
@@ -428,7 +460,7 @@ export default function AbijoeFurnitureERP() {
             viewport={{ once: true, amount: 0.3 }}
             className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3"
           >
-            {stats.map(({ icon: Icon, label, value }) => (
+            {currentStats.map(({ icon: Icon, label, value }) => (
               <motion.div
                 key={label}
                 variants={fadeUp}
@@ -476,19 +508,23 @@ export default function AbijoeFurnitureERP() {
               className="p-8 rounded-[24px] border border-white/[0.08] bg-white/[0.03] backdrop-blur-md"
             >
               <p className="text-gray-300 text-[16px] leading-[1.75] mb-5">
-                The <strong className="text-white">AbiJoe Furniture ERP Management System</strong> is a full-stack,
-                enterprise-grade business platform built exclusively for the furniture manufacturing and retail industry.
+                The <strong className="text-white">{projectTitle}</strong> is a full-stack,
+                enterprise-grade business platform designed and engineered to streamline operations and scale performance.
               </p>
               <p className="text-gray-400 text-[15px] leading-relaxed mb-5">
-                Built from the ground up with a modern tech stack, this system consolidates all critical business
-                operations into a single, intuitive platform — replacing disconnected spreadsheets and fragmented tools
-                with a unified, real-time management solution.
+                {projectOverview}
               </p>
-              <p className="text-gray-400 text-[15px] leading-relaxed">
-                The platform features role-based access control, GST-compliant billing, automated accounting entries,
-                real-time inventory tracking, and comprehensive business intelligence reporting — all accessible from
-                a responsive, dark-themed web interface.
-              </p>
+              {Array.isArray(projectData?.features) && projectData.features.length > 0 && (
+                <div className="mt-6 space-y-2.5">
+                  <h4 className="text-white font-bold text-xs uppercase tracking-wider text-purple-300">Key Features:</h4>
+                  {projectData.features.map((feat, idx) => (
+                    <div key={idx} className="flex items-center gap-2.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span className="text-gray-300 text-sm">{feat}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </motion.div>
 
             <motion.div variants={fadeUp} className="flex flex-col gap-4">
@@ -496,17 +532,17 @@ export default function AbijoeFurnitureERP() {
                 {
                   icon: TrendingUp,
                   title: 'Business Impact',
-                  text: 'Reduces manual billing time by 80%, eliminates data entry errors, and provides real-time financial visibility for owners.',
+                  text: 'Automates key processes, eliminates manual errors, and provides real-time operational visibility for stakeholders.',
                 },
                 {
                   icon: ZapIcon,
-                  title: 'GST Compliant',
-                  text: 'Built-in GST calculation engine supporting CGST, SGST, IGST with automated tax summaries and return filing support.',
+                  title: 'High Performance & Security',
+                  text: 'Role-based access control, secure database transactions, and optimized asset loading.',
                 },
                 {
                   icon: Monitor,
-                  title: 'Modern Architecture',
-                  text: 'React.js SPA frontend with Python Flask REST API backend and MySQL relational database — scalable and maintainable.',
+                  title: 'Modern Tech Stack',
+                  text: `${techList.join(', ')} — scalable, resilient, and built to modern engineering standards.`,
                 },
               ].map(({ icon: Icon, title, text }) => (
                 <div
@@ -768,7 +804,7 @@ export default function AbijoeFurnitureERP() {
                     backgroundClip: 'text',
                   }}
                 >
-                  70%
+                  {projectProgress}
                 </span>
                 <span className="text-gray-500 text-sm mb-2">Completed</span>
               </div>
@@ -777,7 +813,7 @@ export default function AbijoeFurnitureERP() {
                   className="h-full rounded-full"
                   style={{ background: 'linear-gradient(90deg, #7c3aed, #9d00ff, #d470ff)' }}
                   initial={{ width: '0%' }}
-                  whileInView={{ width: '70%' }}
+                  whileInView={{ width: projectProgress }}
                   viewport={{ once: true }}
                   transition={{ duration: 1.5, ease: 'easeOut', delay: 0.3 }}
                 />

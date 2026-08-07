@@ -44,6 +44,41 @@ export const DEFAULT_SEED_PROJECTS = [
       { label: "Reports & Analytics", src: "/REPORTS.jpeg" },
       { label: "System Settings", src: "/SETTINGS.jpeg" }
     ]
+  },
+  {
+    id: "rijoe-pro",
+    title: "RIJOE PRO PROJECT",
+    subtitle: "Enterprise ERP · Professional Suite",
+    category: "Enterprise ERP",
+    image: "/abijoe furniture.png",
+    overview: "An advanced enterprise management & operations platform designed for streamlined workflow automation, real-time tracking, billing, and intelligent business analytics.",
+    description: "An advanced enterprise management & operations platform designed for streamlined workflow automation, real-time tracking, billing, and intelligent business analytics.",
+    status: "Completed",
+    progress: "100%",
+    technologies: ["React.js", "Node.js", "MySQL", "Tailwind CSS"],
+    modulesCount: "8 Modules",
+    pagesCount: "35+ Pages",
+    apisCount: "45+ APIs",
+    tablesCount: "18+ Tables",
+    client: "Rijoe Pro",
+    year: "2026",
+    liveLink: "/portfolio/rijoe-pro",
+    features: [
+      "Smart Business Operations Dashboard",
+      "Automated Invoicing & Financial Accounting",
+      "Role-based User Access & Audit Logs",
+      "Real-time Data Analytics & Custom Reporting",
+      "Cloud Database Integration & High-Speed API Engine"
+    ],
+    screenshots: [
+      { label: "Dashboard Overview", src: "/DASHBOARD.jpeg" },
+      { label: "Billing & Invoicing", src: "/BILLING.jpeg" },
+      { label: "Inventory Management", src: "/INVENTORY.jpeg" },
+      { label: "Accounting Ledger", src: "/ACCOUNTING.jpeg" },
+      { label: "Masters Management", src: "/MASTERS.jpeg" },
+      { label: "Reports & Analytics", src: "/REPORTS.jpeg" },
+      { label: "System Settings", src: "/SETTINGS.jpeg" }
+    ]
   }
 ];
 
@@ -59,7 +94,13 @@ export const getCachedProjects = () => {
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        inMemoryCache = parsed;
+        const merged = [...parsed];
+        DEFAULT_SEED_PROJECTS.forEach(seed => {
+          if (!merged.some(p => p.id === seed.id)) {
+            merged.push(seed);
+          }
+        });
+        inMemoryCache = merged;
         return inMemoryCache;
       }
     }
