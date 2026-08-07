@@ -500,8 +500,34 @@ a[href*="spline"] {
 
 .animate-marquee-left {
   animation: marquee-left 30s linear infinite;
+  will-change: transform;
 }
 
 .animate-marquee-right {
   animation: marquee-right 30s linear infinite;
+  will-change: transform;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   HIGH PERFORMANCE HARDWARE ACCELERATION & COMPOSITOR OPTIMIZATIONS
+──────────────────────────────────────────────────────────────────────── */
+
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform, opacity;
+}
+
+/* Content visibility optimization for long offscreen scroll sections */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 1000px;
+}
+
+/* Optimize smooth scrolling performance */
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    scroll-behavior: smooth;
+  }
 }

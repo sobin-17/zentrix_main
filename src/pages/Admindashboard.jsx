@@ -643,16 +643,14 @@ function CourseModal({ initial, courses = [], onClose, onSave, saving }) {
             <option value="custom">➕ Add New / Custom Course Title...</option>
           </select>
 
-          {form.isCustom && (
-            <input
-              required
-              type="text"
-              value={form.title}
-              onChange={(e) => set('title', e.target.value)}
-              className="input mt-2"
-              placeholder="Enter custom course title (e.g. Flutter Mobile Development)"
-            />
-          )}
+          <input
+            required
+            type="text"
+            value={form.title || ''}
+            onChange={(e) => set('title', e.target.value)}
+            className="input mt-2"
+            placeholder="Edit or enter custom course title (e.g. Flutter Mobile Development)"
+          />
         </Field>
 
         <Field label="Course Description / Overview">
@@ -996,23 +994,21 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
             <option value="custom">➕ Add New / Custom Career Role...</option>
           </select>
 
-          {form.isCustom && (
-            <input
-              required
-              type="text"
-              value={form.baseTitle || form.title}
-              onChange={(e) => {
-                const val = e.target.value;
-                setForm(prev => ({
-                  ...prev,
-                  baseTitle: val,
-                  title: computeJobTitle(val, prev.type)
-                }));
-              }}
-              className="input mt-2"
-              placeholder="Enter custom role title (e.g. Flutter Developer)"
-            />
-          )}
+          <input
+            required
+            type="text"
+            value={form.baseTitle || form.title || ''}
+            onChange={(e) => {
+              const val = e.target.value;
+              setForm(prev => ({
+                ...prev,
+                baseTitle: val,
+                title: computeJobTitle(val, prev.type)
+              }));
+            }}
+            className="input mt-2"
+            placeholder="Edit or enter custom role title (e.g. Flutter Developer)"
+          />
         </Field>
 
         <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-2">
