@@ -2,15 +2,13 @@ import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Home from './pages/Home';
-import FloatingCTA from './components/FloatingCTA';
-import ChatIntegration from './components/chatbot/ChatIntegration';
 import './firebase';
 import './index.css';
 import ScrollToTop from "./components/ScrollToTop";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-// Lazy-loaded routes for code-splitting & reduced initial JS bundle size
+// Lazy-loaded routes & floating components for max initial speed & minimum bundle size
+const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
 const Service = lazy(() => import('./pages/Service'));
 const Contact = lazy(() => import('./pages/Contact'));
@@ -29,11 +27,15 @@ const Admindashboard = lazy(() => import('./pages/Admindashboard'));
 const AdminLogin = lazy(() => import('./pages/AdminLogin'));
 const ResumeViewer = lazy(() => import('./pages/ResumeViewer'));
 
-const GlobalAtmosphere = () => (
+const FloatingCTA = lazy(() => import('./components/FloatingCTA'));
+const ChatIntegration = lazy(() => import('./components/chatbot/ChatIntegration'));
+const CookieBanner = lazy(() => import('./components/CookieBanner'));
+
+const GlobalAtmosphere = React.memo(() => (
   <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
-    {/* Glows removed to prevent blur rendering artifacts */}
+    {/* Atmosphere container */}
   </div>
-);
+));
 
 function AppLayout() {
   const location = useLocation();
@@ -47,16 +49,25 @@ function AppLayout() {
       {/* Persistent Navbar */}
       {!isAdmin && <Navbar />}
 
+      {/* Cookie Consent Banner */}
+      {!isAdmin && (
+        <Suspense fallback={null}>
+          <CookieBanner />
+        </Suspense>
+      )}
+
       {/* Persistent Floating Controls (Chatbot + Actions) */}
       {!isAdmin && (
-        <div className="fixed right-6 bottom-6 md:right-8 md:bottom-8 z-[9999] flex flex-col gap-3 items-end pointer-events-none">
-          <div className="pointer-events-auto origin-bottom-right scale-[0.85] md:scale-100 transition-transform">
-            <FloatingCTA />
+        <Suspense fallback={null}>
+          <div className="fixed right-6 bottom-6 md:right-8 md:bottom-8 z-[9999] flex flex-col gap-3 items-end pointer-events-none">
+            <div className="pointer-events-auto origin-bottom-right scale-[0.85] md:scale-100 transition-transform">
+              <FloatingCTA />
+            </div>
+            <div className="pointer-events-auto mt-2">
+              <ChatIntegration />
+            </div>
           </div>
-          <div className="pointer-events-auto mt-2">
-            <ChatIntegration />
-          </div>
-        </div>
+        </Suspense>
       )}
 
       {/* Dynamic Page Content */}
@@ -80,7 +91,6 @@ function AppLayout() {
             <Route path="/your-next-step" element={<YourNextStep />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-and-conditions" element={<TermsConditions />} />
-            <Route path="/admin-dashboard" element={<Admindashboard />} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route
               path="/admin-dashboard"
