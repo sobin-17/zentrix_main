@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowUpRight, Layers, Code2, Database, Cpu, ChevronRight } from 'lucide-react';
-import { getProjects, getCachedProjects, DEFAULT_SEED_PROJECTS } from '../services/projectService';
+import { getProjects, DEFAULT_SEED_PROJECTS } from '../services/projectService';
 
 /* ─── Animation Variants ────────────────────────────────────────────── */
 const fadeUp = {
@@ -76,6 +76,43 @@ function TiltCard({ children, className = '', onClick }) {
   );
 }
 
+/* ─── Shimmer Skeleton Card ─────────────────────────────────────────── */
+function SkeletonCard({ delay = 0 }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.5, delay }}
+      className="rounded-[24px] sm:rounded-[32px] border border-white/[0.08] bg-white/[0.03] overflow-hidden"
+      style={{ backdropFilter: 'blur(20px)' }}
+    >
+      {/* Shimmer image area */}
+      <div className="relative h-48 sm:h-64 md:h-80 overflow-hidden">
+        <div className="absolute inset-0 skeleton-shimmer" />
+        {/* Status badge skeleton */}
+        <div className="absolute top-4 left-4 h-7 w-32 rounded-full skeleton-shimmer" />
+      </div>
+      {/* Body */}
+      <div className="p-5 sm:p-8 space-y-4">
+        <div className="h-3 w-36 rounded-full skeleton-shimmer" />
+        <div className="h-7 w-2/3 rounded-xl skeleton-shimmer" />
+        <div className="space-y-2">
+          <div className="h-3 w-full rounded skeleton-shimmer" />
+          <div className="h-3 w-5/6 rounded skeleton-shimmer" />
+          <div className="h-3 w-4/6 rounded skeleton-shimmer" />
+        </div>
+        <div className="flex gap-2 pt-1">
+          {[80, 100, 90, 110].map(w => (
+            <div key={w} className="h-6 rounded-full skeleton-shimmer" style={{ width: w }} />
+          ))}
+        </div>
+        <div className="h-2 w-full rounded-full skeleton-shimmer mt-4" />
+      </div>
+    </motion.div>
+  );
+}
+
 /* ─── Floating Particles ─────────────────────────────────────────────── */
 function FloatingParticles() {
   const [particles] = useState(() => {
@@ -116,26 +153,44 @@ function FloatingParticles() {
   );
 }
 
+/* ─── Dedup helper ───────────────────────────────────────────────────── */
+const dedup = (list) => {
+  const seen = new Set();
+  return list.filter(p => {
+    const key = (p.title || '').toLowerCase().trim();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
+
 /* ─── Main Portfolio Page ─────────────────────────────────────────────── */
 export default function OurPortfolio() {
   const navigate = useNavigate();
-  const [projects, setProjects] = useState(() => getCachedProjects());
-  const [loading, setLoading] = useState(() => !getCachedProjects()?.length);
+  const [projects, setProjects] = useState([]);
+  // true = no data at all yet (show skeleton), false = we have something to show
+  const [loading, setLoading] = useState(true);
   const [imagesLoaded, setImagesLoaded] = useState({});
 
   useEffect(() => {
     let isMounted = true;
-    getProjects().then((data) => {
+
+    getProjects({
+      // Called instantly with cached data (0 ms wait)
+      // Then called again silently when Firestore responds
+      onFresh: (fresh) => {
+        if (isMounted) setProjects(dedup(fresh));
+      }
+    }).then((data) => {
       if (isMounted && data) {
-        setProjects(data);
+        setProjects(dedup(data));
         setLoading(false);
       }
     }).catch(err => {
-      console.warn("Could not fetch Firestore projects:", err);
-      if (isMounted) {
-        setLoading(false);
-      }
+      console.warn('Portfolio fetch error:', err);
+      if (isMounted) setLoading(false);
     });
+
     return () => { isMounted = false; };
   }, []);
 
@@ -259,27 +314,38 @@ export default function OurPortfolio() {
       {/* ════════════════════════════════════════ */}
       <section className="relative z-10 pb-24 pt-8">
         <div className="max-w-5xl mx-auto px-6 space-y-12">
+          <AnimatePresence mode="wait">
           {loading ? (
-            <div className="space-y-8">
-              {[1, 2].map((i) => (
-                <div key={i} className="rounded-[24px] sm:rounded-[32px] border border-white/10 bg-white/[0.03] overflow-hidden animate-pulse">
-                  <div className="h-48 sm:h-64 md:h-80 bg-white/5" />
-                  <div className="p-6 sm:p-8 space-y-4">
-                    <div className="h-4 w-40 bg-purple-500/20 rounded" />
-                    <div className="h-8 w-3/4 bg-white/10 rounded" />
-                    <div className="h-4 w-full bg-white/5 rounded" />
-                  </div>
-                </div>
-              ))}
-            </div>
+            <motion.div
+              key="skeleton"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.3 } }}
+              className="space-y-8"
+            >
+              <SkeletonCard delay={0} />
+              <SkeletonCard delay={0.1} />
+            </motion.div>
           ) : projects.length === 0 ? (
-            <div className="text-center py-16 bg-white/[0.02] border border-white/10 rounded-3xl p-8">
+            <motion.div
+              key="empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-16 bg-white/[0.02] border border-white/10 rounded-3xl p-8"
+            >
               <Layers className="w-12 h-12 text-purple-400 mx-auto mb-3 opacity-60" />
               <h3 className="text-lg font-bold text-white mb-1">No Projects Found</h3>
               <p className="text-xs text-slate-400">Projects added from the Admin Dashboard will appear here automatically.</p>
-            </div>
+            </motion.div>
           ) : (
-            projects.map((project, index) => {
+            <motion.div
+              key="projects"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4 }}
+              className="space-y-12"
+            >
+            {projects.map((project, index) => {
               const projectKey = project.firestoreId || project.id || `proj-${index}`;
             const techList = Array.isArray(project.technologies)
               ? project.technologies
@@ -431,8 +497,10 @@ export default function OurPortfolio() {
                 </TiltCard>
               </motion.div>
             );
-          })
-        )}
+          })}
+            </motion.div>
+          )}
+          </AnimatePresence>
         </div>
       </section>
 

@@ -6,9 +6,9 @@ import {
   updateDoc,
   deleteDoc,
   doc,
-  serverTimestamp
 } from "firebase/firestore";
 
+// Seed projects — used ONLY when Firestore collection is empty (fallback display)
 export const DEFAULT_SEED_PROJECTS = [
   {
     id: "abijoefurniture-erp",
@@ -84,9 +84,23 @@ export const DEFAULT_SEED_PROJECTS = [
 
 const COLLECTION_NAME = "projects";
 const CACHE_KEY = "zentrix_projects_cache";
+// In-memory cache — survives React re-renders, resets on full page reload
 let inMemoryCache = null;
 
-// Read local cache instantly (<1ms)
+// ── Deduplication helper ─────────────────────────────────────────────────
+// Keeps the first occurrence of each project by (lowercased) title
+const deduplicateProjects = (list) => {
+  const seen = new Set();
+  return list.filter(p => {
+    const key = (p.title || p.id || p.firestoreId || "").toLowerCase().trim();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
+
+// ── Cache read — returns data instantly (<1 ms) ──────────────────────────
+// Returns only Firestore-sourced data. Seeds are NEVER merged in here.
 export const getCachedProjects = () => {
   if (inMemoryCache && inMemoryCache.length > 0) return inMemoryCache;
   try {
@@ -94,21 +108,15 @@ export const getCachedProjects = () => {
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        const merged = [...parsed];
-        DEFAULT_SEED_PROJECTS.forEach(seed => {
-          if (!merged.some(p => p.id === seed.id)) {
-            merged.push(seed);
-          }
-        });
-        inMemoryCache = merged;
+        inMemoryCache = deduplicateProjects(parsed);
         return inMemoryCache;
       }
     }
   } catch (e) {}
-  return DEFAULT_SEED_PROJECTS;
+  return null; // No cache yet
 };
 
-// Save cache locally
+// ── Cache write ──────────────────────────────────────────────────────────
 const setCachedProjects = (data) => {
   inMemoryCache = data;
   try {
@@ -116,104 +124,112 @@ const setCachedProjects = (data) => {
   } catch (e) {}
 };
 
-// High-speed Stale-While-Revalidate fetch (<2ms response)
-export const getProjects = async () => {
-  const fetchPromise = (async () => {
+// ── Cache clear ──────────────────────────────────────────────────────────
+export const clearProjectsCache = () => {
+  inMemoryCache = null;
+  try { localStorage.removeItem(CACHE_KEY); } catch (e) {}
+};
+
+// ── Stale-While-Revalidate fetch ─────────────────────────────────────────
+// 1. Returns cached data INSTANTLY if available (no wait)
+// 2. Fetches fresh data from Firestore in background
+// 3. Calls onFresh(freshData) when Firestore responds — component can update
+export const getProjects = async ({ onFresh } = {}) => {
+  const cached = getCachedProjects();
+
+  // Kick off background Firestore fetch
+  const fetchFresh = async () => {
     try {
       const projectsCol = collection(db, COLLECTION_NAME);
       const snapshot = await getDocs(projectsCol);
-      
+
       if (!snapshot.empty) {
         const fetched = snapshot.docs.map((docSnap) => ({
           firestoreId: docSnap.id,
           ...docSnap.data()
         }));
-        
-        // Client-side sort by createdAt descending
+
+        // Sort newest first
         fetched.sort((a, b) => {
           const tA = a.createdAt?.toMillis?.() || (typeof a.createdAt === 'number' ? a.createdAt : 0);
           const tB = b.createdAt?.toMillis?.() || (typeof b.createdAt === 'number' ? b.createdAt : 0);
           return tB - tA;
         });
 
-        setCachedProjects(fetched);
-        return fetched;
+        const unique = deduplicateProjects(fetched);
+        setCachedProjects(unique);
+        return unique;
       }
-      setCachedProjects(DEFAULT_SEED_PROJECTS);
+
+      // Firestore empty — seeds are fallback (NOT cached so they re-check next time)
       return DEFAULT_SEED_PROJECTS;
     } catch (error) {
       console.warn("Firestore fetch error, using local cache:", error);
-      return getCachedProjects();
+      return cached || DEFAULT_SEED_PROJECTS;
     }
-  })();
+  };
 
-  // Instant SWR cache hit
-  const cached = getCachedProjects();
   if (cached && cached.length > 0) {
+    // Return cache immediately, then revalidate in background
+    fetchFresh().then(fresh => {
+      if (typeof onFresh === 'function') onFresh(fresh);
+    });
     return cached;
   }
 
-  return await fetchPromise;
+  // No cache — wait for Firestore
+  return await fetchFresh();
 };
 
-// Create a new portfolio project with instant cache update
+// ── Create ───────────────────────────────────────────────────────────────
 export const createProject = async (projectData) => {
   try {
     const projectsCol = collection(db, COLLECTION_NAME);
-    const payload = {
-      ...projectData,
-      createdAt: Date.now(),
-      updatedAt: Date.now()
-    };
+    const payload = { ...projectData, createdAt: Date.now(), updatedAt: Date.now() };
     const docRef = await addDoc(projectsCol, payload);
     const newProject = { firestoreId: docRef.id, ...payload };
-    
-    const current = getCachedProjects();
-    const updated = [newProject, ...current.filter(p => p.id !== newProject.id)];
-    setCachedProjects(updated);
 
+    const current = getCachedProjects() || [];
+    setCachedProjects(deduplicateProjects([newProject, ...current]));
     return newProject;
   } catch (error) {
-    console.error("Error creating project in Firestore:", error);
+    console.error("Error creating project:", error);
     throw error;
   }
 };
 
-// Update an existing portfolio project with instant cache update
+// ── Update ───────────────────────────────────────────────────────────────
 export const updateProject = async (firestoreId, projectData) => {
   try {
     if (!firestoreId) throw new Error("Missing firestoreId for update");
     const projectRef = doc(db, COLLECTION_NAME, firestoreId);
-    const payload = {
-      ...projectData,
-      updatedAt: Date.now()
-    };
+    const payload = { ...projectData, updatedAt: Date.now() };
     await updateDoc(projectRef, payload);
     const updatedProject = { firestoreId, ...payload };
 
-    const current = getCachedProjects();
-    const updated = current.map(p => (p.firestoreId === firestoreId || p.id === projectData.id) ? updatedProject : p);
+    const current = getCachedProjects() || [];
+    const updated = current.map(p =>
+      (p.firestoreId === firestoreId || p.id === projectData.id) ? updatedProject : p
+    );
     setCachedProjects(updated);
-
     return updatedProject;
   } catch (error) {
-    console.error("Error updating project in Firestore:", error);
+    console.error("Error updating project:", error);
     throw error;
   }
 };
 
-// Delete a portfolio project with instant cache update
+// ── Delete ───────────────────────────────────────────────────────────────
 export const deleteProject = async (firestoreId) => {
   try {
     if (!firestoreId) return;
     const projectRef = doc(db, COLLECTION_NAME, firestoreId);
     await deleteDoc(projectRef);
 
-    const current = getCachedProjects();
-    const updated = current.filter(p => p.firestoreId !== firestoreId);
-    setCachedProjects(updated);
+    const current = getCachedProjects() || [];
+    setCachedProjects(current.filter(p => p.firestoreId !== firestoreId));
   } catch (error) {
-    console.error("Error deleting project in Firestore:", error);
+    console.error("Error deleting project:", error);
     throw error;
   }
 };
