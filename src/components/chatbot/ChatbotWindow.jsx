@@ -8,6 +8,8 @@ import TypingAnimation from "./TypingAnimation";
 import CourseCards from "./CourseCards";
 import "./ChatbotWindow.css";
 
+const LEAD_FORM_TRIGGER_COUNT = 5; // show LeadForm after this many user messages
+
 const getTime = () =>
   new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
@@ -39,6 +41,7 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
   const [showLeadForm, setShowLeadForm] = useState(false);
   const [userName, setUserName] = useState("");
   const [showQuickActions, setShowQuickActions] = useState(true);
+  const [userMsgCount, setUserMsgCount] = useState(0);
   const bottomRef = useRef(null);
 
   useEffect(() => {
@@ -58,6 +61,24 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
         { id: Date.now(), type: "text", sender: "bot", text, time: getTime() },
       ]);
     }, delay);
+  };
+
+  // ── Adds a user-authored message to the chat and tracks the count that
+  //    drives the LeadForm trigger. Every place a user message is appended
+  //    should go through this function instead of calling setMessages directly.
+  const addUserMessage = (text) => {
+    setMessages((prev) => [
+      ...prev,
+      { id: Date.now(), type: "text", sender: "user", text, time: getTime() },
+    ]);
+
+    setUserMsgCount((prevCount) => {
+      const nextCount = prevCount + 1;
+      if (nextCount === LEAD_FORM_TRIGGER_COUNT && !leadCaptured) {
+        setTimeout(() => setShowLeadForm(true), 900);
+      }
+      return nextCount;
+    });
   };
 
   const saveQuery = async (userMsg) => {
@@ -86,10 +107,7 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
     setShowQuickActions(false);
 
     // Add user bubble
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), type: "text", sender: "user", text: "Courses", time: getTime() },
-    ]);
+    addUserMessage("Courses");
     saveQuery("Courses");
 
     // Add bot intro message
@@ -116,25 +134,15 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
         },
       ]);
     }, 200);
-
-    if (!leadCaptured) {
-      setTimeout(() => setShowLeadForm(true), 1500);
-    }
   };
 
   // ── Apply Now clicked on a course card ───────────────────────────────────
   const handleApply = (courseName) => {
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), type: "text", sender: "user", text: `Apply for: ${courseName}`, time: getTime() },
-    ]);
+    addUserMessage(`Apply for: ${courseName}`);
     addBotMessage(
       `Great choice! 🎉 To apply for "${courseName}", please share your details and our team will get in touch.\n\n📧 Email: admissions@zentrix.com\n📞 Or fill the lead form below!`,
       800
     );
-    if (!leadCaptured) {
-      setTimeout(() => setShowLeadForm(true), 1400);
-    }
   };
 
   // ── Quick actions (non-courses) → Flask backend ───────────────────────────
@@ -145,10 +153,7 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
     }
 
     setShowQuickActions(false);
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), type: "text", sender: "user", text: label, time: getTime() },
-    ]);
+    addUserMessage(label);
     saveQuery(label);
 
     setIsTyping(true);
@@ -157,10 +162,6 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
 
     addBotMessage(reply, 0);
     saveChatHistory(label, reply);
-
-    if (!leadCaptured) {
-      setTimeout(() => setShowLeadForm(true), 800);
-    }
   };
 
   // ── Lead form submitted ───────────────────────────────────────────────────
@@ -188,20 +189,8 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
     setInput("");
     setShowQuickActions(false);
 
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), type: "text", sender: "user", text, time: getTime() },
-    ]);
+    addUserMessage(text);
     saveQuery(text);
-
-    if (!leadCaptured) {
-      addBotMessage(
-        "Thanks for reaching out! Please fill in your details so we can assist you better.",
-        900
-      );
-      setTimeout(() => setShowLeadForm(true), 1000);
-      return;
-    }
 
     setIsTyping(true);
     const reply = await askBackend(text, userName);
