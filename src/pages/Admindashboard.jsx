@@ -2041,7 +2041,7 @@ function ComingSoon({ label }) {
   return (
     <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-8 sm:p-16 text-center">
       <p className="text-white font-bold text-lg mb-2">{label}</p>
-      <p className="text-slate-500 text-sm">This section isn't wired up yet — ping Claude when you're ready to build it out.</p>
+      <p className="text-slate-500 text-sm">Coming soon — this section is still being built.</p>
     </div>
   );
 }
