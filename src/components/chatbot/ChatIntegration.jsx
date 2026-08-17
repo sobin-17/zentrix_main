@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import ChatbotIcon from "./ChatbotIcon";
-import ChatbotWindow from "./ChatbotWindow";
+
+const ChatbotWindow = lazy(() => import("./ChatbotWindow"));
 
 const ChatIntegration = () => {
   const [chatState, setChatState] = useState("closed");
@@ -15,11 +16,15 @@ const ChatIntegration = () => {
 
   return (
     <>
-      {/* State 2: Full chat window (only renders when open) */}
-      <ChatbotWindow
-        chatState={chatState}
-        onStateChange={handleStateChange}
-      />
+      {/* State 2: Full chat window (lazy loaded on demand) */}
+      {chatState === "open" && (
+        <Suspense fallback={null}>
+          <ChatbotWindow
+            chatState={chatState}
+            onStateChange={handleStateChange}
+          />
+        </Suspense>
+      )}
 
       {/* State 1 (closed floating btn) + State 3 (minimized bar) */}
       {chatState !== "open" && (
@@ -33,4 +38,4 @@ const ChatIntegration = () => {
   );
 };
 
-export default ChatIntegration;
+export default React.memo(ChatIntegration);

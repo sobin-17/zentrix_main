@@ -1,8 +1,9 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react';
+import React, { useRef, useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Spline from '@splinetool/react-spline';
 import { BrainCircuit, Orbit } from 'lucide-react';
 import '../styles/services.css';
+
+const Spline = lazy(() => import('@splinetool/react-spline'));
 
 const Hero = () => {
   const [splineApp, setSplineApp] = useState(null);
@@ -246,29 +247,31 @@ const Hero = () => {
 
             {loadSpline && (
               <div className={`w-full h-[calc(100%+60px)] -mb-[60px] relative z-10 overflow-hidden transition-opacity duration-700 ${isSplineLoaded ? 'opacity-100' : 'opacity-0'}`}>
-                <Spline
-                  scene="https://prod.spline.design/QYsjYTMQQVk8eqIS/scene.splinecode"
-                  className="w-full h-full relative z-10"
-                  style={{ background: 'transparent' }}
-                  onLoad={(spline) => {
-                    setSplineApp(spline);
-                    setIsSplineLoaded(true);
-                    try {
-                      if (spline && spline._runtime) {
-                        if (spline._runtime.pipeline && spline._runtime.pipeline.logoOverlayPass) {
-                          spline._runtime.pipeline.logoOverlayPass.enabled = false;
+                <Suspense fallback={null}>
+                  <Spline
+                    scene="https://prod.spline.design/QYsjYTMQQVk8eqIS/scene.splinecode"
+                    className="w-full h-full relative z-10"
+                    style={{ background: 'transparent' }}
+                    onLoad={(spline) => {
+                      setSplineApp(spline);
+                      setIsSplineLoaded(true);
+                      try {
+                        if (spline && spline._runtime) {
+                          if (spline._runtime.pipeline && spline._runtime.pipeline.logoOverlayPass) {
+                            spline._runtime.pipeline.logoOverlayPass.enabled = false;
+                          }
+                          if (spline._runtime.renderer) {
+                            const isMobile = typeof window !== 'undefined' && (window.innerWidth < 768 || navigator.maxTouchPoints > 0);
+                            const targetDPR = isMobile ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.25);
+                            spline._runtime.renderer.setPixelRatio(targetDPR);
+                          }
                         }
-                        if (spline._runtime.renderer) {
-                          const isMobile = typeof window !== 'undefined' && (window.innerWidth < 768 || navigator.maxTouchPoints > 0);
-                          const targetDPR = isMobile ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.25);
-                          spline._runtime.renderer.setPixelRatio(targetDPR);
-                        }
+                      } catch (e) {
+                        console.error("Spline load optimization error", e);
                       }
-                    } catch (e) {
-                      console.error("Spline load optimization error", e);
-                    }
-                  }}
-                />
+                    }}
+                  />
+                </Suspense>
               </div>
             )}
           </motion.div>

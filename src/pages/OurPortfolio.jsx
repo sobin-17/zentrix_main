@@ -1,17 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowUpRight, Layers, Code2, Database, Cpu, ChevronRight } from 'lucide-react';
+import { getProjects, DEFAULT_SEED_PROJECTS } from '../services/projectService';
 
 /* ─── Animation Variants ────────────────────────────────────────────── */
 const fadeUp = {
   hidden: { opacity: 0, y: 50 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
-};
-
-const staggerContainer = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.12 } },
 };
 
 /* ─── Tech Tag Component ─────────────────────────────────────────────── */
@@ -20,6 +16,8 @@ const techColors = {
   'Python Flask': { bg: 'rgba(255,255,255,0.06)', border: 'rgba(255,255,255,0.25)',text: '#ffffff' },
   'MySQL':        { bg: 'rgba(0,183,148,0.12)',   border: 'rgba(0,183,148,0.4)',   text: '#00B994' },
   'Tailwind CSS': { bg: 'rgba(56,189,248,0.12)',  border: 'rgba(56,189,248,0.4)',  text: '#38BDF8' },
+  'Node.js':      { bg: 'rgba(110,231,183,0.12)', border: 'rgba(110,231,183,0.4)', text: '#6EE7B7' },
+  'Firebase':     { bg: 'rgba(251,191,36,0.12)',  border: 'rgba(251,191,36,0.4)',  text: '#FBBF24' },
 };
 
 function TechTag({ label }) {
@@ -78,6 +76,43 @@ function TiltCard({ children, className = '', onClick }) {
   );
 }
 
+/* ─── Shimmer Skeleton Card ─────────────────────────────────────────── */
+function SkeletonCard({ delay = 0 }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.5, delay }}
+      className="rounded-[24px] sm:rounded-[32px] border border-white/[0.08] bg-white/[0.03] overflow-hidden"
+      style={{ backdropFilter: 'blur(20px)' }}
+    >
+      {/* Shimmer image area */}
+      <div className="relative h-48 sm:h-64 md:h-80 overflow-hidden">
+        <div className="absolute inset-0 skeleton-shimmer" />
+        {/* Status badge skeleton */}
+        <div className="absolute top-4 left-4 h-7 w-32 rounded-full skeleton-shimmer" />
+      </div>
+      {/* Body */}
+      <div className="p-5 sm:p-8 space-y-4">
+        <div className="h-3 w-36 rounded-full skeleton-shimmer" />
+        <div className="h-7 w-2/3 rounded-xl skeleton-shimmer" />
+        <div className="space-y-2">
+          <div className="h-3 w-full rounded skeleton-shimmer" />
+          <div className="h-3 w-5/6 rounded skeleton-shimmer" />
+          <div className="h-3 w-4/6 rounded skeleton-shimmer" />
+        </div>
+        <div className="flex gap-2 pt-1">
+          {[80, 100, 90, 110].map(w => (
+            <div key={w} className="h-6 rounded-full skeleton-shimmer" style={{ width: w }} />
+          ))}
+        </div>
+        <div className="h-2 w-full rounded-full skeleton-shimmer mt-4" />
+      </div>
+    </motion.div>
+  );
+}
+
 /* ─── Floating Particles ─────────────────────────────────────────────── */
 function FloatingParticles() {
   const [particles] = useState(() => {
@@ -118,16 +153,62 @@ function FloatingParticles() {
   );
 }
 
+/* ─── Dedup helper ───────────────────────────────────────────────────── */
+const dedup = (list) => {
+  const seen = new Set();
+  return list.filter(p => {
+    const key = (p.title || '').toLowerCase().trim();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
+
 /* ─── Main Portfolio Page ─────────────────────────────────────────────── */
 export default function OurPortfolio() {
   const navigate = useNavigate();
-  const [imageLoaded, setImageLoaded] = useState(false);
+  const [projects, setProjects] = useState([]);
+  // true = no data at all yet (show skeleton), false = we have something to show
+  const [loading, setLoading] = useState(true);
+  const [imagesLoaded, setImagesLoaded] = useState({});
 
-  const handleProjectClick = () => {
-    navigate('/portfolio/abijoefurniture-erp');
+  useEffect(() => {
+    let isMounted = true;
+
+    getProjects({
+      // Called instantly with cached data (0 ms wait)
+      // Then called again silently when Firestore responds
+      onFresh: (fresh) => {
+        if (isMounted) setProjects(dedup(fresh));
+      }
+    }).then((data) => {
+      if (isMounted && data) {
+        setProjects(dedup(data));
+        setLoading(false);
+      }
+    }).catch(err => {
+      console.warn('Portfolio fetch error:', err);
+      if (isMounted) setLoading(false);
+    });
+
+    return () => { isMounted = false; };
+  }, []);
+
+  const handleProjectClick = (project) => {
+    if (!project) return;
+    if (project.liveLink) {
+      if (project.liveLink.startsWith('http://') || project.liveLink.startsWith('https://')) {
+        window.open(project.liveLink, '_blank', 'noopener,noreferrer');
+        return;
+      }
+      if (project.liveLink.startsWith('/')) {
+        navigate(project.liveLink);
+        return;
+      }
+    }
+    const target = project.id || project.firestoreId || 'abijoefurniture-erp';
+    navigate(`/portfolio/${target}`);
   };
-
-  const technologies = ['React.js', 'Python Flask', 'MySQL', 'Tailwind CSS'];
 
   return (
     <div className="relative min-h-screen bg-black text-white font-poppins">
@@ -222,160 +303,204 @@ export default function OurPortfolio() {
             className="flex items-center gap-4"
           >
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-            <span className="text-xs text-gray-500 uppercase tracking-widest font-semibold">Featured Project</span>
+            <span className="text-xs text-gray-500 uppercase tracking-widest font-semibold">Featured Projects</span>
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
           </motion.div>
         </div>
       </section>
 
       {/* ════════════════════════════════════════ */}
-      {/*  FEATURED PROJECT CARD                  */}
+      {/*  FEATURED PROJECTS LIST                  */}
       {/* ════════════════════════════════════════ */}
       <section className="relative z-10 pb-24 pt-8">
-        <div className="max-w-5xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <TiltCard
-              className="relative overflow-hidden rounded-[24px] sm:rounded-[32px] border border-white/[0.1] bg-gradient-to-br from-white/[0.05] via-white/[0.02] to-transparent backdrop-blur-xl cursor-pointer group"
-              onClick={handleProjectClick}
+        <div className="max-w-5xl mx-auto px-6 space-y-12">
+          <AnimatePresence mode="wait">
+          {loading ? (
+            <motion.div
+              key="skeleton"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.3 } }}
+              className="space-y-8"
             >
-              {/* Inner gradient wash */}
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-transparent to-transparent rounded-[24px] sm:rounded-[32px] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              <SkeletonCard delay={0} />
+              <SkeletonCard delay={0.1} />
+            </motion.div>
+          ) : projects.length === 0 ? (
+            <motion.div
+              key="empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-16 bg-white/[0.02] border border-white/10 rounded-3xl p-8"
+            >
+              <Layers className="w-12 h-12 text-purple-400 mx-auto mb-3 opacity-60" />
+              <h3 className="text-lg font-bold text-white mb-1">No Projects Found</h3>
+              <p className="text-xs text-slate-400">Projects added from the Admin Dashboard will appear here automatically.</p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="projects"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4 }}
+              className="space-y-12"
+            >
+            {projects.map((project, index) => {
+              const projectKey = project.firestoreId || project.id || `proj-${index}`;
+            const techList = Array.isArray(project.technologies)
+              ? project.technologies
+              : (typeof project.technologies === 'string' ? project.technologies.split(',').map(s => s.trim()).filter(Boolean) : ['React.js', 'Tailwind CSS']);
 
-              {/* Shimmer border on hover */}
-              <div
-                className="absolute inset-0 rounded-[24px] sm:rounded-[32px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                style={{ boxShadow: 'inset 0 0 0 1px rgba(168,85,247,0.5)' }}
-              />
+            const isLoaded = Boolean(imagesLoaded[projectKey]);
 
-              {/* ── Thumbnail ── */}
-              <div className="relative overflow-hidden rounded-t-[24px] sm:rounded-t-[32px] bg-gradient-to-br from-gray-900 to-black h-48 sm:h-64 md:h-80">
-                {/* Placeholder shimmer while loading */}
-                {!imageLoaded && (
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 via-black to-violet-900/20 animate-pulse" />
-                )}
+            return (
+              <motion.div
+                key={projectKey}
+                initial={{ opacity: 0, y: 60 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <TiltCard
+                  className="relative overflow-hidden rounded-[24px] sm:rounded-[32px] border border-white/[0.1] bg-gradient-to-br from-white/[0.05] via-white/[0.02] to-transparent backdrop-blur-xl cursor-pointer group"
+                  onClick={() => handleProjectClick(project)}
+                >
+                  {/* Inner gradient wash */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-transparent to-transparent rounded-[24px] sm:rounded-[32px] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-                <img
-                  src="/abijoe furniture.png"
-                  alt="AbiJoe Furniture ERP Project"
-                  className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                  onLoad={() => setImageLoaded(true)}
-                />
+                  {/* Shimmer border on hover */}
+                  <div
+                    className="absolute inset-0 rounded-[24px] sm:rounded-[32px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                    style={{ boxShadow: 'inset 0 0 0 1px rgba(168,85,247,0.5)' }}
+                  />
 
-                {/* Overlay gradient for thumbnail */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#080810] via-transparent to-transparent" />
+                  {/* ── Thumbnail ── */}
+                  <div className="relative overflow-hidden rounded-t-[24px] sm:rounded-t-[32px] bg-gradient-to-br from-gray-900 to-black h-48 sm:h-64 md:h-80">
+                    {!isLoaded && (
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 via-black to-violet-900/20 animate-pulse" />
+                    )}
 
-                {/* Status Badge overlay on thumbnail */}
-                <div className="absolute top-3 left-3 sm:top-5 sm:left-5 z-10">
-                  <span className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-1 sm:px-4 sm:py-2 rounded-full bg-amber-500/20 border border-amber-400/40 backdrop-blur-md text-amber-300 text-[10px] sm:text-xs font-bold tracking-wide uppercase">
-                    <span className="text-xs sm:text-base">🚧</span>
-                    In Development
-                  </span>
-                </div>
+                    <img
+                      src={project.image || '/abijoe furniture.png'}
+                      alt={project.title}
+                      className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                      onLoad={() => setImagesLoaded(prev => ({ ...prev, [projectKey]: true }))}
+                    />
 
-                {/* "Case Study" hint badge top-right */}
-                <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-purple-600/80 border border-purple-400/50 backdrop-blur-md text-white text-[10px] sm:text-xs font-semibold">
-                    View Case Study
-                    <ArrowUpRight className="w-3 h-3" />
-                  </span>
-                </div>
-              </div>
+                    {/* Overlay gradient for thumbnail */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#080810] via-transparent to-transparent" />
 
-              {/* ── Card Body ── */}
-              <div className="relative z-10 p-4 sm:p-7 md:p-10">
-                <div className="flex flex-col md:flex-row md:items-start gap-4 sm:gap-6 md:gap-10">
-
-                  {/* Left: Info */}
-                  <div className="flex-1">
-                    {/* Project category */}
-                    <p className="text-purple-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-1.5 sm:mb-3 flex items-center gap-1.5">
-                      <Layers className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                      Enterprise ERP · Furniture Industry
-                    </p>
-
-                    {/* Project Name */}
-                    <h2 className="text-xl sm:text-2xl md:text-3xl font-black leading-tight tracking-tight text-white mb-2 sm:mb-4 group-hover:text-purple-100 transition-colors duration-300">
-                      ABIJOE FURNITURE ERP PROJECT
-                    </h2>
-
-                    {/* Description */}
-                    <p className="text-gray-400 text-xs sm:text-sm md:text-[15px] leading-relaxed mb-3 sm:mb-6 max-w-2xl">
-                      A complete ERP solution for furniture manufacturers and retailers to manage billing,
-                      accounting, inventory, attendance, reports, GST, and business operations from a single platform.
-                    </p>
-
-                    {/* Tech Tags */}
-                    <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-8">
-                      {technologies.map((tech) => (
-                        <TechTag key={tech} label={tech} />
-                      ))}
+                    {/* Status Badge overlay on thumbnail */}
+                    <div className="absolute top-3 left-3 sm:top-5 sm:left-5 z-10">
+                      <span className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-1 sm:px-4 sm:py-2 rounded-full bg-amber-500/20 border border-amber-400/40 backdrop-blur-md text-amber-300 text-[10px] sm:text-xs font-bold tracking-wide uppercase">
+                        <span className="text-xs sm:text-base">🚀</span>
+                        {project.status || 'Completed'}
+                      </span>
                     </div>
 
-                    {/* Progress Bar */}
-                    <div className="mb-1 sm:mb-2">
-                      <div className="flex items-center justify-between mb-1.5 sm:mb-2">
-                        <span className="text-[10px] sm:text-xs text-gray-400 font-semibold uppercase tracking-wider">Development Progress</span>
-                        <span className="text-[10px] sm:text-xs font-bold text-purple-300">70% Completed</span>
-                      </div>
-                      <div className="h-1.5 w-full rounded-full bg-white/[0.08] overflow-hidden">
-                        <motion.div
-                          className="h-full rounded-full"
-                          style={{ background: 'linear-gradient(90deg, #7c3aed, #9d00ff, #d470ff)' }}
-                          initial={{ width: '0%' }}
-                          whileInView={{ width: '70%' }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 1.4, ease: 'easeOut', delay: 0.3 }}
-                        />
-                      </div>
+                    {/* "Case Study" hint badge top-right */}
+                    <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-purple-600/80 border border-purple-400/50 backdrop-blur-md text-white text-[10px] sm:text-xs font-semibold">
+                        View Case Study
+                        <ArrowUpRight className="w-3 h-3" />
+                      </span>
                     </div>
                   </div>
 
-                  {/* Right: CTA */}
-                  <div className="flex flex-col items-start md:items-end gap-3 sm:gap-4 md:min-w-[180px] md:pt-2">
-                    {/* Module count chips */}
-                    <div className="grid grid-cols-2 gap-1.5 sm:gap-2 w-full md:w-auto">
-                      {[
-                        { icon: Layers, label: '7 Modules' },
-                        { icon: Code2, label: '40+ Pages' },
-                        { icon: Database, label: '50+ APIs' },
-                        { icon: Cpu, label: '20+ Tables' },
-                      ].map(({ icon: Icon, label }) => (
-                        <div key={label} className="flex items-center gap-1.5 bg-white/[0.04] border border-white/[0.08] rounded-lg sm:rounded-xl px-2.5 py-1.5 sm:px-3 sm:py-2">
-                          <Icon className="w-3 h-3 text-purple-400 flex-shrink-0" />
-                          <span className="text-white/70 text-[11px] sm:text-xs font-medium whitespace-nowrap">{label}</span>
+                  {/* ── Card Body ── */}
+                  <div className="relative z-10 p-4 sm:p-7 md:p-10">
+                    <div className="flex flex-col md:flex-row md:items-start gap-4 sm:gap-6 md:gap-10">
+
+                      {/* Left: Info */}
+                      <div className="flex-1">
+                        {/* Project category */}
+                        <p className="text-purple-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-1.5 sm:mb-3 flex items-center gap-1.5">
+                          <Layers className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                          {project.subtitle || project.category || 'Enterprise Software Solution'}
+                        </p>
+
+                        {/* Project Name */}
+                        <h2 className="text-xl sm:text-2xl md:text-3xl font-black leading-tight tracking-tight text-white mb-2 sm:mb-4 group-hover:text-purple-100 transition-colors duration-300">
+                          {project.title}
+                        </h2>
+
+                        {/* Description */}
+                        <p className="text-gray-400 text-xs sm:text-sm md:text-[15px] leading-relaxed mb-3 sm:mb-6 max-w-2xl">
+                          {project.overview || project.description}
+                        </p>
+
+                        {/* Tech Tags */}
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-8">
+                          {techList.map((tech) => (
+                            <TechTag key={tech} label={tech} />
+                          ))}
                         </div>
-                      ))}
+
+                        {/* Progress Bar */}
+                        <div className="mb-1 sm:mb-2">
+                          <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+                            <span className="text-[10px] sm:text-xs text-gray-400 font-semibold uppercase tracking-wider">Development Progress</span>
+                            <span className="text-[10px] sm:text-xs font-bold text-purple-300">{project.progress || '100%'}</span>
+                          </div>
+                          <div className="h-1.5 w-full rounded-full bg-white/[0.08] overflow-hidden">
+                            <motion.div
+                              className="h-full rounded-full"
+                              style={{ background: 'linear-gradient(90deg, #7c3aed, #9d00ff, #d470ff)' }}
+                              initial={{ width: '0%' }}
+                              whileInView={{ width: project.progress || '100%' }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1.4, ease: 'easeOut', delay: 0.3 }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right: CTA */}
+                      <div className="flex flex-col items-start md:items-end gap-3 sm:gap-4 md:min-w-[180px] md:pt-2">
+                        {/* Module count chips */}
+                        <div className="grid grid-cols-2 gap-1.5 sm:gap-2 w-full md:w-auto">
+                          {[
+                            { icon: Layers, label: project.modulesCount || '7 Modules' },
+                            { icon: Code2, label: project.pagesCount || '40+ Pages' },
+                            { icon: Database, label: project.apisCount || '50+ APIs' },
+                            { icon: Cpu, label: project.tablesCount || '20+ Tables' },
+                          ].map(({ icon: Icon, label }) => (
+                            <div key={label} className="flex items-center gap-1.5 bg-white/[0.04] border border-white/[0.08] rounded-lg sm:rounded-xl px-2.5 py-1.5 sm:px-3 sm:py-2">
+                              <Icon className="w-3 h-3 text-purple-400 flex-shrink-0" />
+                              <span className="text-white/70 text-[11px] sm:text-xs font-medium whitespace-nowrap">{label}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Primary CTA */}
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleProjectClick(project); }}
+                          className="w-full md:w-auto flex items-center justify-center gap-2 px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm tracking-wide transition-all duration-300 group/btn"
+                          style={{
+                            background: 'linear-gradient(135deg, #7c3aed, #9d00ff)',
+                            boxShadow: '0 0 30px rgba(157,0,255,0.3)',
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 50px rgba(157,0,255,0.6)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 30px rgba(157,0,255,0.3)'; }}
+                        >
+                          View Project
+                          <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-200" />
+                        </button>
+
+                        {/* Hint text */}
+                        <p className="text-gray-600 text-[10px] sm:text-xs text-center md:text-right leading-snug w-full">
+                          Click anywhere on the card to open full case study
+                        </p>
+                      </div>
                     </div>
-
-                    {/* Primary CTA */}
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleProjectClick(); }}
-                      className="w-full md:w-auto flex items-center justify-center gap-2 px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm tracking-wide transition-all duration-300 group/btn"
-                      style={{
-                        background: 'linear-gradient(135deg, #7c3aed, #9d00ff)',
-                        boxShadow: '0 0 30px rgba(157,0,255,0.3)',
-                      }}
-                      onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 50px rgba(157,0,255,0.6)'; }}
-                      onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 30px rgba(157,0,255,0.3)'; }}
-                    >
-                      View Project
-                      <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-200" />
-                    </button>
-
-                    {/* Hint text */}
-                    <p className="text-gray-600 text-[10px] sm:text-xs text-center md:text-right leading-snug w-full">
-                      Click anywhere on the card to open full case study
-                    </p>
                   </div>
-                </div>
-              </div>
-            </TiltCard>
-          </motion.div>
+                </TiltCard>
+              </motion.div>
+            );
+          })}
+            </motion.div>
+          )}
+          </AnimatePresence>
         </div>
       </section>
 
