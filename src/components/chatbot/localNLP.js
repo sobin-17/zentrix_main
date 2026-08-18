@@ -136,7 +136,25 @@ const STOP_WORDS = new Set([
   "help", "understand", "would", "like", "want", "know", "tell", "give",
   "what", "how", "does", "will", "with", "from", "that", "this", "your",
   "all", "each", "every", "also", "well", "just", "some", "any", "into",
-  "have", "has", "had", "based", "goals", "make", "sure"
+  "have", "has", "had", "based", "goals", "make", "sure",
+
+  // --- Domain stopwords (added) ---------------------------------------
+  // These words are too generic WITHIN this chatbot's own domain: nearly
+  // every course/internship doc's keyword list legitimately contains
+  // "course"/"program" as part of a longer phrase (e.g. "course fees",
+  // "which course is good", "python course details"). Letting them count
+  // as an individual scoring signal caused unrelated intents to steal
+  // score from the actually-correct intent whenever a query happened to
+  // contain the word "course" (e.g. "course duration" scoring points
+  // against the fees-doc, the ai-details-doc, the java-details-doc, etc,
+  // just because their keyword lists each had one phrase containing
+  // "course"). Excluding them from signalWords means they no longer
+  // contribute word-level score on their own — but exact full-query
+  // match and phrase-containment match (both checked separately below,
+  // e.g. "course duration" as a whole phrase against a keyword) are
+  // untouched, so intentional exact phrases like "course duration" or
+  // "which course is good" still work correctly.
+  "course", "courses", "program", "programs",
 ]);
 
 // Real people stretch letters when typing casually — "hellooo", "heyyy",
@@ -291,8 +309,9 @@ export const getFirestoreResponse = async (userInput) => {
   const expandedInput = expandShorthand(normWords.join(" "));
   const expandedWords = expandedInput.split(/\s+/).filter(Boolean);
 
-  // Real signal words only — drop stop words and tiny tokens so long
-  // questions don't rack up score in unrelated intents just from filler.
+  // Real signal words only — drop stop words (including domain stopwords
+  // like "course"/"program") and tiny tokens so long questions don't rack
+  // up score in unrelated intents just from filler or generic domain nouns.
   const signalWords = expandedWords.filter((w) => w.length >= 3 && !STOP_WORDS.has(w));
   const stemmedSignalWords = signalWords.map(stem);
 
@@ -356,7 +375,12 @@ export const getFirestoreResponse = async (userInput) => {
         }
       }
 
-      // Phrase containment match (only for phrases >= 3 chars)
+      // Phrase containment match (only for phrases >= 3 chars). This is
+      // intentionally NOT filtered by the domain stoplist — a query like
+      // "course duration" or "which course is good" should still match a
+      // keyword phrase like "course duration" or "which course" as a
+      // whole unit, since that's a deliberate exact phrase in the data,
+      // not an accidental single-word collision.
       if (kw.length >= 3 && cleanInput.length >= 3) {
         if (cleanInput.includes(kw) || expandedInput.includes(kw)) {
           score += kwWords.length * 8 * w;
@@ -401,7 +425,11 @@ export const getFirestoreResponse = async (userInput) => {
 
   // No confident single match. For long / multi-part questions this is
   // common — better to admit the limit than guess and repeat a wrong answer.
-  if (signalWords.length >= 8) {
+  // Lowered from 8 to 4: a question can genuinely span several topics
+  // ("duration, fees, and internship for python") in as few as 4 signal
+  // words, and those deserve the same "ask one at a time" redirect as a
+  // longer question — not the plain no-match fallback.
+  if (signalWords.length >= 4) {
     return (
       "That's a detailed multi-part question — I can answer one topic at a time " +
       "(courses, internships, services, placement, or careers). Could you break it " +
