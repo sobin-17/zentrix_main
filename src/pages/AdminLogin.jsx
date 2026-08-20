@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Eye, EyeOff, Lock, Mail, Loader2 } from "lucide-react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { useNavigate } from "react-router-dom";
@@ -18,55 +21,66 @@ const AdminLogin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    if (loading) return;
+
     setLoading(true);
     setError("");
 
     try {
-      // Login with Firebase Authentication
+      // 1. Firebase Authentication checks email + password
       const userCredential = await signInWithEmailAndPassword(
         auth,
-        email,
+        email.trim(),
         password
       );
 
       const user = userCredential.user;
 
-      // Check if the user is an admin
+      console.log("Authenticated UID:", user.uid);
+
+      // 2. Get admin document using Firebase Auth UID
       const adminRef = doc(db, "admins", user.uid);
       const adminSnap = await getDoc(adminRef);
 
+      // 3. Admin document must exist
       if (!adminSnap.exists()) {
-        await auth.signOut();
-        setError("You are not authorized to access the admin dashboard.");
+        await signOut(auth);
+
+        setError(
+          "This account is not registered as an administrator."
+        );
+
         return;
       }
 
-      // Optional: verify role field
+      // 4. Check admin role
       const adminData = adminSnap.data();
 
       if (adminData.role !== "admin") {
-        await auth.signOut();
+        await signOut(auth);
+
         setError("Admin access denied.");
+
         return;
       }
 
-      // Success
-      navigate("/admin-dashboard");
+      // 5. Successful login
+      navigate("/admin-dashboard", { replace: true });
 
     } catch (err) {
-      console.error(err);
+      console.error("Admin login error:", err);
 
       switch (err.code) {
         case "auth/invalid-credential":
           setError("Invalid email or password.");
           break;
 
-        case "auth/user-not-found":
-          setError("User not found.");
+        case "auth/invalid-email":
+          setError("Please enter a valid email address.");
           break;
 
-        case "auth/wrong-password":
-          setError("Incorrect password.");
+        case "auth/user-disabled":
+          setError("This account has been disabled.");
           break;
 
         case "auth/too-many-requests":
@@ -77,8 +91,14 @@ const AdminLogin = () => {
           setError("Network error. Check your internet connection.");
           break;
 
+        case "permission-denied":
+          setError(
+            "Login succeeded, but Firestore denied access to the admin profile."
+          );
+          break;
+
         default:
-          setError(err.message);
+          setError(err.message || "Login failed.");
       }
     } finally {
       setLoading(false);
@@ -98,7 +118,7 @@ const AdminLogin = () => {
 
           <img
             src="/logo5_transparent.png"
-            alt="logo"
+            alt="Zentrix Technology"
             className="h-16 mx-auto mb-6"
           />
 
@@ -133,6 +153,7 @@ const AdminLogin = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
             />
           </div>
         </div>
@@ -152,11 +173,13 @@ const AdminLogin = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              autoComplete="current-password"
             />
 
             <button
               type="button"
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="p-1"
             >
               {showPassword ? (
                 <EyeOff className="text-gray-400" />
@@ -181,6 +204,7 @@ const AdminLogin = () => {
             "Login"
           )}
         </button>
+
       </form>
     </div>
   );
