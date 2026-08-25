@@ -36,7 +36,7 @@ const ProjectsManager = React.memo(function ProjectsManager({ projects = [], que
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-purple-900/30 via-purple-950/20 to-black/40 border border-purple-500/20 rounded-2xl p-5 sm:p-6 backdrop-blur-xl">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <FolderGit2 className="w-6 h-6 text-purple-400" />
+            <FolderGit2 className="w-6 h-6 text-rose-400 drop-shadow-[0_0_8px_rgba(244,63,94,0.6)]" />
             <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Portfolio Projects</h2>
           </div>
           <p className="text-xs sm:text-sm text-slate-400 max-w-xl">
@@ -46,7 +46,7 @@ const ProjectsManager = React.memo(function ProjectsManager({ projects = [], que
 
         <button
           onClick={onAdd}
-          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-xs sm:text-sm text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-[0_0_20px_rgba(168,85,247,0.35)] transition-all cursor-pointer shrink-0"
+          className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-medium px-4 py-2 rounded-xl shadow-[0_0_20px_rgba(244,63,94,0.4)] transition-all flex items-center gap-2"
         >
           <Plus size={16} /> Add Portfolio Project
         </button>
@@ -97,8 +97,8 @@ const ProjectsManager = React.memo(function ProjectsManager({ projects = [], que
             onClick={() => setStatusFilter(tab.key)}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               statusFilter === tab.key
-                ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(168,85,247,0.3)]'
-                : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'
+                ? 'bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-[0_0_15px_rgba(244,63,94,0.35)]'
+                : 'bg-white/5 text-white/70 hover:text-white hover:bg-white/10'
             }`}
           >
             {tab.label}
@@ -116,7 +116,7 @@ const ProjectsManager = React.memo(function ProjectsManager({ projects = [], que
           </p>
           <button
             onClick={onAdd}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-purple-600 hover:bg-purple-500 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 shadow-[0_0_20px_rgba(244,63,94,0.4)] transition-all"
           >
             <Plus size={14} /> Add Project
           </button>
@@ -172,7 +172,7 @@ const ProjectsManager = React.memo(function ProjectsManager({ projects = [], que
 
                   {/* Body Info */}
                   <div className="p-5">
-                    <p className="text-[11px] font-bold text-purple-400 uppercase tracking-widest mb-1">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-rose-400 drop-shadow-[0_0_8px_rgba(244,63,94,0.4)]">
                       {project.subtitle || project.category || 'Portfolio Case Study'}
                     </p>
                     <h3 className="text-lg font-bold text-white mb-2 leading-snug group-hover:text-purple-200 transition-colors">
@@ -209,7 +209,7 @@ const ProjectsManager = React.memo(function ProjectsManager({ projects = [], que
                       </div>
                       <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-purple-500 to-indigo-400 rounded-full"
+                          className="h-full bg-gradient-to-r from-rose-500 to-pink-500 rounded-full shadow-[0_0_12px_rgba(244,63,94,0.7)] transition-all duration-500"
                           style={{ width: project.progress || '100%' }}
                         />
                       </div>
