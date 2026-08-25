@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import bgImage from '/bg-dashboard.jpg';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -240,9 +241,9 @@ function Sidebar({ active, setActive, mobileOpen, setMobileOpen }) {
                   <button
                     key={key}
                     onClick={() => handleSelect(key)}
-                    className={`w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${isActive
-                      ? 'bg-[var(--color-brand-purple)] text-white shadow-[0_0_20px_rgba(157,0,255,0.35)]'
-                      : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    className={`w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${isActive
+                      ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-lg shadow-rose-950/60 font-semibold rounded-xl'
+                      : 'text-zinc-400 hover:text-zinc-100 hover:bg-rose-950/25 rounded-xl transition-all'
                       }`}
                   >
                     <span className="flex items-center gap-3">
@@ -250,7 +251,7 @@ function Sidebar({ active, setActive, mobileOpen, setMobileOpen }) {
                       {label}
                     </span>
                     {soon && (
-                      <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-white/5 text-slate-500 font-semibold">
+                      <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full bg-rose-950/40 border border-rose-800/30 text-rose-300/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
                         soon
                       </span>
                     )}
@@ -267,7 +268,7 @@ function Sidebar({ active, setActive, mobileOpen, setMobileOpen }) {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex flex-col w-[260px] flex-shrink-0 h-screen sticky top-0 bg-[#0a0a0a] border-r border-white/10 overflow-y-auto">
+      <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 left-0 flex-shrink-0 z-30 bg-[#0a0a0a] border-r border-white/10 overflow-y-auto">
         {navBody}
       </aside>
 
@@ -329,7 +330,7 @@ function Topbar({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search courses, careers…"
-          className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-purple-500 transition-colors"
+          className="w-full bg-white/[0.03] border border-white/10 focus-within:border-rose-500/50 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors"
         />
       </div>
 
@@ -344,7 +345,7 @@ function Topbar({
               onChange={(e) => setQuery(e.target.value)}
               onBlur={() => !query && setShowMobileSearch(false)}
               placeholder="Search…"
-              className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-2 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-purple-500 transition-colors"
+              className="w-full bg-white/[0.03] border border-white/10 focus-within:border-rose-500/50 rounded-xl pl-9 pr-4 py-2 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-rose-500/50 transition-colors"
             />
           </div>
         ) : null}
@@ -434,7 +435,7 @@ function Topbar({
           )}
         </div>
         <div className="hidden sm:flex items-center gap-2 pl-3 border-l border-white/10">
-          <div className="w-9 h-9 rounded-full bg-purple-600 flex items-center justify-center text-sm font-bold text-white flex-shrink-0">HR</div>
+          <div className="w-9 h-9 rounded-full bg-rose-950/80 border border-rose-500/50 text-rose-200 shadow-[0_0_15px_rgba(244,63,94,0.3)] flex items-center justify-center text-sm font-bold flex-shrink-0">HR</div>
           <div className="hidden md:block leading-tight">
             <p className="text-sm font-semibold text-white">
               {admin?.email?.split("@")[0]}
@@ -459,13 +460,13 @@ function Topbar({
 
 function StatCard({ label, value, icon: Icon, accent }) {
   return (
-    <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 sm:p-5 flex items-center gap-3 sm:gap-4">
-      <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: `${accent}22`, color: accent }}>
+    <div className="bg-[#0c0307]/50 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_10px_30px_rgba(0,0,0,0.5)] rounded-2xl p-4 hover:border-rose-500/50 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_12px_35px_rgba(0,0,0,0.6)] transition-all duration-300 relative overflow-hidden flex items-center gap-2 sm:gap-3 before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-[2px] before:bg-gradient-to-r before:from-rose-500 before:via-red-500 before:to-amber-400">
+      <div className="p-2.5 rounded-xl bg-rose-950/40 border border-rose-500/20 text-rose-300 w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center flex-shrink-0" style={{ background: `${accent}22`, color: accent }}>
         <Icon className="w-5 h-5" />
       </div>
       <div className="min-w-0">
-        <p className="text-slate-500 text-xs mb-1 truncate">{label}</p>
-        <p className="text-xl sm:text-2xl font-bold text-white">{value}</p>
+        <p className="text-xs font-medium text-white/70 whitespace-normal break-words leading-tight mb-1">{label}</p>
+        <p className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-rose-100 to-rose-300 mt-1">{value}</p>
       </div>
     </div>
   );
@@ -831,6 +832,8 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
         baseTitle: initial.baseTitle || initial.title?.replace(/\s+(Intern|Developer|Engineer|Analyst|Specialist|Designer|Manager)$/i, '') || '',
         type: initial.type || CAREER_TYPES[0],
         experience: initial.experience || '',
+        qualification: initial.qualification || '',
+        yearsOfExperience: initial.yearsOfExperience || '',
         location: initial.location || 'Nagercoil, Tamil Nadu',
         mode: initial.mode || 'Onsite',
         status: initial.status || 'Active',
@@ -847,6 +850,8 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
         baseTitle: defaultCareer.baseTitle || defaultCareer.title.replace(/\s+Intern$/i, ''),
         type: defaultCareer.type,
         experience: defaultCareer.experience,
+        qualification: defaultCareer.qualification || '',
+        yearsOfExperience: defaultCareer.yearsOfExperience || '',
         location: defaultCareer.location,
         mode: 'Onsite',
         status: 'Active',
@@ -965,6 +970,8 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
         baseTitle: finalBaseTitle,
         type: form.type,
         experience: form.experience,
+        qualification: form.qualification,
+        yearsOfExperience: form.yearsOfExperience,
         location: form.location,
         mode: form.mode,
         status: form.status,
@@ -1096,13 +1103,33 @@ function CareerModal({ initial, careers = [], onClose, onSave }) {
         </Field>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field label="BASIC QUALIFICATION">
+            <input
+              type="text"
+              name="qualification"
+              value={form.qualification}
+              onChange={(e) => set('qualification', e.target.value)}
+              placeholder="e.g., Arts, Engineering, B.Tech, BCA"
+              className="w-full bg-[#120205]/60 border border-white/10 rounded-xl p-3 text-white text-sm focus:border-rose-500 outline-none"
+            />
+          </Field>
+          <Field label="YEARS OF EXPERIENCE">
+            <input
+              type="text"
+              name="yearsOfExperience"
+              value={form.yearsOfExperience}
+              onChange={(e) => set('yearsOfExperience', e.target.value)}
+              placeholder="e.g., 0-1 Years / 2+ Years"
+              className="w-full bg-[#120205]/60 border border-white/10 rounded-xl p-3 text-white text-sm focus:border-rose-500 outline-none"
+            />
+          </Field>
           <Field label="Type">
             <select value={form.type} onChange={handleTypeChange} className="input">
               {CAREER_TYPES.map((t) => <option key={t}>{t}</option>)}
             </select>
           </Field>
-          <Field label="Experience / Duration">
-            <input value={form.experience} onChange={(e) => set('experience', e.target.value)} className="input" placeholder="3 Months" />
+          <Field label="DURATION">
+            <input value={form.experience} onChange={(e) => set('experience', e.target.value)} className="input" placeholder="3 Months / 6 Months" />
           </Field>
         </div>
 
@@ -1239,13 +1266,14 @@ function DashboardHome({
       getCareerApplicants(a)
   );
   return (
-    <div className="space-y-6 sm:space-y-8">
-      <div>
-        <h1 className="text-xl sm:text-2xl font-bold text-white mb-1">Welcome back, HR 👋</h1>
-        <p className="text-slate-500 text-sm">Here's what's happening with your academy today.</p>
+    <div className="space-y-6 sm:space-y-8 bg-[#0b0204] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(225,29,72,0.15),rgba(255,255,255,0))]">
+      <div className="bg-gradient-to-r from-rose-950/50 via-[#120205]/80 to-purple-950/40 backdrop-blur-2xl border border-rose-500/40 p-6 rounded-3xl shadow-[0_0_30px_rgba(244,63,94,0.15)] relative overflow-hidden">
+        <div className="absolute -right-10 -top-10 w-40 h-40 bg-rose-500/20 rounded-full blur-3xl pointer-events-none" />
+        <h1 className="bg-gradient-to-r from-white via-rose-100 to-rose-300 bg-clip-text text-transparent font-bold tracking-tight text-xl sm:text-2xl mb-2">Welcome back, HR</h1>
+        <p className="text-rose-200/70 text-sm font-medium tracking-wide mt-1">Here's what's happening with your academy today.</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <StatCard label="Total Courses" value={courses.length} icon={BookOpen} accent="#a855f7" />
         <StatCard label="Published Courses" value={published} icon={TrendingUp} accent="#22c55e" />
         <StatCard label="Total Careers" value={careers.length} icon={Briefcase} accent="#f59e0b" />
@@ -1255,20 +1283,20 @@ function DashboardHome({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 sm:p-6">
+        <div className="bg-[#0c0307]/50 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_10px_30px_rgba(0,0,0,0.5)] rounded-2xl p-6 hover:border-rose-500/30 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_12px_35px_rgba(0,0,0,0.6)] transition-all duration-300">
           <div className="flex items-center justify-between mb-4 gap-2">
             <div className="min-w-0">
               <h2 className="font-bold text-white">Enrollments by Course</h2>
               <p className="text-slate-500 text-xs mt-0.5">{totalStudents} total students enrolled</p>
             </div>
-            <button onClick={() => goTo('courses')} className="text-purple-400 text-xs font-semibold flex items-center gap-1 hover:text-purple-300 flex-shrink-0">
+            <button onClick={() => goTo('courses')} className="text-rose-400 hover:text-rose-300 font-semibold text-xs transition-colors duration-300 flex items-center gap-1 flex-shrink-0">
               Manage <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
           <div className="space-y-3">
             {coursesByEnrollment.map((c) => (
-              <div key={c.id || c.firestoreId || c.title} className="flex items-center justify-between text-sm gap-2">
-                <span className="text-slate-300 truncate pr-4">{c.title}</span>
+              <div key={c.id || c.firestoreId || c.title} className="flex items-center justify-between text-sm py-3 px-3.5 rounded-lg border-b border-rose-950/30 hover:bg-rose-950/20 transition-all duration-300 gap-2">
+                <span className="text-zinc-200 truncate pr-4">{c.title}</span>
                 <span className="flex items-center gap-1.5 text-white font-semibold flex-shrink-0">
                   <Users className="w-3.5 h-3.5 text-slate-500" />
                   {getCourseEnrollments(c)}
@@ -1279,20 +1307,20 @@ function DashboardHome({
           </div>
         </div>
 
-        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 sm:p-6">
+        <div className="bg-[#0c0307]/50 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_10px_30px_rgba(0,0,0,0.5)] rounded-2xl p-6 hover:border-rose-500/30 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_12px_35px_rgba(0,0,0,0.6)] transition-all duration-300">
           <div className="flex items-center justify-between mb-4 gap-2">
             <div className="min-w-0">
               <h2 className="font-bold text-white">Applications by Career</h2>
               <p className="text-slate-500 text-xs mt-0.5">{totalApplicants} total applications received</p>
             </div>
-            <button onClick={() => goTo('careers')} className="text-purple-400 text-xs font-semibold flex items-center gap-1 hover:text-purple-300 flex-shrink-0">
+            <button onClick={() => goTo('careers')} className="text-rose-400 hover:text-rose-300 font-semibold text-xs transition-colors duration-300 flex items-center gap-1 flex-shrink-0">
               Manage <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
           <div className="space-y-3">
             {careersByApplicants.map((j) => (
-              <div key={j.id || j.firestoreId || j.jobId || j.title} className="flex items-center justify-between text-sm gap-2">
-                <span className="text-slate-300 truncate pr-4">{j.title}</span>
+              <div key={j.id || j.firestoreId || j.jobId || j.title} className="flex items-center justify-between text-sm py-3 px-3.5 rounded-lg border-b border-rose-950/30 hover:bg-rose-950/20 transition-all duration-300 gap-2">
+                <span className="text-zinc-200 truncate pr-4">{j.title}</span>
                 <span className="flex items-center gap-1.5 text-white font-semibold flex-shrink-0">
                   <FileText className="w-3.5 h-3.5 text-slate-500" />
                   {getCareerApplicants(j)}
@@ -1305,10 +1333,10 @@ function DashboardHome({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 sm:p-6">
+        <div className="bg-[#0c0307]/50 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_10px_30px_rgba(0,0,0,0.5)] rounded-2xl p-6 hover:border-rose-500/30 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_12px_35px_rgba(0,0,0,0.6)] transition-all duration-300">
           <div className="flex items-center justify-between mb-4 gap-2">
             <h2 className="font-bold text-white">Courses Overview</h2>
-            <button onClick={() => goTo('courses')} className="text-purple-400 text-xs font-semibold flex items-center gap-1 hover:text-purple-300 flex-shrink-0">
+            <button onClick={() => goTo('courses')} className="text-rose-400 hover:text-rose-300 font-semibold text-xs transition-colors duration-300 flex items-center gap-1 flex-shrink-0">
               Manage <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -1322,10 +1350,10 @@ function DashboardHome({
           </div>
         </div>
 
-        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 sm:p-6">
+        <div className="bg-[#0c0307]/50 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_10px_30px_rgba(0,0,0,0.5)] rounded-2xl p-6 hover:border-rose-500/30 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_12px_35px_rgba(0,0,0,0.6)] transition-all duration-300">
           <div className="flex items-center justify-between mb-4 gap-2">
             <h2 className="font-bold text-white">Careers Overview</h2>
-            <button onClick={() => goTo('careers')} className="text-purple-400 text-xs font-semibold flex items-center gap-1 hover:text-purple-300 flex-shrink-0">
+            <button onClick={() => goTo('careers')} className="text-rose-400 hover:text-rose-300 font-semibold text-xs transition-colors duration-300 flex items-center gap-1 flex-shrink-0">
               Manage <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -1363,13 +1391,13 @@ function CoursesManager({ courses, query, onAdd, onEdit, onDelete, onShare }) {
   );
 
   return (
-    <div className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden">
+    <div className="bg-[#0c0307]/50 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sm:p-6 border-b border-white/10">
         <div>
           <h2 className="text-lg font-bold text-white">Courses</h2>
           <p className="text-slate-500 text-xs mt-0.5">{filtered.length} of {courses.length} courses</p>
         </div>
-        <button onClick={onAdd} className="flex items-center gap-2 justify-center px-4 py-2.5 rounded-xl bg-[var(--color-brand-purple)] text-white text-sm font-semibold hover:opacity-90 transition-opacity">
+        <button onClick={onAdd} className="flex items-center gap-2 justify-center px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white text-sm font-semibold shadow-[0_0_20px_rgba(244,63,94,0.4)] transition-all">
           <Plus className="w-4 h-4" /> Add New Course
         </button>
       </div>
@@ -1443,13 +1471,13 @@ function CareersManager({ careers, query, onAdd, onEdit, onDelete, onShare }) {
   );
 
   return (
-    <div className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden">
+    <div className="bg-[#0c0307]/50 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sm:p-6 border-b border-white/10">
         <div>
           <h2 className="text-lg font-bold text-white">Careers</h2>
           <p className="text-slate-500 text-xs mt-0.5">{filtered.length} of {careers.length} openings</p>
         </div>
-        <button onClick={onAdd} className="flex items-center gap-2 justify-center px-4 py-2.5 rounded-xl bg-[var(--color-brand-purple)] text-white text-sm font-semibold hover:opacity-90 transition-opacity">
+        <button onClick={onAdd} className="flex items-center gap-2 justify-center px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white text-sm font-semibold shadow-[0_0_20px_rgba(244,63,94,0.4)] transition-all">
           <Plus className="w-4 h-4" /> Add New Career
         </button>
       </div>
@@ -1461,7 +1489,9 @@ function CareersManager({ careers, query, onAdd, onEdit, onDelete, onShare }) {
               <th className="px-6 py-3 font-semibold">Job ID</th>
               <th className="px-6 py-3 font-semibold">Job Title</th>
               <th className="px-6 py-3 font-semibold">Type</th>
-              <th className="px-6 py-3 font-semibold">Experience</th>
+              <th className="px-6 py-3 font-semibold">DURATION</th>
+              <th className="px-6 py-3 font-semibold">REQ. EXP</th>
+              <th className="px-6 py-3 font-semibold">QUALIFICATION</th>
               <th className="px-6 py-3 font-semibold">Location</th>
               <th className="px-6 py-3 font-semibold">Status</th>
               <th className="px-6 py-3 font-semibold text-right">Actions</th>
@@ -1471,13 +1501,15 @@ function CareersManager({ careers, query, onAdd, onEdit, onDelete, onShare }) {
             {filtered.map((j) => (
               <tr key={j.firestoreId || j.jobId || j.id} className="border-b border-white/5 hover:bg-white/[0.02]">
                 <td className="px-6 py-4 font-mono font-bold text-xs">
-                  <span className="px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30 whitespace-nowrap">
+                  <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-mono font-semibold bg-[#3d0d14]/90 border border-rose-500/50 text-rose-200 shadow-[0_0_12px_rgba(244,63,94,0.25)]">
                     {j.jobId || j.id}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-white font-medium">{j.title}</td>
                 <td className="px-6 py-4 text-slate-300">{j.type}</td>
                 <td className="px-6 py-4 text-slate-300">{j.experience}</td>
+                <td className="px-6 py-4 text-slate-300">{j.yearsOfExperience}</td>
+                <td className="px-6 py-4 text-slate-300">{j.qualification}</td>
                 <td className="px-6 py-4 text-slate-300">{j.location}</td>
                 <td className="px-6 py-4"><StatusPill status={j.status} /></td>
                 <td className="px-6 py-4">
@@ -1501,7 +1533,7 @@ function CareersManager({ careers, query, onAdd, onEdit, onDelete, onShare }) {
               </tr>
             ))}
             {filtered.length === 0 && (
-              <tr><td colSpan={7} className="px-6 py-10 text-center text-slate-500">No careers match "{query}".</td></tr>
+              <tr><td colSpan={9} className="px-6 py-10 text-center text-slate-500">No careers match "{query}".</td></tr>
             )}
           </tbody>
         </table>
@@ -1543,12 +1575,12 @@ function EnrollmentsManager({ courses, enrollments, onUpdateStatus, onDeleteEnro
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search courses…"
-              className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-purple-500 transition-colors"
+              className="w-full bg-white/5 border border-rose-500/40 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500/50 transition-colors"
             />
           </div>
         </div>
 
-        <div className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden">
+        <div className="bg-[#0c0307]/50 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm min-w-[720px]">
               <thead>
@@ -1644,7 +1676,7 @@ function EnrollmentsManager({ courses, enrollments, onUpdateStatus, onDeleteEnro
         </div>
       </div>
 
-      <div className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden">
+      <div className="bg-[#0c0307]/50 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[820px]">
             <thead>
@@ -1786,6 +1818,7 @@ function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp 
   const [selectedJob, setSelectedJob] = useState(null);
   const [activeApplicant, setActiveApplicant] = useState(null);
   const [previewPdfUrl, setPreviewPdfUrl] = useState(null);
+  const [remarks, setRemarks] = useState({});
 
   if (!selectedJob) {
     return (
@@ -1804,7 +1837,7 @@ function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp 
             return (
               <div
                 key={career.firestoreId || career.id || career.title}
-                className="bg-white/[0.03] border border-white/10 hover:border-purple-500/40 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between"
+                className="bg-[#0c0307]/50 backdrop-blur-md border border-white/10 hover:border-purple-500/40 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
@@ -1853,7 +1886,7 @@ function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp 
         </div>
       </div>
 
-      <div className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden shadow-xl">
+      <div className="bg-[#0c0307]/50 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left min-w-[900px]">
             <thead>
@@ -1906,6 +1939,13 @@ function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp 
                   </td>
 
                   <td className="px-6 py-4">
+                    <input
+                      type="text"
+                      value={remarks[app.firestoreId || app.id] ?? app.remarks ?? ''}
+                      onChange={(e) => setRemarks((current) => ({ ...current, [app.firestoreId || app.id]: e.target.value }))}
+                      placeholder="Remarks (e.g. Shortlisted / Rejected reason)..."
+                      className="bg-white/5 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-white placeholder-white/40 focus:border-rose-500 focus:outline-none w-48 md:w-60 mr-2"
+                    />
                     {app.resumeUrl && (app.resumeUrl.startsWith('http') || app.resumeUrl.startsWith('data:')) ? (
                       <button
                         onClick={() => openPdfInNewTab(app.resumeUrl, `${app.name}_Resume.pdf`)}
@@ -2039,7 +2079,7 @@ function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp 
 
 function ComingSoon({ label }) {
   return (
-    <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-8 sm:p-16 text-center">
+    <div className="bg-[#0c0307]/50 backdrop-blur-md border border-white/10 rounded-2xl p-8 sm:p-16 text-center">
       <p className="text-white font-bold text-lg mb-2">{label}</p>
       <p className="text-slate-500 text-sm">Coming soon — this section is still being built.</p>
     </div>
@@ -2492,12 +2532,21 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="flex min-h-screen bg-black font-poppins relative overflow-hidden w-full max-w-[100vw]">
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-transparent font-poppins relative isolate w-full max-w-[100vw]">
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <img src="/neonwave.jpg" alt="Neon Wave" className="w-full h-full object-cover opacity-100 brightness-110 contrast-105" />
+        <div className="absolute inset-0 bg-black/25 backdrop-blur-[0.5px]" />
+      </div>
+      <div className="pointer-events-none fixed inset-0 z-[1] overflow-hidden absolute bg-gradient-to-b from-[#090204]/45 via-[#0a0205]/55 to-[#060102]/70" />
+      <div className="pointer-events-none z-0 overflow-hidden absolute -top-32 -left-32 w-96 h-96 bg-rose-600/25 rounded-full blur-[120px] animate-pulse duration-[8000ms]" />
+      <div className="pointer-events-none z-0 overflow-hidden absolute top-1/3 -right-20 w-[500px] h-[500px] bg-red-700/20 rounded-full blur-[140px] animate-pulse duration-[10000ms] delay-1000" />
+      <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden opacity-60 bg-[radial-gradient(ellipse_at_center,transparent_30%,#070103_100%)]" />
+      <div className="relative z-10 flex min-h-screen w-full bg-transparent backdrop-blur-sm">
+      <div className="pointer-events-none z-0 overflow-hidden absolute -bottom-20 left-1/4 w-[450px] h-[450px] bg-rose-900/30 rounded-full blur-[130px] animate-pulse duration-[7000ms] delay-700">
         {particles.map((p) => (
           <div
             key={p.id}
-            className="service-particle"
+            className="hidden service-particle"
             style={{
               width: p.size,
               height: p.size,
@@ -2515,7 +2564,7 @@ export default function AdminDashboard() {
       </div>
       <Sidebar active={active} setActive={setActive} mobileOpen={mobileNavOpen} setMobileOpen={setMobileNavOpen} />
 
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 h-screen overflow-y-auto relative z-10 min-w-0">
         <Topbar
           query={query}
           setQuery={setQuery}
@@ -2658,6 +2707,7 @@ export default function AdminDashboard() {
         item={shareModalState.item}
         type={shareModalState.type}
       />
+      </div>
     </div>
   );
 }
