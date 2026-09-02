@@ -21,6 +21,224 @@
   font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
+.zx-internship-card {
+  width: min(330px, 76vw);
+  max-width: none;
+  box-sizing: border-box;
+}
+
+.zx-internship-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.zx-internship-header > strong {
+  min-width: 0;
+  color: #f5f3ff;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.zx-internship-badge {
+  flex: 0 0 auto;
+  padding: 4px 7px;
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #6ee7b7;
+  font-size: 9.5px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.zx-internship-details {
+  display: grid;
+  gap: 7px;
+  margin-top: 12px;
+  color: rgba(226, 217, 243, 0.82);
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+
+.zx-internship-detail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.zx-internship-detail > span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.zx-internship-detail strong {
+  color: #c4b5fd;
+}
+
+.zx-internship-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  flex: 0 0 18px;
+}
+
+.zx-internship-actions {
+  display: flex;
+  gap: 7px;
+  margin-top: 14px;
+}
+
+.zx-internship-actions button,
+.zx-internship-actions a {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 8px 7px;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.zx-internship-actions button {
+  border: 0;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: #fff;
+}
+
+.zx-internship-actions a {
+  border: 1px solid rgba(167, 139, 250, 0.35);
+  background: rgba(124, 58, 237, 0.1);
+  color: #c4b5fd;
+}
+
+.zx-internship-actions button:hover,
+.zx-internship-actions a:hover {
+  opacity: 0.86;
+}
+
+.zx-career-card {
+  width: min(330px, 76vw);
+  max-width: none;
+  box-sizing: border-box;
+}
+
+.zx-career-card h3 {
+  margin: 0;
+  color: #f5f3ff;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.zx-career-card p {
+  margin: 10px 0 0;
+  color: rgba(226, 217, 243, 0.82);
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+
+.zx-career-email-section {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  color: rgba(226, 217, 243, 0.78);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.zx-career-email-section a {
+  color: #c4b5fd;
+  overflow-wrap: anywhere;
+}
+
+.zx-career-email-action {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 14px;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.zx-career-email-action:hover {
+  opacity: 0.86;
+}
+
+.zx-contact-hub {
+  width: min(330px, 76vw);
+  max-width: none;
+  box-sizing: border-box;
+}
+
+.zx-contact-hub h3 {
+  margin: 0;
+  color: #f5f3ff;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.zx-contact-hub > p {
+  margin: 7px 0 0;
+  color: rgba(226, 217, 243, 0.78);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.zx-contact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 13px;
+}
+
+.zx-contact-grid a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  min-width: 0;
+  padding: 7px 6px;
+  border: 1px solid rgba(167, 139, 250, 0.25);
+  border-radius: 10px;
+  background: rgba(124, 58, 237, 0.1);
+  color: #ddd6fe;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.zx-contact-grid a:hover {
+  border-color: rgba(167, 139, 250, 0.6);
+  background: rgba(124, 58, 237, 0.24);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 420px) {
+  .zx-contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
 @keyframes zx-slide-in {
   from { opacity: 0; transform: translateY(20px) scale(0.95); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
@@ -138,6 +356,7 @@
 
 /* ── Input bar ────────────────────────────── */
 .zx-input-bar {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -145,6 +364,47 @@
   border-top: 1px solid rgba(124,58,237,0.15);
   background: rgba(15,11,30,0.95);
   flex-shrink: 0;
+}
+
+.zx-autocomplete {
+  position: absolute;
+  right: 14px;
+  bottom: calc(100% + 8px);
+  left: 14px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 220px;
+  padding: 8px;
+  overflow-y: auto;
+  background: rgba(15, 11, 30, 0.96);
+  border: 1px solid rgba(124, 58, 237, 0.35);
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(124, 58, 237, 0.12);
+  backdrop-filter: blur(14px);
+}
+
+.zx-autocomplete-option {
+  width: 100%;
+  padding: 8px 10px;
+  color: #c4b5fd;
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.zx-autocomplete-option:hover,
+.zx-autocomplete-option:focus-visible {
+  color: #fff;
+  background: rgba(124, 58, 237, 0.25);
+  border-color: #7C3AED;
+  outline: none;
 }
 
 .zx-text-input {
