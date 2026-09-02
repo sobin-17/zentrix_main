@@ -13,9 +13,9 @@ const LEAD_FORM_TRIGGER_COUNT = 5;
 const CONTACT_ACTIONS = [
   {
     label: "💬 Chat on WhatsApp",
-    href: "https://wa.me/919509730003?text=Hi%20Zentrix%2C%20I%20have%20an%20inquiry",
+    href: "https://wa.me/919150973003",
   },
-  { label: "📞 Call +91 95097 30003", href: "tel:+919509730003" },
+  { label: "📞 Call +91 91509 73003", href: "tel:+919150973003" },
   {
     label: "✉️ info@zentrixtechnology.com",
     href: "https://mail.google.com/mail/?view=cm&fs=1&to=info@zentrixtechnology.com&su=General%20Inquiry",
