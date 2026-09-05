@@ -64,11 +64,12 @@ import {
 } from 'lucide-react';
 
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "../firebase";
+import { db, storage } from "../firebase";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
 /* ────────────────────────────────────────────────────────────────────────
    CONSTANTS / SEED DATA
 ──────────────────────────────────────────────────────────────────────── */
@@ -1814,7 +1815,7 @@ const openPdfInNewTab = (resumeUrl, title = 'Resume.pdf') => {
   window.open(resumeUrl, '_blank');
 };
 
-function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp }) {
+function ApplicationsManager({ careers, applications, updateStatus, updateRemarks, onDeleteApp }) {
   const [selectedJob, setSelectedJob] = useState(null);
   const [activeApplicant, setActiveApplicant] = useState(null);
   const [previewPdfUrl, setPreviewPdfUrl] = useState(null);
@@ -1943,6 +1944,13 @@ function ApplicationsManager({ careers, applications, updateStatus, onDeleteApp 
                       type="text"
                       value={remarks[app.firestoreId || app.id] ?? app.remarks ?? ''}
                       onChange={(e) => setRemarks((current) => ({ ...current, [app.firestoreId || app.id]: e.target.value }))}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          e.target.blur();
+                          updateRemarks(app, e.target.value);
+                        }
+                      }}
                       placeholder="Remarks (e.g. Shortlisted / Rejected reason)..."
                       className="bg-white/5 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-white placeholder-white/40 focus:border-rose-500 focus:outline-none w-48 md:w-60 mr-2"
                     />
@@ -2462,6 +2470,28 @@ export default function AdminDashboard() {
     }
   };
 
+  const updateApplicationRemarks = async (application, newRemarks) => {
+    try {
+      const applicationId = application.firestoreId || application.id;
+      if (!applicationId) {
+        throw new Error("Application document ID is missing");
+      }
+
+      const docRef = doc(db, "applications", applicationId);
+      console.log("Saving remarks for:", applicationId, newRemarks);
+      await updateDoc(docRef, { remarks: newRemarks });
+      setCareerApplications((current) => current.map((item) => (
+        (item.firestoreId || item.id) === applicationId
+          ? { ...item, remarks: newRemarks }
+          : item
+      )));
+      await loadApplications();
+      flash(`Remarks for ${application.name} saved`);
+    } catch (err) {
+      console.error("Failed to save application remarks:", err);
+    }
+  };
+
   const removeApplication = async (application) => {
     if (!window.confirm(`Are you sure you want to completely discard the application from ${application.name}?`)) return;
     try {
@@ -2646,6 +2676,7 @@ export default function AdminDashboard() {
             careers={careers}
             applications={careerApplications}
             updateStatus={updateApplicationStatus}
+            updateRemarks={updateApplicationRemarks}
             onDeleteApp={removeApplication}
           />}
 
