@@ -89,6 +89,7 @@ export const loadIntentsFromFirestore = async () => {
 
             loadedIntents.push({
               tag: `${colName}_${docId}`,
+              collection: colName,
               keywords: keywords,
               response: response
             });
@@ -266,6 +267,45 @@ const SMALL_TALK_RESPONSE =
   "I'm the Zentrix Technology chatbot 🤖 — here to help with courses, internships, and services. " +
   `For anything else, reach our team directly: ${CONTACT_PHONE} or ${CONTACT_EMAIL}`;
 
+const FEE_FALLBACK_RESPONSE =
+  "• Internship training is merit-based with free access to live projects.\n" +
+  "• For specific course fee structures or offers, please click 'Apply Now' or connect via WhatsApp.";
+
+const hasFeeKeyword = (input) =>
+  /\b(fee|fees|cost|pricing|price)\b/i.test(input);
+
+const hasDirectFeeQuote = (response) =>
+  /(?:₹|rs\.?|inr|\$|€|£)\s*[\d,]+|\b(?:fee|fees|cost|price|pricing)\b[^.\n]{0,24}\b\d[\d,]*/i.test(response);
+
+const isCourseCardDescription = (intent, input) =>
+  intent.collection === "courses" &&
+  /\b(course|courses|program|programs)\b/i.test(input);
+
+const conciseBullets = (responses) => {
+  const sentences = responses
+    .flatMap((response) => response.split(/(?<=[.!?])\s+|\n+/))
+    .map((sentence) => sentence.replace(/^[•*-]\s*/, "").trim())
+    .filter(Boolean);
+
+  const uniqueSentences = [];
+  for (const sentence of sentences) {
+    const normalized = sentence.toLowerCase();
+    if (!uniqueSentences.some((item) => item.toLowerCase() === normalized)) {
+      uniqueSentences.push(sentence);
+    }
+  }
+
+  return uniqueSentences
+    .slice(0, 3)
+    .map((sentence) => {
+      const conciseSentence = sentence.length > 180
+        ? `${sentence.slice(0, 177).trimEnd()}...`
+        : sentence;
+      return `• ${conciseSentence}`;
+    })
+    .join("\n");
+};
+
 export const getFirestoreResponse = async (userInput) => {
   await loadIntentsFromFirestore(); // Just in case it's not loaded
 
@@ -394,47 +434,32 @@ export const getFirestoreResponse = async (userInput) => {
 
   scored.sort((a, b) => b.score - a.score);
   const best = scored[0];
-  const runnerUp = scored[1];
 
-  // Short queries (1-2 real words, e.g. "mern", "address") behave
-  // differently from long ones: a keyword that's common across many
-  // course/intent docs (like "mern") gets rarity-downweighted so much
-  // for the long-question fix that it can dip below the normal
-  // threshold even when it's clearly the right (only sensible) match.
-  // Fewer words also means fewer competing intents, so the margin
-  // check that protects long questions isn't needed here — just take
-  // the best score if there's any real signal at all.
-  if (signalWords.length > 0 && signalWords.length <= 2 && best && best.score >= 3) {
-    return best.intent.response;
-  }
-
-  // Require a real minimum score AND a clear margin over the runner-up.
-  // Without the margin check, a long multi-topic question can produce a
-  // near-tie where the "wrong" generic intent wins by a hair — which is
-  // exactly the repeated-same-answer symptom being fixed here.
+  // Keep only meaningful matches, then combine the strongest few answers.
+  // The relative cutoff prevents a weak generic hit from being appended to
+  // otherwise relevant answers for a multi-part question.
   const MIN_SCORE = 6;
-  const MIN_MARGIN_RATIO = 1.25; // best must beat runner-up by 25%+
+  const relevantMatches = best
+    ? scored.filter(
+        ({ score }) => score >= MIN_SCORE && score >= best.score * 0.35
+      )
+    : [];
 
-  if (
-    best &&
-    best.score >= MIN_SCORE &&
-    (!runnerUp || best.score >= runnerUp.score * MIN_MARGIN_RATIO)
-  ) {
-    return best.intent.response;
-  }
-
-  // No confident single match. For long / multi-part questions this is
-  // common — better to admit the limit than guess and repeat a wrong answer.
-  // Lowered from 8 to 4: a question can genuinely span several topics
-  // ("duration, fees, and internship for python") in as few as 4 signal
-  // words, and those deserve the same "ask one at a time" redirect as a
-  // longer question — not the plain no-match fallback.
-  if (signalWords.length >= 4) {
-    return (
-      "That's a detailed multi-part question — I can answer one topic at a time " +
-      "(courses, internships, services, placement, or careers). Could you break it " +
-      `into a single question? Or reach our team directly: ${CONTACT_PHONE} / ${CONTACT_EMAIL}`
+  if (relevantMatches.length > 0) {
+    const feeRequested = hasFeeKeyword(lower);
+    const directFeeMatch = relevantMatches.some(({ intent }) => hasDirectFeeQuote(intent.response));
+    const filteredMatches = relevantMatches.filter(({ intent }) =>
+      !isCourseCardDescription(intent, lower) || (feeRequested && hasDirectFeeQuote(intent.response))
     );
+    const responses = filteredMatches.slice(0, 3).map(({ intent }) => intent.response).filter(Boolean);
+
+    if (feeRequested && !directFeeMatch) {
+      return FEE_FALLBACK_RESPONSE;
+    }
+
+    if (responses.length > 0) {
+      return conciseBullets(responses);
+    }
   }
 
   return FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];

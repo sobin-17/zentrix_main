@@ -784,17 +784,6 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
     navigate(`/course/${course.route}`);
   };
 
-  const showCourseCard = (query) => {
-    const courseRoute = getCourseRoute(query);
-    if (!courseRoute) return false;
-
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), type: "courses", sender: "bot", courseRoute, time: getTime() },
-    ]);
-    return true;
-  };
-
   const openSuggestedCourse = (route) => {
     setMessages((prev) => [
       ...prev,
@@ -805,46 +794,51 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
     }, 50);
   };
 
-  const showServicesMessage = () => {
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), type: "services", sender: "bot", time: getTime() },
-    ]);
-  };
+  const renderMatchedIntents = async (query) => {
+    const courseRoute = getCourseRoute(query);
+    const matchedCourses = getMatchedComparisonCourses(query);
+    const blocks = [];
+    const detailRequested = /\b(duration|fee|fees|price|pricing|cost|syllabus|detail|details)\b/i.test(query);
 
-  const showInternshipMessage = () => {
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), type: "internship", sender: "bot", time: getTime() },
-    ]);
-  };
+    if (matchedCourses.length >= 2 && isComparisonQuery(query)) {
+      blocks.push({ type: "comparison", courses: extractCoursesFromComparison(query) });
+    } else if (courseRoute) {
+      blocks.push({ type: "courses", courseRoute });
+    } else if (/\b(courses?|programs?)\b/i.test(query)) {
+      blocks.push({ type: "courses" });
+    }
 
-  const showCareerMessage = () => {
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), type: "career", sender: "bot", time: getTime() },
-    ]);
-  };
+    if (isServicesQuery(query)) blocks.push({ type: "services" });
+    if (isInternshipQuery(query)) blocks.push({ type: "internship" });
+    if (isCareersQuery(query)) blocks.push({ type: "career" });
+    if (isContactQuery(query)) blocks.push({ type: "contact" });
+    if (isAboutQuery(query)) blocks.push({ type: "about" });
 
-  const showContactMessage = () => {
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), type: "contact", sender: "bot", time: getTime() },
-    ]);
-  };
+    let reply = "";
+    if (detailRequested || blocks.length === 0) {
+      setIsTyping(true);
+      reply = await askBackend(query, userName);
+      setIsTyping(false);
+      if (reply) {
+        const insertAt = courseRoute || blocks.some(({ type }) => type === "courses") ? 1 : 0;
+        blocks.splice(insertAt, 0, { type: "text", text: reply });
+      }
+    }
 
-  const showAboutMessage = () => {
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), type: "about", sender: "bot", time: getTime() },
-    ]);
-  };
+    if (!blocks.length) return false;
 
-  const showComparisonMessage = (courses) => {
+    const timestamp = Date.now();
     setMessages((prev) => [
       ...prev,
-      { id: Date.now(), type: "comparison", sender: "bot", courses, time: getTime() },
+      ...blocks.map((block, index) => ({
+        id: timestamp + index,
+        sender: "bot",
+        time: getTime(),
+        ...block,
+      })),
     ]);
+    if (reply) saveChatHistory(query, reply);
+    return true;
   };
 
   const handleCourseDetailsReply = (text) => {
@@ -889,42 +883,7 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
       return;
     }
 
-    if (isServicesQuery(label)) {
-      showServicesMessage();
-      inputRef.current?.focus();
-      return;
-    }
-    if (isInternshipQuery(label)) {
-      showInternshipMessage();
-      inputRef.current?.focus();
-      return;
-    }
-    if (isCareersQuery(label)) {
-      showCareerMessage();
-      inputRef.current?.focus();
-      return;
-    }
-    if (isContactQuery(label)) {
-      showContactMessage();
-      inputRef.current?.focus();
-      return;
-    }
-    if (isAboutQuery(label)) {
-      showAboutMessage();
-      inputRef.current?.focus();
-      return;
-    }
-
-    if (isComparisonQuery(label)) {
-      const courses = extractCoursesFromComparison(label);
-      if (courses.length >= 2) {
-        showComparisonMessage(courses);
-        inputRef.current?.focus();
-        return;
-      }
-    }
-
-    if (showCourseCard(label)) {
+    if (await renderMatchedIntents(label)) {
       inputRef.current?.focus();
       return;
     }
@@ -964,42 +923,7 @@ const ChatbotWindow = ({ chatState, onStateChange }) => {
       return;
     }
 
-    if (isServicesQuery(text)) {
-      showServicesMessage();
-      inputRef.current?.focus();
-      return;
-    }
-    if (isInternshipQuery(text)) {
-      showInternshipMessage();
-      inputRef.current?.focus();
-      return;
-    }
-    if (isCareersQuery(text)) {
-      showCareerMessage();
-      inputRef.current?.focus();
-      return;
-    }
-    if (isContactQuery(text)) {
-      showContactMessage();
-      inputRef.current?.focus();
-      return;
-    }
-    if (isAboutQuery(text)) {
-      showAboutMessage();
-      inputRef.current?.focus();
-      return;
-    }
-
-    if (isComparisonQuery(text)) {
-      const courses = extractCoursesFromComparison(text);
-      if (courses.length >= 2) {
-        showComparisonMessage(courses);
-        inputRef.current?.focus();
-        return;
-      }
-    }
-
-    if (showCourseCard(text)) {
+    if (await renderMatchedIntents(text)) {
       inputRef.current?.focus();
       return;
     }
