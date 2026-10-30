@@ -15,9 +15,10 @@ import {
   export const getApplications = async () => {
     const snapshot = await getDocs(collection(db, "applications"));
   
-    return snapshot.docs.map(doc => ({
-      firestoreId: doc.id,
-      ...doc.data(),
+    return snapshot.docs.map(applicationDoc => ({
+      ...applicationDoc.data(),
+      firestoreId: applicationDoc.id,
+      remarks: applicationDoc.data().remarks || '',
     }));
   };
   

@@ -1,0 +1,136 @@
+.admin-dashboard {
+  --color-brand-purple: #6472d8;
+  --color-brand-purple-light: #a7b0ff;
+  background: #130406;
+  color: #f4f6fb;
+}
+
+.admin-dashboard .bg-black {
+  background-color: #130406;
+}
+
+.admin-dashboard aside[class*="bg-[#0a0a0a]"] {
+  background-color: #1c080b;
+  border-color: #381218;
+}
+
+.admin-dashboard header[class*="bg-black/70"] {
+  background-color: rgba(19, 4, 6, 0.94);
+  border-color: #381218;
+}
+
+.admin-dashboard [class*="bg-white/[0.03]"] {
+  background-color: #1c080b;
+  border-color: #381218;
+  border-radius: 0.75rem;
+}
+
+.admin-dashboard [class*="border-white/10"] {
+  border-color: #381218;
+}
+
+.admin-dashboard [class*="border-white/5"] {
+  border-color: #381218;
+}
+
+.admin-dashboard [class*="bg-[#0d0d0d]"],
+.admin-dashboard [class*="bg-[#111]"] {
+  background-color: #1c080b;
+}
+
+.admin-dashboard [class*="p-4"][class*="sm:p-5"] {
+  position: relative;
+  display: block;
+  padding: 1.25rem;
+  min-height: 7.5rem;
+  border-top: 2px solid rgba(239, 68, 68, 0.8);
+}
+
+.admin-dashboard [class*="p-4"][class*="sm:p-5"] > div:first-child {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.75rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.admin-dashboard [class*="p-4"][class*="sm:p-5"] > div:last-child {
+  padding-top: 2.75rem;
+}
+
+.admin-dashboard [class*="p-4"][class*="sm:p-5"] p:last-child {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.admin-dashboard [class*="p-4"][class*="sm:p-5"] p:first-child {
+  color: #c4aeb2;
+}
+
+.admin-dashboard [class*="divide-y"] > :not(:last-child),
+.admin-dashboard tr[class*="border-b"] {
+  border-color: #381218;
+}
+
+.admin-dashboard tbody tr:hover,
+.admin-dashboard [class*="divide-y"] > :hover,
+.admin-dashboard .space-y-3 > div:hover {
+  background-color: rgba(255, 255, 255, 0.045);
+}
+
+.admin-dashboard .space-y-3 > div {
+  border-bottom: 1px solid #381218;
+  padding-bottom: 0.75rem;
+}
+
+.admin-dashboard .space-y-3 > div:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.admin-dashboard [class*="bg-white/5"] {
+  background-color: rgba(255, 255, 255, 0.055);
+}
+
+.admin-dashboard [class*="hover:bg-white/10"]:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-dashboard [class*="bg-[var(--color-brand-purple)]"] {
+  background-color: var(--color-brand-purple);
+}
+
+.admin-dashboard [class*="shadow-[0_0_20px_rgba(157,0,255,0.35)]"] {
+  box-shadow: 0 0 18px rgba(100, 114, 216, 0.22);
+}
+
+.admin-dashboard input:focus,
+.admin-dashboard select:focus,
+.admin-dashboard textarea:focus {
+  border-color: #7d8bea;
+}
+
+.admin-dashboard [class*="text-purple-400"] {
+  color: #9da8ff;
+}
+
+.admin-dashboard [class*="hover:text-purple-300"]:hover {
+  color: #c1c8ff;
+}
+
+.admin-dashboard [class*="bg-purple-600"] {
+  background-color: #5664c5;
+}
+
+.admin-dashboard [class*="bg-red-600"] {
+  background-color: #c6535d;
+}
+
+.admin-dashboard [class*="hover:bg-red-700"]:hover {
+  background-color: #ad444f;
+}

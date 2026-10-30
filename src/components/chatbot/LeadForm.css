@@ -30,10 +30,27 @@
 .zx-input::placeholder { color: rgba(255,255,255,0.3); }
 .zx-input:focus { border-color: #7C3AED; }
 
+.zx-course-select {
+  appearance: auto;
+}
+
+.zx-course-select option {
+  color: #111827;
+  background: #fff;
+}
+
 .zx-lead-error {
   color: #f87171;
   font-size: 12px;
   margin: 0 0 8px;
+}
+
+.zx-lead-success {
+  margin: 8px 0;
+  color: #86efac;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
 }
 
 .zx-lead-submit {
