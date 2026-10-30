@@ -2078,60 +2078,184 @@ export default function AdminDashboard() {
       color: colors[Math.floor(Math.random() * colors.length)],
     }));
   });
+  // ======================================================
+  // ADMIN DASHBOARD STATE
+  // ======================================================
   const [courses, setCourses] = useState([]);
   const [careers, setCareers] = useState([]);
   const [enrollments, setEnrollments] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [applications, setApplications] = useState([]);
-
   const [contactMessages, setContactMessages] = useState([]);
+  const [careerApplications, setCareerApplications] = useState([]);
+  const [admin, setAdmin] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [projectModal, setProjectModal] = useState(null);
+  const [projects, setProjects] = useState(() => getCachedProjects());
+  const [savingProject, setSavingProject] = useState(false);
+  const [toast, setToast] = useState('');
+  const [shareModalState, setShareModalState] = useState({ isOpen: false, item: null, type: 'career' });
+  const [courseModal, setCourseModal] = useState(null);
+  const [careerModal, setCareerModal] = useState(null);
 
+  // ======================================================
+  // LOAD CONTACT MESSAGES
+  // ======================================================
   const loadContacts = async () => {
-    const data = await getContactMessages();
-    setContactMessages(data);
+    try {
+      const data = await getContactMessages();
+      setContactMessages(data || []);
+    } catch (error) {
+      console.error("Error loading contacts:", error);
+      setContactMessages([]);
+    }
   };
 
-  useEffect(() => {
-    loadContacts();
-  }, []);
+  // ======================================================
+  // LOAD ENROLLMENTS
+  // ======================================================
+  const loadEnrollments = async () => {
+    try {
+      const data = await getEnrollments();
+      setEnrollments(data || []);
+    } catch (error) {
+      console.error("Error loading enrollments:", error);
+      setEnrollments([]);
+    }
+  };
 
-  const [admin, setAdmin] = useState(null);
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setAdmin({
-          email: user.email,
-        });
-      }
-    });
-
-    return unsubscribe;
-  }, []);
-
-  useEffect(() => {
-    loadEnrollments();
-  }, []);
-
+  // ======================================================
+  // LOAD CAREERS
+  // ======================================================
   const loadCareers = async () => {
     try {
       const data = await getCareers();
-      const formatted = ensureCareerJobIds(data);
+      const formatted = ensureCareerJobIds(data || []);
       setCareers(formatted);
     } catch (error) {
-      console.error("Failed to load careers:", error);
+      console.error("Error loading careers:", error);
       setCareers([]);
     }
   };
 
-  useEffect(() => {
-    loadCareers();
-  }, []);
-
-  const loadEnrollments = async () => {
-    const data = await getEnrollments();
-    setEnrollments(data);
+  // ======================================================
+  // LOAD APPLICATIONS
+  // ======================================================
+  const loadApplications = async () => {
+    try {
+      const data = await getApplications();
+      setCareerApplications(data || []);
+    } catch (error) {
+      console.error("Error loading applications:", error);
+      setCareerApplications([]);
+    }
   };
-  const [careerApplications, setCareerApplications] = useState([]);
+
+  // ======================================================
+  // LOAD PROJECTS
+  // ======================================================
+  const loadProjects = async () => {
+    try {
+      const data = await getProjects();
+      if (data) setProjects(data);
+    } catch (error) {
+      console.error("Error loading projects:", error);
+    }
+  };
+
+  // ======================================================
+  // LOAD COURSES
+  // ======================================================
+  const loadCourses = async () => {
+    try {
+      const data = await getCourses();
+      const formatted = ensureCourseIds(data || []);
+      setCourses(formatted);
+    } catch (error) {
+      console.error("Error loading courses:", error);
+      setCourses([]);
+    }
+  };
+
+  // ======================================================
+  // FIREBASE AUTHENTICATION
+  // ======================================================
+  useEffect(() => {
+    let mounted = true;
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!mounted) return;
+
+      console.log("Firebase auth state:", user ? user.uid : "No user");
+
+      if (!user) {
+        setAdmin(null);
+        setAuthLoading(false);
+        navigate("/admin-login", { replace: true });
+        return;
+      }
+
+      setAdmin({
+        uid: user.uid,
+        email: user.email || "",
+      });
+
+      setAuthLoading(false);
+    });
+
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
+  }, [navigate]);
+
+  // ======================================================
+  // LOAD FIREBASE DATA ONLY AFTER AUTHENTICATION
+  // ======================================================
+  useEffect(() => {
+    if (authLoading || !admin) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadAllAdminData = async () => {
+      console.log("Admin authenticated. Loading dashboard data...");
+
+      const results = await Promise.allSettled([
+        loadContacts(),
+        loadEnrollments(),
+        loadCareers(),
+        loadApplications(),
+        loadProjects(),
+        loadCourses(),
+      ]);
+
+      if (cancelled) return;
+
+      results.forEach((result, index) => {
+        if (result.status === "rejected") {
+          const names = [
+            "contacts",
+            "enrollments",
+            "careers",
+            "applications",
+            "projects",
+            "courses",
+          ];
+          console.error(`Failed to load ${names[index]}:`, result.reason);
+        }
+      });
+
+      console.log("Admin dashboard data loading completed.");
+    };
+
+    loadAllAdminData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [authLoading, admin]);
 
   const notifications = [
     ...enrollments
@@ -2167,115 +2291,34 @@ export default function AdminDashboard() {
 
   const notificationCount = notifications.length;
 
-  const loadApplications = async () => {
-    try {
-      const data = await getApplications();
-      setCareerApplications(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const markAllNotificationsAsRead = async () => {
     try {
-      // Update enrollments
       for (const enrollment of enrollments.filter(e => e.status === "New")) {
         await updateEnrollmentStatus(enrollment.firestoreId, "Contacted");
       }
 
-      // Update applications
       for (const application of careerApplications.filter(a => a.status === "New")) {
         await updateAppStatusService(application.firestoreId, "Pending");
       }
 
-      // Update contact messages
       for (const contact of contactMessages.filter(c => c.status === "New")) {
         await updateContactMessageStatus(contact.firestoreId, "Read");
       }
 
-      // Reload data
-      await loadEnrollments();
-      await loadApplications();
-      await loadContacts();
+      await Promise.all([
+        loadEnrollments(),
+        loadApplications(),
+        loadContacts(),
+      ]);
 
       setShowNotifications(false);
     } catch (error) {
-      console.error(error);
+      console.error("Error marking notifications as read:", error);
     }
   };
 
-  useEffect(() => {
-    loadApplications();
-  }, []);
-  const [courseModal, setCourseModal] = useState(null);
-  const [careerModal, setCareerModal] = useState(null);
-  const [projectModal, setProjectModal] = useState(null);
-  const [projects, setProjects] = useState(() => getCachedProjects());
-  const [savingProject, setSavingProject] = useState(false);
-  const [toast, setToast] = useState('');
-  const [shareModalState, setShareModalState] = useState({ isOpen: false, item: null, type: 'career' });
-  const handleOpenShare = (item, type) => setShareModalState({ isOpen: true, item, type });
-
-  const loadProjects = async () => {
-    try {
-      const data = await getProjects();
-      if (data) setProjects(data);
-    } catch (err) {
-      console.error("Error loading projects:", err);
-    }
-  };
-
-  useEffect(() => {
-    loadProjects();
-  }, []);
-
-  const saveProject = async (payload, isEdit) => {
-    if (savingProject) return;
-    setSavingProject(true);
-    try {
-      if (isEdit) {
-        await updateProject(payload.firestoreId, payload);
-      } else {
-        await createProject(payload);
-      }
-      await loadProjects();
-      setProjectModal(null);
-      flash(isEdit ? "Portfolio project updated" : "Portfolio project added");
-    } catch (err) {
-      console.error(err);
-      alert(err.message || "Failed to save project");
-    } finally {
-      setSavingProject(false);
-    }
-  };
-
-  const deleteProjectHandler = async (project) => {
-    if (!window.confirm(`Delete project "${project.title}"?`)) return;
-    try {
-      if (project.firestoreId) {
-        await deleteProjectFromDB(project.firestoreId);
-      }
-      setProjects(prev => prev.filter(p => p.firestoreId !== project.firestoreId && p.id !== project.id));
-      flash("Project removed");
-    } catch (err) {
-      console.error(err);
-      alert(err.message || "Failed to delete project");
-    }
-  };
-
-  useEffect(() => {
-    loadCourses();
-  }, []);
-
-  const loadCourses = async () => {
-    try {
-      const data = await getCourses();
-      const formatted = ensureCourseIds(data);
-      setCourses(formatted);
-    } catch (error) {
-      console.error("Error loading courses:", error);
-      setCourses([]);
-    }
+  const handleOpenShare = (item, type) => {
+    setShareModalState({ isOpen: true, item, type });
   };
 
   const flash = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
@@ -2490,6 +2533,25 @@ export default function AdminDashboard() {
       console.error('Error marking notification as read:', err);
     }
   };
+
+  // ======================================================
+  // AUTH LOADING / ACCESS GUARD
+  // ======================================================
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-10 h-10 mx-auto mb-4 rounded-full border-4 border-purple-500/30 border-t-purple-500 animate-spin" />
+          <p className="text-white font-semibold">Checking admin access...</p>
+          <p className="text-slate-500 text-sm mt-1">Please wait</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!admin) {
+    return null;
+  }
 
   return (
     <div className="flex min-h-screen bg-black font-poppins relative overflow-hidden w-full max-w-[100vw]">
