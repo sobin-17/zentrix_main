@@ -75,7 +75,7 @@ function ServiceCard({ title, items, delay = 0 }) {
           ))}
         </ul>
 
-        <Link to="/your-next-step#get-in-touch">
+        <Link to={title === "Website Development" ? "/website-development" : "/your-next-step#get-in-touch"}>
           <button
             className="
               mt-8
@@ -176,7 +176,7 @@ function WhyChooseUsCards({ items }) {
 export default function Services() {
   const services = [
     {
-      title: "Software Development",
+      title: "Website Development",
       items: [
         "Custom Web & Mobile Applications",
         <>Scalable Business<br />Solutions</>,
