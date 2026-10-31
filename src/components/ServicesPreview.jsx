@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const ServicesPreview = () => {
   const services = [
     {
-      title: "software developmet",
+      title: "Website Development",
       features: [
         "Custom Web & Mobile Applications",
         "Scalable Business Solutions",
@@ -56,7 +56,7 @@ const ServicesPreview = () => {
                 ))}
               </ul>
 
-              <Link to="/your-next-step#get-in-touch" className="w-full flex justify-center">
+              <Link to={index === 0 ? "/website-development" : "/your-next-step#get-in-touch"} className="w-full flex justify-center">
                 <button className="btn-outline w-3/4">
                   Enquire now
                 </button>
