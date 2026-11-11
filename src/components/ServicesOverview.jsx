@@ -1,16 +1,28 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Smartphone, Globe, Cloud, GraduationCap } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Smartphone, Globe, Cloud, GraduationCap, PanelsTopLeft } from 'lucide-react';
 import '../styles/services.css';
+
+const MotionLink = motion.create(Link);
 
 const ServicesOverview = () => {
   const services = [
     {
-      title: "Web Development",
-      tagline: "Custom & Scalable",
-      description: "Custom, scalable, and high-performance web applications tailored to your business needs.",
+      title: "Website Development",
+      tagline: "Responsive & Built for your brand",
+      description: "Modern, responsive websites designed to build trust and turn visitors into customers.",
       icon: <Globe className="w-5 h-5 shrink-0" />,
       color: "#00c6ff", // Blue glow
+      to: "/website-development",
+    },
+    {
+      title: "Web App Development",
+      tagline: "Custom & Scalable",
+      description: "Secure, high-performance web applications tailored to your business needs.",
+      icon: <PanelsTopLeft className="w-5 h-5 shrink-0" />,
+      color: "#8b5cf6",
+      to: "/web-app-development",
     },
     {
       title: "Mobile App Development",
@@ -18,6 +30,7 @@ const ServicesOverview = () => {
       description: "Native and cross-platform mobile experiences that engage users on any device.",
       icon: <Smartphone className="w-5 h-5 shrink-0" />,
       color: "#25D366", // Green glow
+      to: "/mobile-app-development",
     },
     {
       title: "Digital Marketing",
@@ -78,10 +91,11 @@ const ServicesOverview = () => {
         >
           {services.map((service, index) => {
             return (
-              <motion.div 
-                key={index}
+              <MotionLink
+                key={service.title}
+                to={service.to || "/service"}
                 variants={cardVariants}
-                className="group relative cursor-pointer w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)] xl:w-auto shrink-0 transition-all duration-300 hover:-translate-y-1.5"
+                className="group relative cursor-pointer w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.75rem)] xl:w-[calc(33.333%-0.75rem)] shrink-0 transition-all duration-300 hover:-translate-y-1.5 no-underline"
                 title={service.description}
               >
                 {/* Outer Glow on Hover */}
@@ -130,7 +144,7 @@ const ServicesOverview = () => {
                     </span>
                   </div>
                 </div>
-              </motion.div>
+              </MotionLink>
             );
           })}
         </motion.div>

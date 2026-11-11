@@ -24,6 +24,7 @@ const OurPortfolio = lazy(() => import('./pages/OurPortfolio'));
 const AbijoeFurnitureERP = lazy(() => import('./pages/AbijoeFurnitureERP'));
 const YourNextStep = lazy(() => import('./pages/Yournextstepnew'));
 const WebsiteDevelopment = lazy(() => import('./pages/WebsiteDevelopment'));
+const AppDevelopment = lazy(() => import('./pages/AppDevelopment'));
 const Admindashboard = lazy(() => import('./pages/Admindashboard'));
 const AdminLogin = lazy(() => import('./pages/AdminLogin'));
 const ResumeViewer = lazy(() => import('./pages/ResumeViewer'));
@@ -41,7 +42,11 @@ const GlobalAtmosphere = React.memo(() => (
 function AppLayout() {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin-dashboard') || location.pathname.startsWith('/view-resume');
-  const isWebsiteDevelopment = location.pathname === '/website-development';
+  const isDevelopmentService = [
+    '/website-development',
+    '/web-app-development',
+    '/mobile-app-development',
+  ].includes(location.pathname);
 
   return (
     <div className="bg-transparent text-white font-poppins relative w-full max-w-[100vw]">
@@ -49,17 +54,17 @@ function AppLayout() {
       <GlobalAtmosphere />
 
       {/* Persistent Navbar */}
-      {!isAdmin && !isWebsiteDevelopment && <Navbar />}
+      {!isAdmin && !isDevelopmentService && <Navbar />}
 
       {/* Cookie Consent Banner */}
-      {!isAdmin && !isWebsiteDevelopment && (
+      {!isAdmin && !isDevelopmentService && (
         <Suspense fallback={null}>
           <CookieBanner />
         </Suspense>
       )}
 
       {/* Persistent Floating Controls (Chatbot + Actions) */}
-      {!isAdmin && !isWebsiteDevelopment && (
+      {!isAdmin && !isDevelopmentService && (
         <Suspense fallback={null}>
           <div className="fixed right-6 bottom-6 md:right-8 md:bottom-8 z-[9999] flex flex-col gap-3 items-end pointer-events-none">
             <div className="pointer-events-auto origin-bottom-right scale-[0.85] md:scale-100 transition-transform">
@@ -93,6 +98,8 @@ function AppLayout() {
             <Route path="/get-touch" element={<GetTouch />} />
             <Route path="/your-next-step" element={<YourNextStep />} />
             <Route path="/website-development" element={<WebsiteDevelopment />} />
+            <Route path="/web-app-development" element={<AppDevelopment serviceType="web-app" />} />
+            <Route path="/mobile-app-development" element={<AppDevelopment serviceType="mobile-app" />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-and-conditions" element={<TermsConditions />} />
             <Route path="/admin-login" element={<AdminLogin />} />
@@ -117,7 +124,7 @@ function AppLayout() {
         </Suspense>
 
         {/* Persistent Footer */}
-        {!isAdmin && !isWebsiteDevelopment && <Footer />}
+        {!isAdmin && !isDevelopmentService && <Footer />}
       </main>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { GraduationCap, Boxes, BrainCircuit, HeartHandshake } from "lucide-react";
@@ -30,13 +30,17 @@ const cardVariant = {
   },
 };
 
+const MotionLink = motion.create(Link);
+
 /* ─── Service Card ────────────────────────────────────────────────── */
 
-function ServiceCard({ title, items, delay = 0 }) {
+function ServiceCard({ title, items, to }) {
   return (
-    <motion.div
+    <MotionLink
+      to={to}
       variants={cardVariant}
       className="
+        block
         relative
         flex flex-col
         overflow-hidden
@@ -55,13 +59,14 @@ function ServiceCard({ title, items, delay = 0 }) {
       "
       style={{ willChange: "transform" }}
       whileHover={{ y: -4, transition: { duration: 0.3 } }}
+      aria-label={`Explore ${title}`}
     >
       {/* Internal gradient shimmer */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/[0.07] via-white/[0.02] to-transparent rounded-[28px]" />
       {/* Purple edge glow */}
       <div className="absolute inset-0 rounded-[28px] bg-gradient-to-b from-purple-600/[0.06] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-      <div className="relative z-10 flex flex-col h-full mt-4" >
+      <div className="relative z-10 flex flex-col h-full mt-4">
         <h3 className="text-[22px] font-bold mb-5 text-center leading-tight tracking-tight">
           {title}
         </h3>
@@ -75,29 +80,28 @@ function ServiceCard({ title, items, delay = 0 }) {
           ))}
         </ul>
 
-        <Link to={title === "Website Development" ? "/website-development" : "/your-next-step#get-in-touch"}>
-          <button
-            className="
-              mt-8
-              w-full
-              py-[10px]
-              rounded-full
-              bg-black/60
-              border border-purple-500/70
-              text-[13px]
-              font-medium
-              tracking-wide
-              hover:bg-purple-600/80
-              hover:border-purple-400
-              transition-all duration-300
-              backdrop-blur-sm
-            "
-          >
-            Enquire now
-          </button>
-        </Link>
+        <span
+          className="
+            inline-flex items-center justify-center
+            mt-8
+            w-full
+            py-[10px]
+            rounded-full
+            bg-black/60
+            border border-purple-500/70
+            text-[13px]
+            font-medium
+            tracking-wide
+            hover:bg-purple-600/80
+            hover:border-purple-400
+            transition-all duration-300
+            backdrop-blur-sm
+          "
+        >
+          Explore service <span aria-hidden="true" className="ml-2">→</span>
+        </span>
       </div>
-    </motion.div>
+    </MotionLink>
   );
 }
 
@@ -177,29 +181,32 @@ export default function Services() {
   const services = [
     {
       title: "Website Development",
+      to: "/website-development",
       items: [
-        "Custom Web & Mobile Applications",
-        <>Scalable Business<br />Solutions</>,
-        <>Secure & High-<br />Performance Systems</>,
-        <>Maintenance &<br />Technical Support</>,
+        "Responsive business websites",
+        "Custom design and development",
+        "SEO-ready, secure experiences",
+        "Launch support and maintenance",
       ],
     },
     {
-      title: "Projects",
+      title: "Web App Development",
+      to: "/web-app-development",
       items: [
-        "Academic & Final Year Projects",
-        "Industry-Oriented Development",
-        <>Real-World Problem <br/>Solving</>,
-        <>End-to-End Project <br/>Guidance</>,
+        "Custom dashboards and portals",
+        "Workflow and process automation",
+        "Secure integrations and data",
+        "Scalable cloud-ready systems",
       ],
     },
     {
-      title: "Digital Marketing",
+      title: "Mobile App Development",
+      to: "/mobile-app-development",
       items: [
-        <>Search Engine<br/> Optimization (SEO)</>,
-        "Social Media Marketing",
-        <>Content Marketing<br/> Strategies</>,
-        <>Lead Generation <br/>Campaigns</>,
+        "iOS and Android experiences",
+        "Native and cross-platform apps",
+        "API and notification integration",
+        "App launch and ongoing support",
       ],
     },
   ];
@@ -291,10 +298,17 @@ export default function Services() {
           viewport={{ once: true, amount: 0.1 }}
           className="grid md:grid-cols-3 gap-6"
         >
-          {services.map((svc, i) => (
-            <ServiceCard key={i} {...svc} delay={i * 0.15} />
+          {services.map((svc) => (
+            <ServiceCard key={svc.title} {...svc} />
           ))}
         </motion.div>
+        <p className="mt-7 text-center text-sm text-gray-300">
+          Need project guidance or digital marketing?
+          {" "}
+          <Link className="font-semibold text-purple-300 hover:text-white" to="/your-next-step#get-in-touch">
+            Explore more services
+          </Link>
+        </p>
       </section>
 
       {/* ════════════════════════════════════════════════════════════ */}
