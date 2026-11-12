@@ -335,6 +335,7 @@ const ApplyForm = ({ jobTitle, jobId }) => {
             required
             type="tel"
             name="phone"
+            inputMode="numeric"
             maxLength={10}
             value={form.phone}
             onChange={handlePhoneChange}

@@ -6,7 +6,7 @@ import "../styles/website-development.css";
 
 const packages = [
   { name: "BASIC", price: "₹29,999", description: "Everything you need to get started.", features: ["5–7 pages", "Responsive design", "Custom domain", "Basic SEO setup", "3 months Google Profile", "1 year domain validity", "Free hosting"], action: "Choose Basic" },
-  { name: "STANDARD", price: "₹39,999", description: "A stronger foundation to grow online.", badge: "POPULAR", features: ["8–10 pages", "Responsive design", "Blog / portfolio", "Advanced SEO setup", "6 months SEO", "6 months Google Profile", "Free hosting"], action: "Choose Standard" },
+  { name: "STANDARD", price: "₹39,999", description: "A stronger foundation to grow online.", features: ["8–10 pages", "Responsive design", "Blog / portfolio", "Advanced SEO setup", "6 months SEO", "6 months Google Profile", "Free hosting"], action: "Choose Standard" },
 ];
 
 const destinations = [
@@ -53,9 +53,9 @@ export default function WebsiteDevelopment() {
         <nav className={menuOpen ? "wd-nav wd-nav-open" : "wd-nav"} aria-label="Website development navigation">
           <Link to="/" onClick={() => setMenuOpen(false)}>HOME</Link>
           <a href="#showcase" onClick={() => setMenuOpen(false)}>OUR WEBSITE</a>
+          <Link to="/service" onClick={() => setMenuOpen(false)}>TECH SPACE</Link>
           <a href="#work" onClick={() => setMenuOpen(false)}>OUR WORK</a>
           <a href="#plans" onClick={() => setMenuOpen(false)}>PRICING</a>
-          <Link to="/contact" onClick={() => setMenuOpen(false)}>CONTACT</Link>
         </nav>
         <button className="wd-header-cta" type="button" onClick={() => openEnquiry()}>LET’S TALK <ArrowUpRight size={14} /></button>
       </header>
@@ -151,7 +151,6 @@ export default function WebsiteDevelopment() {
       <section className="wd-plans" id="plans">
         <div className="wd-section-heading"><h2>Choose the right launch plan.</h2><p>Great websites, designed for your next move.</p></div>
         <div className="wd-plan-grid">{packages.map((plan) => <article className="wd-plan-card" key={plan.name}>
-          {plan.badge && <span className="wd-plan-badge">{plan.badge}</span>}
           <small>{plan.name}</small><p>{plan.description}</p><strong>{plan.price}</strong><span className="wd-plan-caption">One-time website package</span>
           <ul>{plan.features.map((feature) => <li key={feature}><Check size={13} />{feature}</li>)}</ul>
           <button type="button" onClick={() => openEnquiry(plan.name)}>Choose {plan.name === "BASIC" ? "Basic" : "Standard"} <ArrowRight size={14} /></button>
@@ -174,7 +173,7 @@ export default function WebsiteDevelopment() {
             <form onSubmit={submit} className="wd-form">
               <label>Your name<input required name="name" value={form.name} onChange={update} placeholder="Name" autoComplete="name" /></label>
               <label>Email address<input required type="email" name="email" value={form.email} onChange={update} placeholder="you@example.com" autoComplete="email" /></label>
-              <label>Phone number<input required type="tel" name="phone" value={form.phone} onChange={update} placeholder="Your phone number" autoComplete="tel" /></label>
+              <label>Phone number<input required type="tel" name="phone" value={form.phone} onChange={update} placeholder="10-digit phone number" autoComplete="tel" inputMode="numeric" pattern="[0-9]{10}" maxLength={10} title="Enter exactly 10 digits" /></label>
               <label>Tell us about your website<textarea required name="message" value={form.message} onChange={update} placeholder="What would you like to build?" rows={3} /></label>
               {status.error && <p className="wd-form-error" role="alert">{status.error}</p>}
               <button className="wd-form-submit" disabled={status.loading} type="submit">{status.loading ? <><LoaderCircle className="wd-spin" size={16} /> Sending…</> : <>Send enquiry <Send size={15} /></>}</button>
