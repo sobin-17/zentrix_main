@@ -400,7 +400,7 @@ export default function AppDevelopment({ serviceType }) {
                 <form className="appd-form" onSubmit={submitEnquiry}>
                   <label>Your name<input required name="name" value={form.name} onChange={updateForm} placeholder="Name" autoComplete="name" /></label>
                   <label>Email address<input required type="email" name="email" value={form.email} onChange={updateForm} placeholder="you@example.com" autoComplete="email" /></label>
-                  <label>Phone number<input required type="tel" name="phone" value={form.phone} onChange={updateForm} placeholder="Your phone number" autoComplete="tel" /></label>
+                  <label>Phone number<input required type="tel" name="phone" value={form.phone} onChange={updateForm} placeholder="10-digit phone number" autoComplete="tel" inputMode="numeric" pattern="[0-9]{10}" maxLength={10} title="Enter exactly 10 digits" /></label>
                   <label>Project details<textarea required name="message" value={form.message} onChange={updateForm} placeholder={service.formPrompt} rows={3} /></label>
                   {status.error && <p className="appd-form-error" role="alert">{status.error}</p>}
                   <button className="appd-form-submit" disabled={status.loading} type="submit">

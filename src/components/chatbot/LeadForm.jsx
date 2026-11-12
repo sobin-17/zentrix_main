@@ -73,7 +73,7 @@ const LeadForm = ({ onSubmit, onSkip }) => {
           <form onSubmit={handleSubmit}>
             <input className="zx-input" type="text" name="name" placeholder="Your name" value={form.name} onChange={handleChange} required />
             <input className="zx-input" type="email" name="email" placeholder="Email address" value={form.email} onChange={handleChange} required />
-            <input className="zx-input" type="tel" name="phone" placeholder="Phone number" value={form.phone} onChange={handleChange} inputMode="numeric" maxLength={10} required />
+            <input className="zx-input" type="tel" name="phone" placeholder="10-digit phone number" value={form.phone} onChange={handleChange} inputMode="numeric" maxLength={10} required />
             <input className="zx-input" type="text" name="location" placeholder="Your location (optional)" value={form.location} onChange={handleChange} />
             <select className="zx-input zx-course-select" name="interestedCourse" value={form.interestedCourse} onChange={handleChange} required>
               <option value="" disabled>Interested course</option>

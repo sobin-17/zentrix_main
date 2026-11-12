@@ -173,7 +173,7 @@ export default function WebsiteDevelopment() {
             <form onSubmit={submit} className="wd-form">
               <label>Your name<input required name="name" value={form.name} onChange={update} placeholder="Name" autoComplete="name" /></label>
               <label>Email address<input required type="email" name="email" value={form.email} onChange={update} placeholder="you@example.com" autoComplete="email" /></label>
-              <label>Phone number<input required type="tel" name="phone" value={form.phone} onChange={update} placeholder="Your phone number" autoComplete="tel" /></label>
+              <label>Phone number<input required type="tel" name="phone" value={form.phone} onChange={update} placeholder="10-digit phone number" autoComplete="tel" inputMode="numeric" pattern="[0-9]{10}" maxLength={10} title="Enter exactly 10 digits" /></label>
               <label>Tell us about your website<textarea required name="message" value={form.message} onChange={update} placeholder="What would you like to build?" rows={3} /></label>
               {status.error && <p className="wd-form-error" role="alert">{status.error}</p>}
               <button className="wd-form-submit" disabled={status.loading} type="submit">{status.loading ? <><LoaderCircle className="wd-spin" size={16} /> Sending…</> : <>Send enquiry <Send size={15} /></>}</button>

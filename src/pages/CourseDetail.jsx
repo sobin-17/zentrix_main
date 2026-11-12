@@ -156,6 +156,7 @@ const EnrollForm = ({ course }) => {
             required
             type="tel"
             name="phone"
+            inputMode="numeric"
             maxLength={10}
             value={form.phone}
             onChange={handlePhoneChange}

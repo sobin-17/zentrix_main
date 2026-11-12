@@ -310,6 +310,7 @@ const GetTouch = () => {
                     type="tel"
                     name="phone"
                     required
+                    inputMode="numeric"
                     maxLength={form.countryCode === "+91" ? 10 : 15}
                     placeholder={form.countryCode === "+91" ? "10-digit Phone Number *" : "Phone Number *"}
                     value={form.phone}
